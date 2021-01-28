@@ -266,7 +266,7 @@ This functionality allows the user to paper trade on a limited stock listing.
 <li>Check stocks 2+ times daily, reads about long term trends or major news events, but not day to day </li>
 <li>Is important to think about this space because 1) want money to be put to good use 2) educational experience for financial knowledge and how businesses work or don’t </li></ul>
 <li>If they do invest, how did they get started?</li><ul>
-<li>Started internship in forex a few years ago</li>
+<li>Started internship in Forex a few years ago</li>
 <li>Stock started with robinhood </li>
 <li>Heard friends talking about it so got interested in investing, also making account on robinhood was super easy </li></ul>
 <li>If they do invest, what are their rhythms? How often do you, say, check your stocks? What triggers the check — notification, news, a certain time?</li> <ul>
@@ -340,3 +340,33 @@ This functionality allows the user to paper trade on a limited stock listing.
 <li>Once every 2 months</li></ul>
 <li>What communities do you often go to for information?</li><ul>
 <li>If it’s large enough info, will hear from news</li></ul></ul>
+
+
+#### Interview #6
+- <b> What's your investment background? </b>
+    - Makes investments but not zealously; Dad did them for her for a while. Dad thinks a lot about stocks and is prone to micromangement in general. Puts about 20% of her assets into investments
+    - Mostly goes for stocks since they're easier to manage and longer term.
+    - For personal investments, she consults with her friends.
+    - When you're going for long term, you don't need to be as investigative/scrutinizing. Stonks go up.
+- $1000 exercise.
+    - Plays riskier when it's not her money. But would want to <b> talk to people/see what other people are doing </b> to get a sense of waht she wants to invest in.
+        - Specifically, in an 1-on-1 setting or with family.
+    - Riskier for her = cheaper stocks.
+    - Also motivated by upping her portfolio diversity
+- Feedback from Regretless Robinhood
+    - <b>Using historical data as a practice — could fast-forward like in the SIMS and get immediate results.</b>
+    - What do we want to do with those who succeed in Regretless Robinhood? Are there explicit rewards? How do you mitigate the sadness of knowing you could've made money?
+        - <b>The prudent solution would be to let them go and encourage them to invest IRL.</b>
+    - What will the refresh rate be? Strategy with shorts could be good, but then you'd have to have a fast refresh rate.
+- Generally, wishes that there were good places for knowledge or tips on investing.
+
+ 
+#### Interview #7 (multiple people)
+- "GME has made me a gambler." I used to just do ETFs. 
+- One of the interviewees was an incredibly cautious/prudent investor resisting the GME movement. Very risk averse. Something about dollar loss-averaging.
+    -  With $1000 (whether it was his or money I gave him) he 
+    - <b>If Regretless Robinhood were to exist, he was adament that it should demonstrate how to make money with passive investement.</b> 
+    - He balked at the idea otherwise, citing that people would be incentivized to gamble more — winning is great, save some opportunity cost, and losing has no consequence.
+- Another interviewee had play accounts from at least 8 or 9 that he used to play (and screw up with)
+    - Even he acknowledged that passive investment on average was a better strategy. (Though he was actively making bank from GME at the time)
+    - He seemed to have landed on "universally agree upon" smart investing principles, like the one above. (So, those must exist.)
