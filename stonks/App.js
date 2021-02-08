@@ -1,12 +1,10 @@
+
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-
-
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-
 import Signup from "./App/Components/Signup";
 import Welcome from "./App/Components/Welcome";
 import HomeScreen from "./App/Components/HomeScreen";   // sejal's
@@ -14,11 +12,20 @@ import HomeScreen from "./App/Components/HomeScreen";   // sejal's
 import Login from './App/Components/Login';
 import Portfolio from "./App/Components/Portfolio";  
 
-
+import { VictoryLine, VictoryChart, VictoryTheme } from "victory-native";
 
 const Stack = createStackNavigator();
+//import { VictoryBar, VictoryChart, VictoryTheme } from "./Victory";
 
-export default function App() {
+const data = [ //this is sample data for the sample chart on details
+  { x: 1, y: 13000 },
+  { x: 2, y: 16500 },
+  { x: 3, y: 14250 },
+  { x: 4, y: 19000 }
+];
+
+
+function HomeScreen({ navigation }) {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
@@ -31,6 +38,23 @@ export default function App() {
     </NavigationContainer>
   );
 }
+
+const Stack = createStackNavigator();
+
+function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Details" component={DetailsScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+    
+  );
+}
+
+export default App;
+
 
 const styles = StyleSheet.create({
   container: {
