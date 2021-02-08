@@ -1,13 +1,45 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Button } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
-export default function App() {
-  return (
+import Signup from "./App/Components/Signup";
+import Welcome from "./App/Components/Welcome";
+
+
+
+const Stack = createStackNavigator();
+
+function HomeScreen({ navigation }) {
+  return ( 
     <View style={styles.container}>
       <Text style={styles.text}> Stonks </Text>
       <StatusBar style="auto" />
+      <Button
+        title="Go to Signup"
+        onPress={() => navigation.navigate('Signup')}
+      />
+
+      <Button
+        title="Go to Welcome"
+        onPress={() => navigation.navigate('Welcome')}
+      />
     </View>
+  );
+}
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen name="Home" component={HomeScreen} />
+        {/* <Stack.Screen name="Details" component={DetailsScreen} /> */}
+        <Stack.Screen name="Signup" component={Signup} />
+        <Stack.Screen name="Welcome" component={Welcome} />
+
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
