@@ -1,11 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
+
 import { StyleSheet, Text, View, Button } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import Signup from "./App/Components/Signup";
 import Welcome from "./App/Components/Welcome";
+import Home from './src/Home';
+import Login from './src/Login'
 
 
 
@@ -37,6 +40,8 @@ export default function App() {
         {/* <Stack.Screen name="Details" component={DetailsScreen} /> */}
         <Stack.Screen name="Signup" component={Signup} />
         <Stack.Screen name="Welcome" component={Welcome} />
+        <Stack.Screen name="Login" component={Login} />
+
 
       </Stack.Navigator>
     </NavigationContainer>
