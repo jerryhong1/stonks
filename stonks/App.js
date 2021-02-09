@@ -7,42 +7,26 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import Signup from "./App/Components/Signup";
 import Welcome from "./App/Components/Welcome";
-import Home from './src/Home';
-import Login from './src/Login'
+import HomeScreen from "./App/Components/HomeScreen";   // sejal's
+
+
+import Home from './App/Components/Home';  // bihan's
+import Login from './App/Components/Login';
+
+
 
 
 
 const Stack = createStackNavigator();
-
-function HomeScreen({ navigation }) {
-  return ( 
-    <View style={styles.container}>
-      <Text style={styles.text}> Stonks </Text>
-      <StatusBar style="auto" />
-      <Button
-        title="Go to Signup"
-        onPress={() => navigation.navigate('Signup')}
-      />
-
-      <Button
-        title="Go to Welcome"
-        onPress={() => navigation.navigate('Welcome')}
-      />
-    </View>
-  );
-}
 
 export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Home" component={HomeScreen} />
-        {/* <Stack.Screen name="Details" component={DetailsScreen} /> */}
         <Stack.Screen name="Signup" component={Signup} />
         <Stack.Screen name="Welcome" component={Welcome} />
         <Stack.Screen name="Login" component={Login} />
-
-
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -1,5 +1,6 @@
 import { StyleSheet, Dimensions } from "react-native";
 
+
 export const styles = StyleSheet.create({
   container: {
       flex: 1,
@@ -12,6 +13,8 @@ export const styles = StyleSheet.create({
       fontSize: 25,
       color: '#fff'
     },
+
+  // TO MOVE INTO STYLES 
   button: {
       backgroundColor: "#009688",
       fontSize: 40,
