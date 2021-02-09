@@ -11,22 +11,7 @@ export const styles = StyleSheet.create({
   text: {
       textAlign: 'center',
       fontSize: 25,
-      color: '#fff'
+      color: '#fff',
+      margin: 10,
     },
-
-  // TO MOVE INTO STYLES 
-  button: {
-      backgroundColor: "#009688",
-      fontSize: 40,
-      color: "#009688",
-      padding: 10,
-      margin: 6,
-      borderRadius: 4,
-      width: 180,
-    },
-  buttontext: {
-    color: '#fff',
-    fontSize: 15,
-    textAlign: 'center',
-  }
 });

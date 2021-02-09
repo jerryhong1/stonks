@@ -16,7 +16,7 @@ export default function Welcome({navigation}) {
         <Text style={styles.text}> You have $1000 in your account. </Text>
 
         <TouchableOpacity style={Buttons.button}
-          // onPress={() => navigation.navigate('Welcome')}
+          onPress={() => navigation.navigate('Portfolio')}
         >
           <Text style={Buttons.buttontext}> Get Started </Text> 
         </TouchableOpacity>
