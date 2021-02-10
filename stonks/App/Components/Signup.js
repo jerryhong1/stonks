@@ -1,5 +1,6 @@
 import React, { useState, setState} from 'react';
 import { StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity } from 'react-native';
+import firebase from 'firebase';
 
 import Buttons from "../Styles/Buttons";
 
@@ -27,15 +28,41 @@ export default function Signup({navigation}) {
   
   function createAccount(name, email, username, password){
       alert('name: ' + name + 'email: ' + email + 'username: ' + username + ' password: ' + password);
-      // TODO: Add login logic using firebase
       // TODO: Get username and balance using firebase
       let balance = 0;
-      navigation.navigate('Welcome', {
-        name: name, 
-        email: email, 
-        username: username,
-        balance: balance
-      });
+      firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          // Signed in     
+          const user = userCredential.user;
+          console.log("User Info", user);
+          user.updateProfile({
+            displayName: name
+          });
+          return user;
+        })
+        .then((user) => {
+          console.log(user, user.displayName); // TODO: display name not passing on
+          navigation.navigate('Welcome', {
+            name: user.displayName, 
+            email: user.email, 
+            username: username, // TODO: attach username to user
+            balance: balance // TODO: save balance in docs.
+          });
+        })
+        .catch((error) => {
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          alert(errorMessage);
+          console.log("Account creation failed with error", error.code);
+        })
+        .catch((error) => {
+          alert(error.message);
+          console.log("Display name update failed with error", error.code);
+        });
+        
+      
+        
+
   }
   
   return (

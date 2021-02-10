@@ -10,7 +10,7 @@ import Buttons from "../Styles/Buttons";
 
 export default function Welcome({route, navigation}) {
   const {name, email, username, balance} = route.params;
-  const [curUser, setUsername] = useState(username);
+  const [curUser, setUsername] = useState(name);
   const [curBalance, setBalance] = useState(balance);
   
   return (
