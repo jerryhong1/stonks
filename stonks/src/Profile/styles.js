@@ -25,27 +25,5 @@ export const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 15,
     textAlign: 'center',
-  },
-  input: {
-      margin: 15,
-      height: 40,
-      width: 150,
-      color: '#fff',
-      borderColor: '#009688',
-      borderWidth: 1,
-      borderRadius: 5,
-      padding: 10,
-   },
-   submitButton: {
-      backgroundColor: '#009688',
-      padding: 10,
-      margin: 15,
-      height: 40,
-      width: 150,
-      borderRadius: 5,
-   },
-   submitButtonText:{
-      color: 'white',
-      textAlign: 'center'
-   }
+  }
 });

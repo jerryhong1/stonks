@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import {Button, View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import { styles } from './styles';
+import SignUp from './signup';
+import LoginPage from './login';
 
 function Login ({navigation} ) {
   return (
