@@ -15,9 +15,9 @@ export default function Welcome({route, navigation}) {
   
   return (
     <View style={styles.container}>
-        <Text style={styles.text}> Welcome to Stonks, {curUser} </Text>
+        <Text style={styles.title}> Welcome to Stonks{curUser ? `, ${curUser}` : "."} </Text>
 
-        <Text style={styles.text}> You have ${curBalance} in your account. </Text>
+        <Text style={styles.subtitle}> You have ${curBalance} in your account. </Text>
 
         <TouchableOpacity style={Buttons.button}
           onPress={() => navigation.navigate('TabScreen')}
@@ -36,9 +36,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  text: {
+  subtitle: {
       color: 'white',
       margin: 10, 
-      fontSize: 24,
+      fontSize: 18,
   }, 
+  title: {
+    color: 'white',
+    margin: 10, 
+    fontSize: 24,
+}, 
 });
