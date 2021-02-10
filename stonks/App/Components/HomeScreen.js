@@ -3,41 +3,29 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Button, ActivityIndicator} from 'react-native';
 
 import Login from "./Login";
-
 import Buttons from "../Styles/Buttons";
-
-
 
 export default function HomeScreen({navigation}) {
 
-    // const [shouldShow, setShouldShow] = useState(false);
+    const [shouldShow, setShouldShow] = useState(false);
   
-    // useEffect(() => {
-    //     setTimeout(() => {
-    //     setShouldShow(true);
-    //     }, 2000);
-    // });
+    useEffect(() => {
+        setTimeout(() => {
+        setShouldShow(true);
+      }, 2500);
+    });
 
   return (
     <View style={styles.container}>
         <Text style={styles.text}> stonks </Text>
         <StatusBar style="auto" />
-
-        {/* {shouldShow ? 
-            <Button
-            title="Go to Login"
+        {
+          shouldShow ?
+          <Button title="Login or Create Account"
             onPress={() => navigation.navigate('Login')}
-            />
-            // <Login /> 
-        : 
-            <ActivityIndicator/> 
-        } */}
-
-        <Button
-        title="Login"
-        onPress={() => navigation.navigate('Login')}
-        />
-
+          />
+          : null
+        }
     </View>
   );
 }
@@ -54,6 +42,3 @@ const styles = StyleSheet.create({
     color: '#fff'
   }
 });
-
-
-

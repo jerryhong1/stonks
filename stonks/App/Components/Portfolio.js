@@ -1,44 +1,37 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity, Image} from 'react-native';
 
 import Buttons from "../Styles/Buttons";
 
 export default function Portfolio({navigation}) {
   return (
-    <View style={styles.container}>
+      <View style={styles.container}>
 
-        {/* graph view */}
-        <View style = {styles.graph}> 
+          {/* graph view */}
+          <View style={styles.graph}> 
+            <Image source={require('../../imgs/stonksGoUp.png')}/>
+          </View>
 
+          {/* Your portfolio statistics */}
+          <View style={styles.urPrtflio}> 
+              <Text style = {{color: "white", fontSize: 18}} > Your Portfolio </Text> 
+              <Text style = {{color: "white", fontSize: 35, marginTop: 5}} > $1050.00 </Text> 
+              <Text style = {{color: "green", fontSize: 18, marginTop: 5}} > +$50.00 (5%)</Text>
 
-        </View>
-
-        {/* Your portfolio statistics */}
-        <View style = {styles.urPrtflio}> 
-            <Text style = {{color: "white"}} > Your Portfolio </Text> 
-            <Text style = {{color: "white"}} > $0.00 </Text> 
-        </View>
-
-
-        {/* Stocks */}
-        <View style = {styles.stocks}> 
-
-
-        </View>
-
-        {/* 3 icons for nav */}
-        <View style = {styles.navBar}> 
- 
-        </View>
-        
-    </View>
+          </View>
+          
+          {/* Stocks */}
+          <View style={styles.stocks}>
+            <Image source={require('../../imgs/tempstocks.png')}/>
+          </View>
+      </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: 'black',
     alignItems: 'center',
     justifyContent: 'center',
     alignContent: "space-between",
@@ -53,7 +46,7 @@ const styles = StyleSheet.create({
       borderWidth: 1,
   },
   urPrtflio: {
-      flex: 1,
+      flex: 1.5,
       backgroundColor: "black",
       width: "100%", 
       borderBottomColor: "white",
@@ -71,7 +64,7 @@ const styles = StyleSheet.create({
 
   },
   navBar: {
-      flex: 1,
+      flex: 0,
       backgroundColor: "black",
       width: "100%", 
       borderBottomColor: "white",

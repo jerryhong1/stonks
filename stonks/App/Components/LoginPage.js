@@ -3,19 +3,9 @@ import { StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity } from 
 
 import Buttons from "../Styles/Buttons";
 
-export default function Signup({navigation}) {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+export default function LoginPage({navigation}) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-
-  function handleName(name) {
-    setName(name);
-  }
-  
-  function handleEmail(email) {
-    setEmail(email);
-  }
   
   function handleUsername(username) {
     setUsername(username);
@@ -25,14 +15,16 @@ export default function Signup({navigation}) {
     setPassword(password);
   }
   
-  function createAccount(name, email, username, password){
-      alert('name: ' + name + 'email: ' + email + 'username: ' + username + ' password: ' + password);
+  function login(username, password){
+      alert('username: ' + username + ' password: ' + password);
       // TODO: Add login logic using firebase
-      // TODO: Get username and balance using firebase
+      // TODO: Get name, email, username and balance using firebase
+      let name = 'tempName';
+      let email = 'temp@gmail.com';
       let balance = 0;
       navigation.navigate('Welcome', {
         name: name, 
-        email: email, 
+        email: email,
         username: username,
         balance: balance
       });
@@ -40,36 +32,16 @@ export default function Signup({navigation}) {
   
   return (
     <View style={styles.container}>
-
       <View style = {styles.header}> 
-        <Text style={{fontWeight: "bold", color: "white", fontSize: 30}}> Sign up for stonks </Text>
-        <Text style={{color: "white", fontSize: 16}}> Create an account to play with stocks and track your performance.</Text>
+        <Text style={{fontWeight: "bold", color: "white", fontSize: 30}}> Login to stonks </Text>
       </View>
-
-
       <View style = {styles.textFields}>
-          <TextInput 
-            style={styles.inputField} 
-            placeholder="Name"
-            placeholderTextColor="grey"
-            onChangeText = {handleName}
-          /> 
-
-          <TextInput 
-            style={styles.inputField} 
-            placeholder="Email"
-            placeholderTextColor="grey"
-            onChangeText = {handleEmail}
-          /> 
-
           <TextInput 
             style={styles.inputField} 
             placeholder="Username"
             placeholderTextColor="grey"
             onChangeText = {handleUsername}
           /> 
-
-
           <TextInput 
             style={styles.inputField} 
             placeholder="Password (8+ characters)"
@@ -81,10 +53,10 @@ export default function Signup({navigation}) {
         <TouchableOpacity
           style = {Buttons.button}
           onPress = {
-             () => createAccount(name, email, username, password)
+             () => login(username, password)
           }
         > 
-          <Text style={Buttons.buttontext}> Create Account </Text>
+          <Text style={Buttons.buttontext}> Login </Text>
         
         </TouchableOpacity>
 
