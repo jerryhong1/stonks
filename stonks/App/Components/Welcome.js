@@ -38,12 +38,11 @@ const styles = StyleSheet.create({
   },
   subtitle: {
       color: 'white',
-      margin: 10, 
+      margin: 20, 
       fontSize: 18,
   }, 
   title: {
     color: 'white',
-    margin: 10, 
     fontSize: 24,
 }, 
 });
