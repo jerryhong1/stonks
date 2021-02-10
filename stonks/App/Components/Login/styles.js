@@ -1,5 +1,6 @@
 import { StyleSheet, Dimensions } from "react-native";
 
+
 export const styles = StyleSheet.create({
   container: {
       flex: 1,
@@ -8,12 +9,9 @@ export const styles = StyleSheet.create({
       justifyContent: 'center',
     },
   text: {
-      fontFamily: 'Arial',
-      fontSize: 40,
-      color: '#fff'
+      textAlign: 'center',
+      fontSize: 25,
+      color: '#fff',
+      margin: 10,
     },
-  Button: {
-    display: 'none',
-    color: '#fff',
-  }
 });
