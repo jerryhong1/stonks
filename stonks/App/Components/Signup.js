@@ -1,5 +1,5 @@
 import React, { useState, setState} from 'react';
-import { StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity } from 'react-native';
+import { KeyboardAvoidingView, StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity } from 'react-native';
 
 import Buttons from "../Styles/Buttons";
 
@@ -26,10 +26,10 @@ export default function Signup({navigation}) {
   }
   
   function createAccount(name, email, username, password){
-      alert('name: ' + name + 'email: ' + email + 'username: ' + username + ' password: ' + password);
+      alert('name: ' + name + '\r\nemail: ' + email + '\r\nusername: ' + username + '\r\npassword: ' + password);
       // TODO: Add login logic using firebase
       // TODO: Get username and balance using firebase
-      let balance = 0;
+      let balance = 1000;
       navigation.navigate('Welcome', {
         name: name, 
         email: email, 
@@ -39,11 +39,11 @@ export default function Signup({navigation}) {
   }
   
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView style={styles.container}  behavior="padding">
 
       <View style = {styles.header}> 
-        <Text style={{fontWeight: "bold", color: "white", fontSize: 30}}> Sign up for stonks </Text>
-        <Text style={{color: "white", fontSize: 16}}> Create an account to play with stocks and track your performance.</Text>
+        <Text style={{fontWeight: "bold", color: "white", fontSize: 30, lineHeight:"50px"}}> Sign up for stonks </Text>
+        <Text style={{color: "white", fontSize: 16, textAlign: "center"}}> Create an account to play with stocks and track your performance.</Text>
       </View>
 
 
@@ -53,6 +53,7 @@ export default function Signup({navigation}) {
             placeholder="Name"
             placeholderTextColor="grey"
             onChangeText = {handleName}
+            returnKeyType = {"Next"}
           /> 
 
           <TextInput 
@@ -74,6 +75,7 @@ export default function Signup({navigation}) {
             style={styles.inputField} 
             placeholder="Password (8+ characters)"
             placeholderTextColor="grey"
+            secureTextEntry
             onChangeText = {handlePassword}
           /> 
         </View> 
@@ -89,7 +91,7 @@ export default function Signup({navigation}) {
         </TouchableOpacity>
 
         
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
