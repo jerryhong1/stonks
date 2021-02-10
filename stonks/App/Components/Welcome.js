@@ -20,7 +20,7 @@ export default function Welcome({route, navigation}) {
         <Text style={styles.text}> You have ${curBalance} in your account. </Text>
 
         <TouchableOpacity style={Buttons.button}
-          onPress={() => navigation.navigate('Portfolio')}
+          onPress={() => navigation.navigate('TabScreen')}
         >
           <Text style={Buttons.buttontext}> Get Started </Text> 
         </TouchableOpacity>
