@@ -1,33 +1,48 @@
 import React, { useState, setState} from 'react';
 import { StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity } from 'react-native';
+import firebase from 'firebase';
 
 import Buttons from "../Styles/Buttons";
 
 export default function LoginPage({navigation}) {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   
-  function handleUsername(username) {
-    setUsername(username);
+  function handleEmail(email) {
+    setEmail(email);
   }
 
   function handlePassword(password) {
     setPassword(password);
   }
   
-  function login(username, password){
-      alert('username: ' + username + ' password: ' + password);
+  async function login(email, password){
+      alert('email: ' + email + ' password: ' + password);
+      firebase.auth().signInWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        // Signed in
+        var user = userCredential.user;
+        let name = user.displayName;
+        let username = "foo" // TODO: connect username
+        let balance = 0; // TODO: connect balance
+        navigation.navigate('Welcome', {
+          name: name, 
+          email: email,
+          username: username,
+          balance: balance
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        alert("Login error:" + errorMessage);
+        console.log("Login failed with error", errorCode);
+      });
+
       // TODO: Add login logic using firebase
       // TODO: Get name, email, username and balance using firebase
-      let name = 'tempName';
-      let email = 'temp@gmail.com';
-      let balance = 0;
-      navigation.navigate('Welcome', {
-        name: name, 
-        email: email,
-        username: username,
-        balance: balance
-      });
+     
   }
   
   return (
@@ -38,9 +53,9 @@ export default function LoginPage({navigation}) {
       <View style = {styles.textFields}>
           <TextInput 
             style={styles.inputField} 
-            placeholder="Username"
+            placeholder="Email"
             placeholderTextColor="grey"
-            onChangeText = {handleUsername}
+            onChangeText = {handleEmail}
           /> 
           <TextInput 
             style={styles.inputField} 
@@ -53,12 +68,29 @@ export default function LoginPage({navigation}) {
         <TouchableOpacity
           style = {Buttons.button}
           onPress = {
-             () => login(username, password)
+             () => login(email, password)
           }
         > 
           <Text style={Buttons.buttontext}> Login </Text>
         
         </TouchableOpacity>
+        <TouchableOpacity
+          style = {Buttons.secondary}
+          onPress = {
+             () => {
+              firebase.auth().sendPasswordResetEmail(email).then(function() {
+                alert(`Password reset email sent to ${email}.`);
+              }).catch(function(error) {
+                alert("Error with password reset email")
+              });
+            }
+          }
+        > 
+          <Text style={Buttons.buttontext}> Reset Password </Text>
+        
+        </TouchableOpacity>
+        
+
 
         
     </View>

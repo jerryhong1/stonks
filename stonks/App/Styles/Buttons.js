@@ -14,6 +14,15 @@ const Buttons = {
       color: '#fff',
       fontSize: 15,
       textAlign: 'center',
+    },
+    secondary: {
+        backgroundColor: "#000",
+        fontSize: 24,
+        color: "#FFF",
+        padding: 10,
+        margin: 6,
+        borderRadius: 4,
+        width: Dimensions.get('window').width * .6,
     }
 
 }
