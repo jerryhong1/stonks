@@ -15,7 +15,7 @@ export default function Welcome({route, navigation}) {
   
   return (
     <View style={styles.container}>
-        <Text style={styles.title}> Welcome to Stonks{curUser ? `, ${curUser}` : "."} </Text>
+        <Text style={styles.title}> Welcome to Stonks{curUser ? `, ${curUser}` : ""}. </Text>
 
         <Text style={styles.subtitle}> You have ${curBalance} in your account. </Text>
 

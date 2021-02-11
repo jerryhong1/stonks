@@ -41,9 +41,9 @@ export default function Signup({navigation}) {
           return user;
         })
         .then((user) => {
-          console.log(user, user.displayName); // TODO: display name not passing on
+          console.log(user, user.displayName); // TODO: display name not passing on after updatee
           navigation.navigate('Welcome', {
-            name: user.displayName, 
+            name: name, 
             email: user.email, 
             username: username, // TODO: attach username to user
             balance: balance // TODO: save balance in docs.
