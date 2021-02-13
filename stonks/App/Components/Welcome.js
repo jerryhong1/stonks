@@ -12,7 +12,7 @@ export default function Welcome({route, navigation}) {
   const {name, email, username, balance} = route.params;
   const [curUser, setUsername] = useState(name);
   const [curBalance, setBalance] = useState(balance);
-  
+
   return (
     <View style={styles.container}>
         <Text style={styles.title}> Welcome to Stonks{curUser ? `, ${curUser}` : ""}. </Text>
@@ -24,7 +24,6 @@ export default function Welcome({route, navigation}) {
         >
           <Text style={Buttons.buttontext}> Get Started </Text> 
         </TouchableOpacity>
-
     </View>
   );
 }

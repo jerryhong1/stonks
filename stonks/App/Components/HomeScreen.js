@@ -1,14 +1,22 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Button, ActivityIndicator} from 'react-native';
+import firebase from 'firebase';
 
+import firebaseInit from "../Lib/Firebase"; 
 import Login from "./Login";
 import Buttons from "../Styles/Buttons";
 
 export default function HomeScreen({navigation}) {
 
     const [shouldShow, setShouldShow] = useState(false);
-  
+    
+    useEffect(() => {
+      if (firebase.apps.length === 0) {
+        firebaseInit();
+      }
+    }, []);
+
     useEffect(() => {
         setTimeout(() => {
         setShouldShow(true);

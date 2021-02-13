@@ -1,6 +1,7 @@
 import React, { useState, setState} from 'react';
 import { StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity } from 'react-native';
 import firebase from 'firebase';
+import 'firebase/firestore';
 
 import Buttons from "../Styles/Buttons";
 
@@ -21,17 +22,22 @@ export default function LoginPage({navigation}) {
       firebase.auth().signInWithEmailAndPassword(email, password)
       .then((userCredential) => {
         // Signed in
+        const testDoc = firebase.firestore().collection('users').doc('test');
+        return Promise.all([testDoc.get(), userCredential]);
+      })
+      .then(([testSnapshot, userCredential]) => {
+        let testData = testSnapshot.data();
         var user = userCredential.user;
         let name = user.displayName;
         let username = "foo" // TODO: connect username
-        let balance = 0; // TODO: connect balance
+        let balance = testData.cash; 
         navigation.navigate('Welcome', {
           name: name, 
           email: email,
           username: username,
           balance: balance
         });
-      })
+      }) 
       .catch((error) => {
         console.log(error);
         var errorCode = error.code;

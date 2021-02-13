@@ -34,19 +34,24 @@ export default function Signup({navigation}) {
         .then((userCredential) => {
           // Signed in     
           const user = userCredential.user;
-          console.log("User Info", user);
-          user.updateProfile({
-            displayName: name
-          });
-          return user;
+          const userDoc = firebase.firestore().collection('users').doc(user.uid);
+          return Promise.all([userDoc, user, userDoc.set({cash: 1000, username: username}, {merge: true})]);
         })
-        .then((user) => {
-          console.log(user, user.displayName); // TODO: display name not passing on after updatee
+        .then(([userDoc, user]) => {
+          console.log("User Info", user);
+          console.log("User Doc", userDoc);
+          return Promise.all([userDoc.get(), user, user.updateProfile({
+            displayName: name
+          })]);
+        })
+        .then(([userSnapshot, user]) => {
+          let userData = userSnapshot.data();
+          console.log(user, user.displayName);
           navigation.navigate('Welcome', {
-            name: name, 
+            name: user.displayName, 
             email: user.email, 
-            username: username, // TODO: attach username to user
-            balance: balance // TODO: save balance in docs.
+            username: userData.username,
+            balance: userData.cash
           });
         })
         .catch((error) => {
@@ -54,10 +59,6 @@ export default function Signup({navigation}) {
           var errorMessage = error.message;
           alert(errorMessage);
           console.log("Account creation failed with error", error.code);
-        })
-        .catch((error) => {
-          alert(error.message);
-          console.log("Display name update failed with error", error.code);
         });
         
       

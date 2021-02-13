@@ -5,7 +5,6 @@ import { StyleSheet, Text, View, Button } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import firebaseTest from "./src/firebase_test"
 import Signup from "./App/Components/Signup";
 import Welcome from "./App/Components/Welcome";
 import HomeScreen from "./App/Components/HomeScreen";
@@ -17,7 +16,6 @@ import TabScreen from "./App/Components/TabScreen";
 const Stack = createStackNavigator();
 
 export default function App() {
-  firebaseTest();
 
   return (
     <NavigationContainer>
