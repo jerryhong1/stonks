@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity } from 
 import firebase from 'firebase';
 import 'firebase/firestore';
 
-import Buttons from "../Styles/Buttons";
+import Buttons from '../Styles/Buttons';
 
 export default function LoginPage({navigation}) {
   const [email, setEmail] = useState('');
@@ -17,53 +17,56 @@ export default function LoginPage({navigation}) {
     setPassword(password);
   }
 
-  function login(email, password){
-      firebase.auth().signInWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-          // Signed in
-          const user = userCredential.user;
-          const userDoc = firebase.firestore().collection('users').doc(user.uid);
+  function accountLogin(email, password) {
+    // Make sign in persist even after app is closed
+    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+      .then(() => {
+        return firebase.auth().signInWithEmailAndPassword(email, password);
+      })
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        const userDoc = firebase.firestore().collection('users').doc(user.uid);
 
-          // Get user data
-          return Promise.all([userDoc.get(), userCredential]);
-        })
-        .then(([userSnapshot, userCredential]) => {
-          const userData = userSnapshot.data();
-          const user = userCredential.user;
+        // Get user data
+        return Promise.all([user, userDoc.get()]);
+      })
+      .then(([user, userSnapshot]) => {
+        const userData = userSnapshot.data();
 
-          // Display welcome page
-          navigation.navigate('Welcome', {
-            name: user.displayName,
-            email: email,
-            username: userData.username,
-            balance: userData.balance
-          });
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-
-          alert("Login error:" + errorMessage);
-          console.log("Login failed with error", errorCode);
+        // Display welcome page
+        navigation.navigate('Welcome', {
+          name: user.displayName,
+          email: user.email,
+          username: userData.username,
+          balance: userData.balance
         });
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+
+        alert('Login error:' + errorMessage);
+        console.log('Login failed with error', errorCode);
+      });
   }
 
   return (
     <View style={styles.container}>
       <View style = {styles.header}>
-        <Text style={{fontWeight: "bold", color: "white", fontSize: 30}}> Login to stonks </Text>
+        <Text style={{fontWeight: 'bold', color: 'white', fontSize: 30}}> Login to stonks </Text>
       </View>
       <View style = {styles.textFields}>
           <TextInput
             style={styles.inputField}
-            placeholder="Email"
-            placeholderTextColor="grey"
+            placeholder='Email'
+            placeholderTextColor='grey'
             onChangeText = {handleEmail}
           />
           <TextInput
             style={styles.inputField}
-            placeholder="Password (8+ characters)"
-            placeholderTextColor="grey"
+            placeholder='Password (8+ characters)'
+            placeholderTextColor='grey'
             onChangeText = {handlePassword}
           />
         </View>
@@ -71,7 +74,7 @@ export default function LoginPage({navigation}) {
         <TouchableOpacity
           style = {Buttons.button}
           onPress = {
-             () => login(email, password)
+             () => accountLogin(email, password)
           }
         >
           <Text style={Buttons.buttontext}> Login </Text>
@@ -84,7 +87,7 @@ export default function LoginPage({navigation}) {
               firebase.auth().sendPasswordResetEmail(email).then(function() {
                 alert(`Password reset email sent to ${email}.`);
               }).catch(function(error) {
-                alert("Error with password reset email")
+                alert('Error with password reset email')
               });
             }
           }
@@ -102,12 +105,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
     alignItems: 'center',
     justifyContent: 'center',
-    alignContent: "space-between",
+    alignContent: 'space-between',
     flexDirection: 'column',
   },
   header: {
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     width: Dimensions.get('window').width * .8,
   },
   textFields: {

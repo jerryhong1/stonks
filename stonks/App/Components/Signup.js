@@ -2,7 +2,7 @@ import React, { useState, setState} from 'react';
 import { KeyboardAvoidingView, StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity } from 'react-native';
 import firebase from 'firebase';
 
-import Buttons from "../Styles/Buttons";
+import Buttons from '../Styles/Buttons';
 
 export default function Signup({navigation}) {
   const [name, setName] = useState('');
@@ -26,88 +26,90 @@ export default function Signup({navigation}) {
     setPassword(password);
   }
 
-  function createAccount(name, email, username, password){
-      const defaultBalance = 1000;
+  function accountSignup(name, email, username, password){
+    const defaultBalance = 1000;
 
-      firebase.auth().createUserWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-          // Account created
-          const user = userCredential.user;
-          const userDoc = firebase.firestore().collection('users').doc(user.uid);
+    // Make sign in of new user persist even after app is closed
+    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+      .then(() => {
+        return firebase.auth().createUserWithEmailAndPassword(email, password);
+      })
+      .then((userCredential) => {
+        // Account created
+        const user = userCredential.user;
+        const userDoc = firebase.firestore().collection('users').doc(user.uid);
 
-          // Create doc for user with default data
-          return Promise.all([
-            userDoc,
-            user,
-            userDoc.set({balance: defaultBalance, username: username}, {merge: true})
-          ]);
-        })
-        .then(([userDoc, user]) => {
-          // Set user's display name
-          return Promise.all([
-            user,
-            user.updateProfile({
-              displayName: name
-            })
-          ]);
-        })
-        .then((user) => {
-          console.log(user, user.displayName);
-
-          // Display welcome page for new user
-          navigation.navigate('Welcome', {
-            name: user.displayName,
-            email: user.email,
-            username: username,
-            balance: defaultBalance
-          });
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-
-          alert(errorMessage);
-          console.log("Account creation failed with error", error.code);
+        // Create doc for user with default data
+        return Promise.all([
+          userDoc,
+          user,
+          userDoc.set({balance: defaultBalance, username: username}, {merge: true})
+        ]);
+      })
+      .then(([userDoc, user]) => {
+        // Set user's display name
+        return Promise.all([
+          user,
+          user.updateProfile({
+            displayName: name
+          })
+        ]);
+      })
+      .then((user) => {
+        // Display welcome page
+        navigation.navigate('Welcome', {
+          name: name,
+          email: email,
+          username: username,
+          balance: defaultBalance
         });
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+
+        alert(errorMessage);
+        console.log('Account creation failed with error', error.code);
+      });
   }
 
   return (
-    <KeyboardAvoidingView style={styles.container}  behavior="padding">
+    <KeyboardAvoidingView style={styles.container}  behavior='padding'>
 
       <View style = {styles.header}>
-        <Text style={{fontWeight: "bold", color: "white", fontSize: 30, lineHeight:"50px"}}> Sign up for stonks </Text>
-        <Text style={{color: "white", fontSize: 16, textAlign: "center"}}> Create an account to play with stocks and track your performance.</Text>
+        <Text style={{fontWeight: 'bold', color: 'white', fontSize: 30, lineHeight:'50px'}}> Sign up for stonks </Text>
+        <Text style={{color: 'white', fontSize: 16, textAlign: 'center'}}> Create an account to play with stocks and track your performance.</Text>
       </View>
 
 
       <View style = {styles.textFields}>
           <TextInput
             style={styles.inputField}
-            placeholder="Name"
-            placeholderTextColor="grey"
+            placeholder='Name'
+            placeholderTextColor='grey'
             onChangeText = {handleName}
-            returnKeyType = {"Next"}
+            returnKeyType = {'Next'}
           />
 
           <TextInput
             style={styles.inputField}
-            placeholder="Email"
-            placeholderTextColor="grey"
+            placeholder='Email'
+            placeholderTextColor='grey'
             onChangeText = {handleEmail}
           />
 
           <TextInput
             style={styles.inputField}
-            placeholder="Username"
-            placeholderTextColor="grey"
+            placeholder='Username'
+            placeholderTextColor='grey'
             onChangeText = {handleUsername}
           />
 
 
           <TextInput
             style={styles.inputField}
-            placeholder="Password (8+ characters)"
-            placeholderTextColor="grey"
+            placeholder='Password (8+ characters)'
+            placeholderTextColor='grey'
             secureTextEntry
             onChangeText = {handlePassword}
           />
@@ -116,7 +118,7 @@ export default function Signup({navigation}) {
         <TouchableOpacity
           style = {Buttons.button}
           onPress = {
-             () => createAccount(name, email, username, password)
+             () => accountSignup(name, email, username, password)
           }
         >
           <Text style={Buttons.buttontext}> Create Account </Text>
@@ -133,12 +135,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
     alignItems: 'center',
     justifyContent: 'center',
-    alignContent: "space-between",
+    alignContent: 'space-between',
     flexDirection: 'column',
   },
   header: {
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     width: Dimensions.get('window').width * .8,
   },
   textFields: {

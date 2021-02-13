@@ -1,5 +1,6 @@
 import React, { useState, setState} from 'react';
 import { StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity, Image } from 'react-native';
+import firebase from 'firebase';
 
 import Buttons from "../Styles/Buttons";
 
@@ -17,7 +18,19 @@ export default function Profile({navigation}) {
         <Text style = {{color: "white", fontSize: 18}}> Username: Bihan </Text>
         <Text style = {{color: "white", fontSize: 18}}> Your balance is $1050. </Text>
       </View>
-      
+
+      {/* Account managedment, temporary debug stuff */}
+      <View>
+        <TouchableOpacity style={Buttons.button}
+          onPress={() => {
+            firebase.auth().signOut()
+              .then(() => navigation.navigate('Home'))
+              .catch(console.err);
+          }}
+        >
+          <Text style={Buttons.buttontext}>Sign out</Text> 
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
