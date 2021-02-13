@@ -8,7 +8,7 @@ import Buttons from "../Styles/Buttons";
 export default function LoginPage({navigation}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  
+
   function handleEmail(email) {
     setEmail(email);
   }
@@ -16,69 +16,66 @@ export default function LoginPage({navigation}) {
   function handlePassword(password) {
     setPassword(password);
   }
-  
-  async function login(email, password){
-      alert('email: ' + email + ' password: ' + password);
-      firebase.auth().signInWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        // Signed in
-        const testDoc = firebase.firestore().collection('users').doc('test');
-        return Promise.all([testDoc.get(), userCredential]);
-      })
-      .then(([testSnapshot, userCredential]) => {
-        let testData = testSnapshot.data();
-        var user = userCredential.user;
-        let name = user.displayName;
-        let username = "foo" // TODO: connect username
-        let balance = testData.cash; 
-        navigation.navigate('Welcome', {
-          name: name, 
-          email: email,
-          username: username,
-          balance: balance
-        });
-      }) 
-      .catch((error) => {
-        console.log(error);
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        alert("Login error:" + errorMessage);
-        console.log("Login failed with error", errorCode);
-      });
 
-      // TODO: Add login logic using firebase
-      // TODO: Get name, email, username and balance using firebase
-     
+  function login(email, password){
+      firebase.auth().signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          const userDoc = firebase.firestore().collection('users').doc(user.uid);
+
+          // Get user data
+          return Promise.all([userDoc.get(), userCredential]);
+        })
+        .then(([userSnapshot, userCredential]) => {
+          const userData = userSnapshot.data();
+          const user = userCredential.user;
+
+          // Display welcome page
+          navigation.navigate('Welcome', {
+            name: user.displayName,
+            email: email,
+            username: userData.username,
+            balance: userData.balance
+          });
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+
+          alert("Login error:" + errorMessage);
+          console.log("Login failed with error", errorCode);
+        });
   }
-  
+
   return (
     <View style={styles.container}>
-      <View style = {styles.header}> 
+      <View style = {styles.header}>
         <Text style={{fontWeight: "bold", color: "white", fontSize: 30}}> Login to stonks </Text>
       </View>
       <View style = {styles.textFields}>
-          <TextInput 
-            style={styles.inputField} 
+          <TextInput
+            style={styles.inputField}
             placeholder="Email"
             placeholderTextColor="grey"
             onChangeText = {handleEmail}
-          /> 
-          <TextInput 
-            style={styles.inputField} 
+          />
+          <TextInput
+            style={styles.inputField}
             placeholder="Password (8+ characters)"
             placeholderTextColor="grey"
             onChangeText = {handlePassword}
-          /> 
-        </View> 
-          
+          />
+        </View>
+
         <TouchableOpacity
           style = {Buttons.button}
           onPress = {
              () => login(email, password)
           }
-        > 
+        >
           <Text style={Buttons.buttontext}> Login </Text>
-        
+
         </TouchableOpacity>
         <TouchableOpacity
           style = {Buttons.secondary}
@@ -91,14 +88,10 @@ export default function LoginPage({navigation}) {
               });
             }
           }
-        > 
+        >
           <Text style={Buttons.buttontext}> Reset Password </Text>
-        
+
         </TouchableOpacity>
-        
-
-
-        
     </View>
   );
 }
@@ -114,21 +107,21 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: "center",
-    justifyContent: "center", 
+    justifyContent: "center",
     width: Dimensions.get('window').width * .8,
   },
   textFields: {
-    margin: 20, 
+    margin: 20,
   },
   text: {
       color: 'white',
   },
   inputField: {
-    backgroundColor: 'white', 
+    backgroundColor: 'white',
     width: Dimensions.get('window').width * .6,
-    borderRadius: 10, 
-    padding: 10, 
+    borderRadius: 10,
+    padding: 10,
     margin: 5
-  }, 
+  },
 
 });
