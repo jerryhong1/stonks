@@ -19,10 +19,10 @@ To build the Stonks app, first enter the `stonks` directory.
 cd stonks
 ```
 
-If you haven't already installed expo, you will need to do so.
+If you haven't already installed expo (and other dependencies), you will need to do so.
 
 ```
-npm install expo
+npm install expo victory-native firebase react-native-svg
 ```
 
 Finally, build and run the app using expo.
