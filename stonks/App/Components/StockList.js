@@ -23,6 +23,7 @@ export default function StockList(props) {
         return index.toString();
     };
 
+    // Generates a flatlist from all the data passed into it. Eventually, we will do props.data for data
     return (
         <FlatList
             data={stockList}
