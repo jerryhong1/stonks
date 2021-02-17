@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import { StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity, Image, FlatList} from 'react-native';
 
 import Buttons from "../Styles/Buttons";
-import StockItem from "./StockItem";
+import StockItem from "../Components/StockItem";
 
 export default function Portfolio({navigation}) {
 
@@ -16,7 +16,7 @@ export default function Portfolio({navigation}) {
         return <StockItem data={item}/> 
     };
     
-    // FIX ONCE WE HAVE DATA
+    // DOUBLE CHECK ONCE WE HAVE DATA
     const keyExtractor = (index) => {
         return index.toString();
     };
@@ -45,7 +45,6 @@ export default function Portfolio({navigation}) {
                     renderItem={renderStockItem}
                     keyExtractor={(item, index) => keyExtractor(index)}     // FIX ONCE WE HAVE DATA
                 />
-
             </View>
         </View>
     );
