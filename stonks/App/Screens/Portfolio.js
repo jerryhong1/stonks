@@ -2,24 +2,10 @@ import React, {useState} from 'react';
 import { StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity, Image, FlatList} from 'react-native';
 
 import Buttons from "../Styles/Buttons";
-import StockItem from "../Components/StockItem";
+// import StockItem from "../Components/StockItem";
+import StockList from "../Components/StockList";
 
 export default function Portfolio({navigation}) {
-
-    const [stockList, setStockList] = useState([
-        {ticker: 'GME', company: 'Gamestop', currPrice: '$15.00'},
-        {ticker: 'NFLX', company: 'Netflix', currPrice: '$420.00'},
-        {ticker: 'MSFT', company: 'Microsoft', currPrice: '$232.00'}
-    ]);
-
-    const renderStockItem = ({ index, item }) => {
-        return <StockItem data={item}/> 
-    };
-    
-    // DOUBLE CHECK ONCE WE HAVE DATA
-    const keyExtractor = (index) => {
-        return index.toString();
-    };
 
     return (
         <View style={styles.container}>
@@ -38,13 +24,7 @@ export default function Portfolio({navigation}) {
             
             {/* Your stocks list */}
             <View style={styles.stocks}>
-                {/* <Image source={require('../../imgs/tempstocks.png')}/> */}
-                {/* To be made into component later */}
-                <FlatList
-                    data={stockList}
-                    renderItem={renderStockItem}
-                    keyExtractor={(item, index) => keyExtractor(index)}     // FIX ONCE WE HAVE DATA
-                />
+                <StockList />
             </View>
         </View>
     );

@@ -1,8 +1,12 @@
 import React, { useState, setState} from 'react';
-import { StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity, Image, Keyboard} from 'react-native';
+import { StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity, Image, Keyboard, FlatList} from 'react-native';
 
 import Buttons from "../Styles/Buttons";
 import {Ionicons} from '@expo/vector-icons';
+
+// import StockItem from "../Components/StockItem";
+import StockList from "../Components/StockList";
+
 
 export default function Search({navigation}) {
 
@@ -10,8 +14,8 @@ export default function Search({navigation}) {
   
   return (
     <View style={styles.container}>
+
       <View style = {styles.search}> 
-        {/* <Image source={require('../../imgs/tempSearch.jpg')}/> */}
         <Text style = {styles.headerText}> Search for stocks </Text> 
 
         <View style = {styles.searchBar}>
@@ -22,16 +26,21 @@ export default function Search({navigation}) {
             value = {text}
             onChangeText = { (input) => setText(input)}
           />
-
           <TouchableOpacity
             onPress = { () => {console.log("Searching!!"); setText(""); Keyboard.dismiss();}}
           >
             <Ionicons name="ios-search-outline" size={35} color="white" />
           </TouchableOpacity> 
-
         </View>
-
       </View>
+
+
+      <View style = {styles.stockResults}> 
+        <StockList />
+      </View>
+
+
+
     </View>
   );
 }
@@ -47,6 +56,9 @@ const styles = StyleSheet.create({
   },
   search: {
     flexDirection: 'column',
+    height: "20%",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   searchBar: {
     flexDirection: 'row',
@@ -65,5 +77,8 @@ const styles = StyleSheet.create({
     borderWidth : 1,
     color: 'white'
   },
+  stockResults: {
+    height: "80%",
+  }
   
 });
