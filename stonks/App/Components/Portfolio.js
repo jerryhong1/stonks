@@ -1,40 +1,54 @@
-import React from 'react';
-import { StyleSheet, Button, Text, View, TextInput, Dimensions, StatusBar, TouchableOpacity, Image} from 'react-native';
+import React, {useState} from 'react';
+import { StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity, Image, FlatList} from 'react-native';
 
 import Buttons from "../Styles/Buttons";
+import StockItem from "./StockItem";
 
 export default function Portfolio({navigation}) {
-  return (
-      <View style={styles.container}>
 
-          {/* graph view */}
-          <View style={styles.graph}> 
-            <Image source={require('../../imgs/stonksGoUp.png')}/>
-          </View>
+    const [stockList, setStockList] = useState([
+        {ticker: 'GME', company: 'Gamestop', currPrice: '$15.00'},
+        {ticker: 'NFLX', company: 'Netflix', currPrice: '$420.00'},
+        {ticker: 'MSFT', company: 'Microsoft', currPrice: '$232.00'}
+    ]);
 
-          {/* Your portfolio statistics */}
-          <View style={styles.urPrtflio}> 
-              <Text style = {{color: "white", fontSize: 18}} > Your Portfolio </Text> 
-              <Text style = {{color: "white", fontSize: 35, marginTop: 5}} > $1050.00 </Text> 
-              <Text style = {{color: "green", fontSize: 18, marginTop: 5}} > +$50.00 (5%)</Text>
+    const renderStockItem = ({ index, item }) => {
+        return <StockItem data={item}/> 
+    };
+    
+    // FIX ONCE WE HAVE DATA
+    const keyExtractor = (index) => {
+        return index.toString();
+    };
 
-          </View>
-          
-          {/* Stocks */}
-          <View style={styles.stocks}>
-            <Image source={require('../../imgs/tempstocks.png')}/>
-          </View>
+    return (
+        <View style={styles.container}>
 
-          <View style={styles.container}>
-            <Text style={styles.text}> Stonks </Text>
-            <StatusBar style="auto" />
-            <Button
-              title="Go to Single Stock's Detail"
-              onPress={() => navigation.navigate('StockDetail')}
-            />
-          </View>
-      </View>
-  );
+            {/* graph view */}
+            <View style={styles.graph}> 
+                <Image source={require('../../imgs/stonksGoUp.png')}/>
+            </View>
+
+            {/* Your portfolio statistics */}
+            <View style={styles.urPrtflio}> 
+                <Text style = {{color: "white", fontSize: 18}} > Your Portfolio </Text> 
+                <Text style = {{color: "white", fontSize: 35, marginTop: 5}} > $1050.00 </Text> 
+                <Text style = {{color: "green", fontSize: 18, marginTop: 5}} > +$50.00 (5%)</Text>
+            </View>
+            
+            {/* Your stocks list */}
+            <View style={styles.stocks}>
+                {/* <Image source={require('../../imgs/tempstocks.png')}/> */}
+                {/* To be made into component later */}
+                <FlatList
+                    data={stockList}
+                    renderItem={renderStockItem}
+                    keyExtractor={(item, index) => keyExtractor(index)}     // FIX ONCE WE HAVE DATA
+                />
+
+            </View>
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({

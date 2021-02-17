@@ -22,7 +22,7 @@ export default function LoginPage({navigation}) {
       let name = 'tempName';
       let email = 'temp@gmail.com';
       let balance = 0;
-      navigation.navigate('Welcome', {
+      navigation.navigate('TabScreen', {
         name: name, 
         email: email,
         username: username,

@@ -6,6 +6,10 @@ import Portfolio from "./Portfolio";
 import Profile from "./Profile";  
 import Search from "./Search";
 
+import {Ionicons} from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
+
+
 const Tab = createBottomTabNavigator();
 
 export default function TabScreen() {
@@ -23,7 +27,7 @@ export default function TabScreen() {
             options={{
               tabBarLabel: 'Stocks',
               tabBarIcon: () => (
-                <Image source={require('../../imgs/stock.png')}/>
+                <FontAwesome name="line-chart" size={28} color="white" />
               ),
             }}
           />
@@ -33,7 +37,7 @@ export default function TabScreen() {
             options={{
               tabBarLabel: 'Search',
               tabBarIcon: () => (
-                <Image source={require('../../imgs/search.png')}/>
+                <Ionicons name="ios-search-outline" size={28} color="white" />                
               ),
             }}
           />
@@ -43,7 +47,7 @@ export default function TabScreen() {
             options={{
               tabBarLabel: 'Profile',
               tabBarIcon: () => (
-                <Image source={require('../../imgs/profile.png')}/>
+                <FontAwesome name="user-circle-o" size={28} color="white" />                
               ),
             }}
           />
