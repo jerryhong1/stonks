@@ -34,8 +34,8 @@ export default function LoginPage({navigation}) {
       .then(([user, userSnapshot]) => {
         const userData = userSnapshot.data();
 
-        // Display welcome page
-        navigation.navigate('Welcome', {
+        // Display Portfolio page
+        navigation.navigate('TabScreen', {
           name: user.displayName,
           email: user.email,
           username: userData.username,
