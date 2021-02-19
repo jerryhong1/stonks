@@ -4,6 +4,7 @@ import firebase from 'firebase';
 
 import Buttons from '../Styles/Buttons';
 
+
 export default function Profile({navigation}) {
   const [username, setUsername] = useState('');
   const [balance, setBalance] = useState(0);
@@ -11,7 +12,7 @@ export default function Profile({navigation}) {
   // Get username and balance from firebase
   useEffect(() => {
     const getUserData = async () => {
-      const user = firebase.auth().currentUser;
+      const user = firebase.auth().currentUser;  // Not safe, but fine for now
       const userDoc = firebase.firestore().collection('users').doc(user.uid);
       const userSnapshot = await userDoc.get();
       const userData = userSnapshot.data();
@@ -41,7 +42,7 @@ export default function Profile({navigation}) {
         <TouchableOpacity style={Buttons.button}
           onPress={() => {
             firebase.auth().signOut()
-              .then(() => navigation.navigate('Home'))
+              .then(() => navigation.navigate('Login'))
               .catch(console.err);
           }}
         >
@@ -51,8 +52,6 @@ export default function Profile({navigation}) {
     </View>
   );
 }
-
-
 
 const styles = StyleSheet.create({
   container: {

@@ -4,8 +4,7 @@ import { StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import Buttons from "../Styles/Buttons";
-
+import Buttons from '../Styles/Buttons';
 
 
 export default function Welcome({route, navigation}) {
@@ -15,15 +14,14 @@ export default function Welcome({route, navigation}) {
 
   return (
     <View style={styles.container}>
-        <Text style={styles.title}> Welcome to Stonks{curUser ? `, ${curUser}` : ""}. </Text>
+      <Text style={styles.title}> Welcome to Stonks{curUser ? `, ${curUser}` : ''}. </Text>
+      <Text style={styles.subtitle}> You have ${curBalance} in your account. </Text>
 
-        <Text style={styles.subtitle}> You have ${curBalance} in your account. </Text>
-
-        <TouchableOpacity style={Buttons.button}
-          onPress={() => navigation.navigate('TabScreen')}
-        >
-          <Text style={Buttons.buttontext}> Get Started </Text> 
-        </TouchableOpacity>
+      <TouchableOpacity style={Buttons.button}
+        onPress={() => navigation.navigate('TabScreen')}
+      >
+        <Text style={Buttons.buttontext}> Get Started </Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -37,11 +35,11 @@ const styles = StyleSheet.create({
   },
   subtitle: {
       color: 'white',
-      margin: 20, 
+      margin: 20,
       fontSize: 18,
-  }, 
+  },
   title: {
     color: 'white',
     fontSize: 24,
-}, 
+},
 });

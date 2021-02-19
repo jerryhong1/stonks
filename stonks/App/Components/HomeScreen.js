@@ -8,42 +8,42 @@ import Login from './Login';
 import Buttons from '../Styles/Buttons';
 
 
-
 export default function HomeScreen({navigation}) {
   const [shouldShow, setShouldShow] = useState(false);
 
   // Call once only on mount
   useEffect( () => {
-    // Initialize app 
+    // Initialize app
     if (firebase.apps.length === 0) {
       firebaseInit();
     }
 
     // Check if user is already signed in
-    firebase.auth().onAuthStateChanged((user) => {
+    const authUnsubscribe = firebase.auth().onAuthStateChanged((user) => {
+      // Don't need to keep calling this every time auth state changes,
+      // unsubscribe after first call.
+      authUnsubscribe();
+
       // Navigate to portfolio if already signed in
       if (user) {
         navigation.navigate('TabScreen');
-      } 
-      // Show login button once firebase is loaded and auth state is determined
-      setShouldShow(true);
+      } else {
+        setShouldShow(true);
+      }
     });
-    // return authUnsubscribe; // return in useEffect is called when it unmounts
   }, []);
- 
-  
 
   return (
     <View style={styles.container}>
-        <Text style={styles.text}> stonks </Text>
-        <StatusBar style='auto' />
-        {
-          shouldShow ?
-          <Button title='Login or Create Account'
-            onPress={() => navigation.navigate('Login')}
-          />
-          : null
-        }
+      <Text style={styles.text}> stonks </Text>
+      <StatusBar style='auto' />
+      {
+        shouldShow ?
+        <Button title='Login or Create Account'
+          onPress={() => navigation.navigate('Login')}
+        />
+        : null
+      }
     </View>
   );
 }

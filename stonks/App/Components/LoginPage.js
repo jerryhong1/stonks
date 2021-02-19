@@ -5,6 +5,7 @@ import 'firebase/firestore';
 
 import Buttons from '../Styles/Buttons';
 
+
 export default function LoginPage({navigation}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -57,44 +58,44 @@ export default function LoginPage({navigation}) {
         <Text style={{fontWeight: 'bold', color: 'white', fontSize: 30}}> Login to stonks </Text>
       </View>
       <View style = {styles.textFields}>
-          <TextInput
-            style={styles.inputField}
-            placeholder='Email'
-            placeholderTextColor='grey'
-            onChangeText = {handleEmail}
-          />
-          <TextInput
-            style={styles.inputField}
-            placeholder='Password (8+ characters)'
-            placeholderTextColor='grey'
-            onChangeText = {handlePassword}
-          />
-        </View>
+        <TextInput
+          style={styles.inputField}
+          placeholder='Email'
+          placeholderTextColor='grey'
+          onChangeText = {handleEmail}
+        />
+        <TextInput
+          style={styles.inputField}
+          placeholder='Password (8+ characters)'
+          placeholderTextColor='grey'
+          onChangeText = {handlePassword}
+        />
+      </View>
 
-        <TouchableOpacity
-          style = {Buttons.button}
-          onPress = {
-             () => accountLogin(email, password)
+      <TouchableOpacity
+        style = {Buttons.button}
+        onPress = {
+           () => accountLogin(email, password)
+        }
+      >
+        <Text style={Buttons.buttontext}> Login </Text>
+
+      </TouchableOpacity>
+      <TouchableOpacity
+        style = {Buttons.secondary}
+        onPress = {
+           () => {
+            firebase.auth().sendPasswordResetEmail(email).then(function() {
+              alert(`Password reset email sent to ${email}.`);
+            }).catch(function(error) {
+              alert('Error with password reset email')
+            });
           }
-        >
-          <Text style={Buttons.buttontext}> Login </Text>
+        }
+      >
+        <Text style={Buttons.buttontext}> Reset Password </Text>
 
-        </TouchableOpacity>
-        <TouchableOpacity
-          style = {Buttons.secondary}
-          onPress = {
-             () => {
-              firebase.auth().sendPasswordResetEmail(email).then(function() {
-                alert(`Password reset email sent to ${email}.`);
-              }).catch(function(error) {
-                alert('Error with password reset email')
-              });
-            }
-          }
-        >
-          <Text style={Buttons.buttontext}> Reset Password </Text>
-
-        </TouchableOpacity>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -126,5 +127,4 @@ const styles = StyleSheet.create({
     padding: 10,
     margin: 5
   },
-
 });

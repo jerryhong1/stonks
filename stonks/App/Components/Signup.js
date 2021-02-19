@@ -4,6 +4,7 @@ import firebase from 'firebase';
 
 import Buttons from '../Styles/Buttons';
 
+
 export default function Signup({navigation}) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -75,56 +76,51 @@ export default function Signup({navigation}) {
 
   return (
     <KeyboardAvoidingView style={styles.container}  behavior='padding'>
-
       <View style = {styles.header}>
         <Text style={{fontWeight: 'bold', color: 'white', fontSize: 30, lineHeight:'50px'}}> Sign up for stonks </Text>
         <Text style={{color: 'white', fontSize: 16, textAlign: 'center'}}> Create an account to play with stocks and track your performance.</Text>
       </View>
 
-
       <View style = {styles.textFields}>
-          <TextInput
-            style={styles.inputField}
-            placeholder='Name'
-            placeholderTextColor='grey'
-            onChangeText = {handleName}
-            returnKeyType = {'Next'}
-          />
+        <TextInput
+          style={styles.inputField}
+          placeholder='Name'
+          placeholderTextColor='grey'
+          onChangeText = {handleName}
+          returnKeyType = {'Next'}
+        />
 
-          <TextInput
-            style={styles.inputField}
-            placeholder='Email'
-            placeholderTextColor='grey'
-            onChangeText = {handleEmail}
-          />
+        <TextInput
+          style={styles.inputField}
+          placeholder='Email'
+          placeholderTextColor='grey'
+          onChangeText = {handleEmail}
+        />
 
-          <TextInput
-            style={styles.inputField}
-            placeholder='Username'
-            placeholderTextColor='grey'
-            onChangeText = {handleUsername}
-          />
+        <TextInput
+          style={styles.inputField}
+          placeholder='Username'
+          placeholderTextColor='grey'
+          onChangeText = {handleUsername}
+        />
 
+        <TextInput
+          style={styles.inputField}
+          placeholder='Password (8+ characters)'
+          placeholderTextColor='grey'
+          secureTextEntry
+          onChangeText = {handlePassword}
+        />
+      </View>
 
-          <TextInput
-            style={styles.inputField}
-            placeholder='Password (8+ characters)'
-            placeholderTextColor='grey'
-            secureTextEntry
-            onChangeText = {handlePassword}
-          />
-        </View>
-
-        <TouchableOpacity
-          style = {Buttons.button}
-          onPress = {
-             () => accountSignup(name, email, username, password)
-          }
-        >
-          <Text style={Buttons.buttontext}> Create Account </Text>
-
-        </TouchableOpacity>
-
+      <TouchableOpacity
+        style = {Buttons.button}
+        onPress = {
+           () => accountSignup(name, email, username, password)
+        }
+      >
+        <Text style={Buttons.buttontext}> Create Account </Text>
+      </TouchableOpacity>
     </KeyboardAvoidingView>
   );
 }
