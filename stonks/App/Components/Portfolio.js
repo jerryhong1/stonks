@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity, Image} from 'react-native';
+import { StyleSheet, Button, Text, View, TextInput, Dimensions, StatusBar, TouchableOpacity, Image} from 'react-native';
 
 import Buttons from '../Styles/Buttons';
 
@@ -22,6 +22,15 @@ export default function Portfolio({navigation}) {
       {/* Stocks */}
       <View style={styles.stocks}>
         <Image source={require('../../imgs/tempstocks.png')}/>
+      </View>
+
+      <View style={styles.container}>
+        <Text style={styles.text}> Stonks </Text>
+        <StatusBar style='auto' />
+        <Button
+          title="Go to Single Stock's Detail"
+          onPress={() => navigation.navigate('StockDetail')}
+        />
       </View>
     </View>
   );

@@ -1,6 +1,4 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -11,11 +9,11 @@ import Login from './App/Components/Login';
 import Portfolio from './App/Components/Portfolio';
 import LoginPage from './App/Components/LoginPage';
 import TabScreen from './App/Components/TabScreen';
-
+import StockDetail from './App/Components/StockDetail';
 
 const Stack = createStackNavigator();
 
-export default function App() {
+function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName='Home'>
@@ -26,20 +24,10 @@ export default function App() {
         <Stack.Screen name='Portfolio' component={Portfolio} />
         <Stack.Screen name='LoginPage' component={LoginPage} />
         <Stack.Screen name='TabScreen' component={TabScreen} />
+        <Stack.Screen name='StockDetail' component={StockDetail} />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#000',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  text: {
-    fontSize: 40,
-    color: '#fff'
-  }
-});
+export default App;
