@@ -1,5 +1,6 @@
 import React, { useEffect, useState, setState} from 'react';
 import { StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity, Image } from 'react-native';
+import firebase from 'firebase';
 
 import Buttons from '../Styles/Buttons';
 import { Ionicons } from '@expo/vector-icons';
@@ -11,7 +12,7 @@ export default function Profile({navigation}) {
   // Get username and balance from firebase
   useEffect(() => {
     const getUserData = async () => {
-      const user = firebase.auth().currentUser;
+      const user = firebase.auth().currentUser;  // Not safe, but fine for now
       const userDoc = firebase.firestore().collection('users').doc(user.uid);
       const userSnapshot = await userDoc.get();
       const userData = userSnapshot.data();
@@ -24,11 +25,13 @@ export default function Profile({navigation}) {
 
   return (
     <View style={styles.container}>
+      {/* graph view */}
       <View style={styles.propicContainer}>
         {/* TODO: save/get profile pics in firestore */}
         <Image style={styles.propic} source={require('../../imgs/tempPropic.jpg')} />
       </View>
 
+      {/* Your portfolio statistics */}
       <View  style={styles.profileInfo}>
         <Text style = {{color: 'white', fontSize: 18}}> Username: {username} </Text>
         <Text style = {{color: 'white', fontSize: 18}}> Your balance is ${balance}. </Text>
@@ -39,7 +42,7 @@ export default function Profile({navigation}) {
         <TouchableOpacity style={Buttons.button}
           onPress={() => {
             firebase.auth().signOut()
-              .then(() => navigation.navigate('Home'))
+              .then(() => navigation.navigate('Login'))
               .catch(console.err);
           }}
         >
@@ -52,8 +55,6 @@ export default function Profile({navigation}) {
     </View>
   );
 }
-
-
 
 const styles = StyleSheet.create({
   container: {

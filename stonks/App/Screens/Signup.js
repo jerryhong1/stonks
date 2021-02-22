@@ -1,7 +1,9 @@
 import React, { useState, setState} from 'react';
 import { KeyboardAvoidingView, StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity } from 'react-native';
+import firebase from 'firebase';
 
-import Buttons from "../Styles/Buttons";
+import Buttons from '../Styles/Buttons';
+
 
 export default function Signup({navigation}) {
   const [name, setName] = useState('');
@@ -12,11 +14,11 @@ export default function Signup({navigation}) {
   function handleName(name) {
     setName(name);
   }
-  
+
   function handleEmail(email) {
     setEmail(email);
   }
-  
+
   function handleUsername(username) {
     setUsername(username);
   }
@@ -24,73 +26,105 @@ export default function Signup({navigation}) {
   function handlePassword(password) {
     setPassword(password);
   }
-  
-  function createAccount(name, email, username, password){
-      alert('name: ' + name + '\r\nemail: ' + email + '\r\nusername: ' + username + '\r\npassword: ' + password);
-      // TODO: Add login logic using firebase
-      // TODO: Get username and balance using firebase
-      let balance = 1000;
-      navigation.navigate('Welcome', {
-        name: name, 
-        email: email, 
-        username: username,
-        balance: balance
+
+  function accountSignup(name, email, username, password){
+    const defaultBalance = 1000;
+
+    // Make sign in of new user persist even after app is closed
+    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+      .then(() => {
+        return firebase.auth().createUserWithEmailAndPassword(email, password);
+      })
+      .then((userCredential) => {
+        // Account created
+        const user = userCredential.user;
+        const userDoc = firebase.firestore().collection('users').doc(user.uid);
+
+        // Create doc for user with default data
+        return Promise.all([
+          userDoc,
+          user,
+          userDoc.set({balance: defaultBalance, username: username}, {merge: true})
+        ]);
+      })
+      .then(([userDoc, user]) => {
+        // Set user's display name
+        return Promise.all([
+          user,
+          user.updateProfile({
+            displayName: name
+          })
+        ]);
+      })
+      .then((user) => {
+        // Display welcome page
+        navigation.navigate('Welcome', {
+          name: name,
+          email: email,
+          username: username,
+          balance: defaultBalance
+        });
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+
+        alert(errorMessage);
+        console.log('Account creation failed with error', error.code);
       });
   }
-  
-  return (
-    <KeyboardAvoidingView style={styles.container}  behavior="padding">
 
-      <View style = {styles.header}> 
-        <Text style={{fontWeight: "bold", color: "white", fontSize: 30, lineHeight:"50px"}}> Sign up for stonks </Text>
-        <Text style={{color: "white", fontSize: 16, textAlign: "center"}}> Create an account to play with stocks and track your performance.</Text>
+  return (
+    <KeyboardAvoidingView style={styles.container}  behavior='padding'>
+      <View style = {styles.header}>
+        <Text style={{fontWeight: 'bold', color: 'white', fontSize: 30, lineHeight:'50px'}}> Sign up for stonks </Text>
+        <Text style={{color: 'white', fontSize: 16, textAlign: 'center'}}> Create an account to play with stocks and track your performance.</Text>
       </View>
 
-
       <View style = {styles.textFields}>
-          <TextInput 
-            style={styles.inputField} 
-            placeholder="Name"
-            placeholderTextColor="grey"
-            onChangeText = {handleName}
-            returnKeyType = {"Next"}
-          /> 
+        <TextInput
+          style={styles.inputField}
+          placeholder='Name'
+          placeholderTextColor='grey'
+          onChangeText = {handleName}
+          returnKeyType = 'next'
+        />
 
-          <TextInput 
-            style={styles.inputField} 
-            placeholder="Email"
-            placeholderTextColor="grey"
-            onChangeText = {handleEmail}
-          /> 
+        <TextInput
+          style={styles.inputField}
+          placeholder='Email'
+          keyboardType='email-address'
+          placeholderTextColor='grey'
+          onChangeText = {handleEmail}
+          returnKeyType = 'next'
+        />
 
-          <TextInput 
-            style={styles.inputField} 
-            placeholder="Username"
-            placeholderTextColor="grey"
-            onChangeText = {handleUsername}
-          /> 
+        <TextInput
+          style={styles.inputField}
+          placeholder='Username'
+          placeholderTextColor='grey'
+          onChangeText = {handleUsername}
+          returnKeyType = 'next'
+        />
 
+        <TextInput
+          style={styles.inputField}
+          placeholder='Password (8+ characters)'
+          placeholderTextColor='grey'
+          secureTextEntry
+          onChangeText = {handlePassword}
+          returnKeyType = 'done'
+        />
+      </View>
 
-          <TextInput 
-            style={styles.inputField} 
-            placeholder="Password (8+ characters)"
-            placeholderTextColor="grey"
-            secureTextEntry
-            onChangeText = {handlePassword}
-          /> 
-        </View> 
-          
-        <TouchableOpacity
-          style = {Buttons.button}
-          onPress = {
-             () => createAccount(name, email, username, password)
-          }
-        > 
-          <Text style={Buttons.buttontext}> Create Account </Text>
-        
-        </TouchableOpacity>
-
-        
+      <TouchableOpacity
+        style = {Buttons.button}
+        onPress = {
+           () => accountSignup(name, email, username, password)
+        }
+      >
+        <Text style={Buttons.buttontext}> Create Account </Text>
+      </TouchableOpacity>
     </KeyboardAvoidingView>
   );
 }
@@ -101,26 +135,25 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
     alignItems: 'center',
     justifyContent: 'center',
-    alignContent: "space-between",
+    alignContent: 'space-between',
     flexDirection: 'column',
   },
   header: {
-    alignItems: "center",
-    justifyContent: "center", 
+    alignItems: 'center',
+    justifyContent: 'center',
     width: Dimensions.get('window').width * .8,
   },
   textFields: {
-    margin: 20, 
+    margin: 20,
   },
   text: {
       color: 'white',
   },
   inputField: {
-    backgroundColor: 'white', 
+    backgroundColor: 'white',
     width: Dimensions.get('window').width * .6,
-    borderRadius: 10, 
-    padding: 10, 
+    borderRadius: 10,
+    padding: 10,
     margin: 5
-  }, 
-
+  },
 });
