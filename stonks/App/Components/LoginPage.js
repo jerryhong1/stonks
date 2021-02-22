@@ -1,5 +1,5 @@
 import React, { useState, setState} from 'react';
-import { StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity } from 'react-native';
+import { KeyboardAvoidingView, StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity } from 'react-native';
 import firebase from 'firebase';
 import 'firebase/firestore';
 
@@ -53,7 +53,7 @@ export default function LoginPage({navigation}) {
   }
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView style={styles.container}>
       <View style = {styles.header}>
         <Text style={{fontWeight: 'bold', color: 'white', fontSize: 30}}> Login to stonks </Text>
       </View>
@@ -61,12 +61,14 @@ export default function LoginPage({navigation}) {
         <TextInput
           style={styles.inputField}
           placeholder='Email'
+          keyboardType='email-address'
           placeholderTextColor='grey'
           onChangeText = {handleEmail}
         />
         <TextInput
           style={styles.inputField}
           placeholder='Password (8+ characters)'
+          secureTextEntry
           placeholderTextColor='grey'
           onChangeText = {handlePassword}
         />
@@ -96,7 +98,7 @@ export default function LoginPage({navigation}) {
         <Text style={Buttons.buttontext}> Reset Password </Text>
 
       </TouchableOpacity>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

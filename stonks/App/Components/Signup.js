@@ -87,14 +87,16 @@ export default function Signup({navigation}) {
           placeholder='Name'
           placeholderTextColor='grey'
           onChangeText = {handleName}
-          returnKeyType = {'Next'}
+          returnKeyType = 'next'
         />
 
         <TextInput
           style={styles.inputField}
           placeholder='Email'
+          keyboardType='email-address'
           placeholderTextColor='grey'
           onChangeText = {handleEmail}
+          returnKeyType = 'next'
         />
 
         <TextInput
@@ -102,6 +104,7 @@ export default function Signup({navigation}) {
           placeholder='Username'
           placeholderTextColor='grey'
           onChangeText = {handleUsername}
+          returnKeyType = 'next'
         />
 
         <TextInput
@@ -110,6 +113,7 @@ export default function Signup({navigation}) {
           placeholderTextColor='grey'
           secureTextEntry
           onChangeText = {handlePassword}
+          returnKeyType = 'done'
         />
       </View>
 
