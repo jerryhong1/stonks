@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity, Image 
 import firebase from 'firebase';
 
 import Buttons from '../Styles/Buttons';
-
+import { Ionicons } from '@expo/vector-icons';
 
 export default function Profile({navigation}) {
   const [username, setUsername] = useState('');
@@ -46,7 +46,10 @@ export default function Profile({navigation}) {
               .catch(console.err);
           }}
         >
-          <Text style={Buttons.buttontext}>Sign out</Text>
+          <View  style={{flexDirection: "row", alignItems: "center"}} > 
+            <Ionicons name="exit-outline" size={24} color="white" style={{marginRight: 10}} />
+            <Text style={Buttons.buttontext}>Sign out</Text>
+          </View>
         </TouchableOpacity>
       </View>
     </View>
