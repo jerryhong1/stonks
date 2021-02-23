@@ -22,10 +22,11 @@ export default function Search({navigation}) {
           <TextInput 
             style = {styles.textInputField}
             placeholder="ex: GME, Apple"
-            placeholderTextColor='white'
+            placeholderTextColor='grey'
             value = {text}
             onChangeText = { (input) => setText(input)}
           />
+          {/* Note: This would be best removed, and the searching should occur in real-time as the user is inputting text */}
           <TouchableOpacity
             onPress = { () => {console.log("Searching!!"); setText(""); Keyboard.dismiss();}}
           >

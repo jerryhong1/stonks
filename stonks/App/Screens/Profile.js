@@ -6,6 +6,7 @@ import Buttons from '../Styles/Buttons';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function Profile({navigation}) {
+  const [name, setName] = useState('');
   const [username, setUsername] = useState('');
   const [balance, setBalance] = useState(0);
 
@@ -17,6 +18,7 @@ export default function Profile({navigation}) {
       const userSnapshot = await userDoc.get();
       const userData = userSnapshot.data();
 
+      setName(user.displayName);
       setUsername(userData.username);
       setBalance(userData.balance);
     }
@@ -25,21 +27,13 @@ export default function Profile({navigation}) {
 
   return (
     <View style={styles.container}>
-      {/* graph view */}
       <View style={styles.propicContainer}>
         {/* TODO: save/get profile pics in firestore */}
         <Image style={styles.propic} source={require('../../imgs/tempPropic.jpg')} />
-      </View>
-
-      {/* Your portfolio statistics */}
-      <View  style={styles.profileInfo}>
-        <Text style = {{color: 'white', fontSize: 18}}> Username: {username} </Text>
-        <Text style = {{color: 'white', fontSize: 18}}> Your balance is ${balance}. </Text>
-      </View>
-
-      {/* Account managedment, temporary debug stuff */}
-      <View>
-        <TouchableOpacity style={Buttons.button}
+      <Text style = {{color: 'white', fontSize: 24, fontWeight:"500"}}>{name}</Text>
+        <Text style = {{color: 'grey', fontSize: 18,marginBottom: 8}}> {username} </Text>
+        <Text style = {{color: 'white', fontSize: 18, marginBottom: 12}}> Your balance is ${balance}. </Text>
+        <TouchableOpacity style={{...Buttons.smallButton, backgroundColor: "red"}}
           onPress={() => {
             firebase.auth().signOut()
               .then(() => navigation.navigate('Login'))
@@ -75,7 +69,7 @@ const styles = StyleSheet.create({
     marginTop: 50,
     aspectRatio: 1,
     borderRadius: 50,
-    marginBottom: 40,
+    marginBottom: 16,
   },
   profileInfo: {
     flex: 2,

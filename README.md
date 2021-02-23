@@ -31,6 +31,8 @@ Finally, build and run the app using expo.
 expo start
 ```
 
+Because of `victory-native`, which we use to create line charts, you will need to test this app on your phone and not with the web app. Console and error logs will appear in the shell you used to run `expo start`.
+
 ## MVP 
 For our MVP, we hope to deliver the basic functionality to support paper trading. The feature list and user journey is as follows: 
 
