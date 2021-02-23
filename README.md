@@ -8,6 +8,9 @@ We want to build a website to help new stock traders become familiar with the fi
 ## Why should we build this? 
 According to our needfinding interviews, we discovered that many new traders or people who want to trade wish they had a de-risked environment to test their trading skills. They wanted to get the hang of trading without the potential of losing their money. An interviewee, Tommy, stated he had always wanted to start paper trading but has not done so because you “need high willpower or discipline to build the paper trading system yourself.” He thinks Regretless Robinhood can fill that gap. 
 
+## Link to Figma
+https://www.figma.com/file/dJ9Dh7n8ZARQ2G0c3HY3fV/Stonks-CS-194?node-id=1%3A3
+
 ## Building
 
 To build the Stonks app, first enter the `stonks` directory.
@@ -16,10 +19,10 @@ To build the Stonks app, first enter the `stonks` directory.
 cd stonks
 ```
 
-If you haven't already installed expo, you will need to do so.
+If you haven't already installed expo (and other dependencies), you will need to do so.
 
 ```
-npm install expo
+npm install expo victory-native firebase react-native-svg
 ```
 
 Finally, build and run the app using expo.

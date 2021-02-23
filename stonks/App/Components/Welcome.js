@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React, { useState, setState} from 'react';
 import { StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -8,15 +8,19 @@ import Buttons from "../Styles/Buttons";
 
 
 
-export default function Welcome({navigation}) {
+export default function Welcome({route, navigation}) {
+  const {name, email, username, balance} = route.params;
+  const [curUser, setUsername] = useState(username);
+  const [curBalance, setBalance] = useState(balance);
+  
   return (
     <View style={styles.container}>
-        <Text style={styles.text}> Welcome to Stonks, Lauren </Text>
+        <Text style={styles.title}> Welcome to Stonks{curUser ? `, ${curUser}` : "."} </Text>
 
-        <Text style={styles.text}> You have $1000 in your account. </Text>
+        <Text style={styles.subtitle}> You have ${curBalance} in your account. </Text>
 
         <TouchableOpacity style={Buttons.button}
-          onPress={() => navigation.navigate('Portfolio')}
+          onPress={() => navigation.navigate('TabScreen')}
         >
           <Text style={Buttons.buttontext}> Get Started </Text> 
         </TouchableOpacity>
@@ -32,9 +36,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  text: {
+  subtitle: {
       color: 'white',
-      margin: 10, 
-      fontSize: 24,
+      margin: 20, 
+      fontSize: 18,
   }, 
+  title: {
+    color: 'white',
+    fontSize: 24,
+}, 
 });
