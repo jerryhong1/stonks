@@ -40,7 +40,7 @@ function App() {
           component={MainApp}
           options={{ headerShown: false }}
         />
-        <RootStack.Screen name="BuySell" component={BuySellModal} />
+        <RootStack.Screen name="BuySell" component={BuySellModal} options={{ headerShown: false }}/>
       </RootStack.Navigator>
     </NavigationContainer>
   );
