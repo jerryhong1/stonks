@@ -19,7 +19,7 @@ export default function TabScreen() {
       tabBarOptions={{
         showLabel:false,
         inactiveBackgroundColor: 'black',
-        activeBackgroundColor: '#009688',
+        activeBackgroundColor: '#1EDD4E',
       }}
     >
       <Tab.Screen 
