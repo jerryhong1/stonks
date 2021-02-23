@@ -28,20 +28,22 @@ export default function DetailsScreen({route, navigation}) {
         </VictoryGroup>
       </View>
 
-       {/* Your portfolio statistics */}
-       <View style={styles.urPrtflio}> 
+       {/* Info about the stock */}
+       <View style={styles.stockInfo}> 
           <Text style = {{color: "white", fontSize: 16}} > 
             <Text style = {{fontWeight: "bold"}}>{stockData.ticker} </Text> 
           ({stockData.company}) </Text> 
           <Text style = {{color: "white", fontSize: 30, marginTop: 5}} > {'$' + stockData.currPrice} </Text> 
           <TouchableOpacity style={Buttons.smallButton}
-            onPress={() => navigation.navigate('TabScreen')}
+            onPress={() => navigation.navigate('BuySell', {
+              stockData: stockData
+            })}
           >
-            <Text style={Buttons.buttontext}>Buy/Sell</Text>
+            <Text style={Buttons.buttontext}>Buy</Text>
           </TouchableOpacity>
       </View>
 
-      {/* Your stocks list */}
+      {/* News */}
       <View style={styles.stocks}>
           <Text style={{color: "white", fontSize: 16, margin: 8}}>News</Text>
       </View>
@@ -69,7 +71,7 @@ const styles = StyleSheet.create({
       borderBottomColor: "white",
       borderWidth: 1,
   },
-  urPrtflio: {
+  stockInfo: {
       padding: 8,
       flex: 1.5,
       backgroundColor: "black",

@@ -27,7 +27,6 @@ export default function Profile({navigation}) {
 
   return (
     <View style={styles.container}>
-      {/* graph view */}
       <View style={styles.propicContainer}>
         {/* TODO: save/get profile pics in firestore */}
         <Image style={styles.propic} source={require('../../imgs/tempPropic.jpg')} />

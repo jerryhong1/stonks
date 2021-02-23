@@ -16,6 +16,11 @@ const Buttons = {
       fontSize: 15,
       textAlign: 'center',
     },
+  buttontextdisabled: {
+    color: '#FFFFFF88',
+    fontSize: 15,
+    textAlign: 'center',
+  },
   secondary: {
       backgroundColor: "#000",
       fontSize: 24,
@@ -24,6 +29,15 @@ const Buttons = {
       margin: 6,
       borderRadius: 4,
       width: Dimensions.get('window').width * .6,
+  },
+  disabled: {
+    backgroundColor: "#1EDD4E88",
+    fontSize: 40,
+    color: "#1EDD4E",
+    padding: 8,
+    margin: 6,
+    borderRadius: 4,
+    width: Dimensions.get('window').width * .6,
   },
   smallButton: {
     backgroundColor: "#1EDD4E",

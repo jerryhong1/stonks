@@ -3,19 +3,18 @@ import { StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity, Image,
 import firebase from 'firebase';
 
 import Buttons from "../Styles/Buttons";
-import StockList from "../Components/StockList";
-import { fullStockDict } from "../Components/StockList";
+import StockList, { fullStockDict }  from "../Components/StockList";
 
 function EmptyState({navigation}) {
     return (
-        <>
-            <Text style={{textAlign: "center", color: "white", fontSize: 20, marginTop: 24, marginBottom: 8}}>No stocks yet.</Text>
-            <TouchableOpacity style={Buttons.smallButton}
-                onPress={() => navigation.navigate('Search')}
-            >
-                <Text style={Buttons.buttontext}>Browse stocks</Text>
-            </TouchableOpacity>
-        </>
+    <>
+        <Text style={{textAlign: "center", color: "white", fontSize: 20, marginTop: 24, marginBottom: 8}}>No stocks yet.</Text>
+        <TouchableOpacity style={Buttons.smallButton}
+            onPress={() => navigation.navigate('Search')}
+        >
+            <Text style={Buttons.buttontext}>Browse stocks</Text>
+        </TouchableOpacity>
+    </>
     )
 }
 
@@ -27,7 +26,7 @@ export default function Portfolio({navigation}) {
     const [stockList, setStockList] = useState([]);
     
     
-    // Get username and balance from firebase
+    // Get username, balance, and portfolio from firebase
     useEffect(() => {
         const getUserData = async () => {
             const user = firebase.auth().currentUser;  // Not safe, but fine for now
@@ -44,9 +43,9 @@ export default function Portfolio({navigation}) {
 
     useEffect(() => {
         // Update the stock list with just stocks that the user owns. TODO: empty state.
-        let newStockList = [];
+        let newStockList = []; 
         Object.entries(portfolio).forEach(
-            (elt) => { console.log(elt); newStockList.push({...fullStockDict[elt[0]], count: elt[1]}); }
+            ([name, qty]) => {newStockList.push({...fullStockDict[name], count: qty}); }
         ); 
         setStockList(newStockList);
     }, [portfolio])

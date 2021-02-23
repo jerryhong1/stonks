@@ -10,22 +10,38 @@ import Portfolio from './App/Screens/Portfolio';
 import LoginPage from './App/Screens/LoginPage';
 import TabScreen from './App/Screens/TabScreen';
 import StockDetail from './App/Screens/StockDetail';
+import BuySellModal from './App/Screens/BuySell';
 
-const Stack = createStackNavigator();
+const RootStack = createStackNavigator();
+const MainStack = createStackNavigator();
+
+function MainApp() {
+  return (
+    <MainStack.Navigator initialRouteName='Home'>
+      <MainStack.Screen name='Home' component={HomeScreen} options={{ headerShown: false }}/>
+      <MainStack.Screen name='Welcome' component={Welcome}  options={{ headerShown: false }}/>
+      <MainStack.Screen name='Login' component={Login}  options={{ headerShown: false }}/>
+      <MainStack.Screen name='Signup' component={Signup} />
+      <MainStack.Screen name='LoginPage' component={LoginPage} />
+      <MainStack.Screen name='TabScreen' component={TabScreen}  options={{ headerShown: false }}/>
+      <MainStack.Screen name='Portfolio' component={Portfolio} />
+      <MainStack.Screen name='StockDetail' component={StockDetail} />
+    </MainStack.Navigator>
+  );
+}
+
 
 function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName='Home'>
-        <Stack.Screen name='Home' component={HomeScreen} />
-        <Stack.Screen name='Signup' component={Signup} />
-        <Stack.Screen name='Welcome' component={Welcome} />
-        <Stack.Screen name='Login' component={Login} />
-        <Stack.Screen name='Portfolio' component={Portfolio} />
-        <Stack.Screen name='LoginPage' component={LoginPage} />
-        <Stack.Screen name='TabScreen' component={TabScreen} />
-        <Stack.Screen name='StockDetail' component={StockDetail} />
-      </Stack.Navigator>
+      <RootStack.Navigator mode="modal">
+        <RootStack.Screen
+          name="Main"
+          component={MainApp}
+          options={{ headerShown: false }}
+        />
+        <RootStack.Screen name="BuySell" component={BuySellModal} />
+      </RootStack.Navigator>
     </NavigationContainer>
   );
 }
