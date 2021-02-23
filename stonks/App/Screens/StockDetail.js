@@ -37,7 +37,7 @@ export default function DetailsScreen({route, navigation}) {
           <TouchableOpacity style={Buttons.smallButton}
             onPress={() => navigation.navigate('TabScreen')}
           >
-            <Text style={Buttons.buttontext}> Buy/Sell </Text>
+            <Text style={Buttons.buttontext}>Buy/Sell</Text>
           </TouchableOpacity>
       </View>
 

@@ -6,12 +6,26 @@ import Buttons from "../Styles/Buttons";
 import StockList from "../Components/StockList";
 import { fullStockDict } from "../Components/StockList";
 
+function EmptyState({navigation}) {
+    return (
+        <>
+            <Text style={{textAlign: "center", color: "white", fontSize: 20, marginTop: 24, marginBottom: 8}}>No stocks yet.</Text>
+            <TouchableOpacity style={Buttons.smallButton}
+                onPress={() => navigation.navigate('Search')}
+            >
+                <Text style={Buttons.buttontext}>Browse stocks</Text>
+            </TouchableOpacity>
+        </>
+    )
+}
+
 export default function Portfolio({navigation}) {
     // total assets = balance (aka "buying power") + calculated from stock
     const [totalAssets, setTotalAssets] = useState(0);
     const [balance, setBalance] = useState(0);
     const [portfolio, setPortfolio] = useState({});
-    const stockList = [];
+    const [stockList, setStockList] = useState([]);
+    
     
     // Get username and balance from firebase
     useEffect(() => {
@@ -21,7 +35,6 @@ export default function Portfolio({navigation}) {
             const userSnapshot = await userDoc.get();
             const userData = userSnapshot.data();
             
-            console.log("User Data", userData);
             setBalance(userData.balance);
             setPortfolio(userData.portfolio);
         }
@@ -31,9 +44,11 @@ export default function Portfolio({navigation}) {
 
     useEffect(() => {
         // Update the stock list with just stocks that the user owns. TODO: empty state.
+        let newStockList = [];
         Object.entries(portfolio).forEach(
-            (elt) => { console.log(elt); stockList.push({...fullStockDict[elt[0]], count: elt[1]}); }
-        );
+            (elt) => { console.log(elt); newStockList.push({...fullStockDict[elt[0]], count: elt[1]}); }
+        ); 
+        setStockList(newStockList);
     }, [portfolio])
 
 
@@ -41,8 +56,8 @@ export default function Portfolio({navigation}) {
     useEffect(() => {
         let stockAssets = 0;
         Object.entries(portfolio).forEach(
-            (elt) => {
-                stockAssets += fullStockDict[elt[0]].currPrice * elt[1];
+            ([name, qty]) => {
+                stockAssets += fullStockDict[name].currPrice * qty;
             } 
         );
         setTotalAssets(stockAssets + balance);
@@ -69,7 +84,11 @@ export default function Portfolio({navigation}) {
             
             {/* Your stocks list TODO: feed in list from docs */}
             <View style={styles.stocks}>
+                {stockList.length ? 
                 <StockList userStockList={stockList}/>
+                : 
+                <EmptyState navigation={navigation} />
+                }
             </View>
         </View>
     );
