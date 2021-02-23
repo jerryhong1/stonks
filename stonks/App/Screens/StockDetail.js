@@ -16,6 +16,8 @@ const data = [ //this is sample data for the sample chart on details
 
 export default function DetailsScreen({route, navigation}) {
   const stockData = route.params.data;
+  const buy = "Purchase";
+  const sell = "Sell";
   return (
     <View style={styles.container}>
       <View  style={styles.graph}>
@@ -36,10 +38,19 @@ export default function DetailsScreen({route, navigation}) {
           <Text style = {{color: "white", fontSize: 30, marginTop: 5}} > {'$' + stockData.currPrice} </Text> 
           <TouchableOpacity style={Buttons.smallButton}
             onPress={() => navigation.navigate('BuySell', {
-              stockData: stockData
+              stockData: stockData,
+              buyOrSell: buy,
             })}
           >
             <Text style={Buttons.buttontext}>Buy</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={Buttons.smallButton}
+            onPress={() => navigation.navigate('BuySell', {
+              stockData: stockData,
+              buyOrSell: sell,
+            })}
+          >
+            <Text style={Buttons.buttontext}>Sell</Text>
           </TouchableOpacity>
       </View>
 
