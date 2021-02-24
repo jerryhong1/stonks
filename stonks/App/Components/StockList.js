@@ -17,7 +17,7 @@ const fullStockList = Object.values(fullStockDict)
 // The key difference is the latter also includes a quantity of owned stocks.
 export default function StockList({userStockList}) {
     // TEMP DATA FOR BOTH SCREENS
-    console.log('Stock List from parent component', userStockList)
+    console.log('Stock List from parent component', userStockList);
     const [stockList, setStockList] = useState(userStockList ? userStockList : fullStockList);
 
     const renderStockItem = ({ index, item }) => {

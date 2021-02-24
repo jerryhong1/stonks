@@ -12,7 +12,7 @@ import {useNavigation} from '@react-navigation/native';
 
 export default function StockItem(props) {
     const navigation = useNavigation();
-    const data = props.data
+    const data = props.data;
   
     return (
         <TouchableOpacity 

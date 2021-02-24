@@ -42,24 +42,32 @@ export default function Portfolio({navigation}) {
     }, []); 
 
     useEffect(() => {
-        // Update the stock list with just stocks that the user owns. TODO: empty state.
+      // Update the stock list with just stocks that the user owns. TODO: empty state.
+      if (portfolio) {
         let newStockList = []; 
         Object.entries(portfolio).forEach(
-            ([name, qty]) => {newStockList.push({...fullStockDict[name], count: qty}); }
+          ([name, qty]) => {
+            if (qty > 0) {
+              newStockList.push({...fullStockDict[name], count: qty});
+            }
+          }
         ); 
         setStockList(newStockList);
+      }
     }, [portfolio])
 
 
     // Update the "total assets" based on stocks owned and balance.
     useEffect(() => {
+      if (portfolio) {
         let stockAssets = 0;
         Object.entries(portfolio).forEach(
-            ([name, qty]) => {
-                stockAssets += fullStockDict[name].currPrice * qty;
-            } 
+          ([name, qty]) => {
+            stockAssets += fullStockDict[name].currPrice * qty;
+          } 
         );
         setTotalAssets(stockAssets + balance);
+      }
     }, [balance, portfolio])
     
     console.log("Portfolio", portfolio);
