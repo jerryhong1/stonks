@@ -1,21 +1,59 @@
-import React from 'react';
-import { VictoryLine, VictoryGroup, VictoryTheme } from "victory-native";
+import React, { useEffect, useState, setState}  from 'react';
+import { VictoryLine, VictoryChart, VictoryTheme } from "victory-native";
 import { StyleSheet, Text, View, Dimensions, TouchableOpacity } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import firebase from 'firebase';
 
 import Buttons from '../Styles/Buttons';
 
-const data = [ //this is sample data for the sample chart on details
-  { x: 1, y: 13000 },
-  { x: 2, y: 16500 },
-  { x: 3, y: 14250 },
-  { x: 4, y: 19000 },
-  { x: 5, y: 12000 }
-];
+//import { polygonClient, restClient, websocketClient } from "polygon.io";
+//const rest = restClient("VfpjQL3hxlS56WBVpmcslVQ5jCwm7U2m");
+//todo: find way to get current stock 
+//todo: determine what type of stock chart we want to implement and add it
+// simple option is to chart the 5 min average ? another option is to plot the bars 
 
 
+function formatChartData(data) {
+  var chartData = [];
+  for (var i = 0; i < data.length; i++) {
+    var datapoint = [i, data[i].vw]
+    chartData.push(datapoint)
+  }
+  return chartData;
+}
+// const stockdata = {
+//  }
+ 
+ 
+//pull data from firestore and feed to chart 
 export default function DetailsScreen({route, navigation}) {
+  const [stockresults, setStockResults] = useState([0,0]);
   const stockData = route.params.data;
+  
+  // Get stock data from firebase
+  useEffect(() => {
+    const getStockData = async () => {
+      const stock = "GME";  // not sure how to determine which stock we are on
+      const stockDoc = firebase.firestore().collection('stocks').doc(stock);
+      const stockSnapshot = await stockDoc.get();
+      const stockDataFirebase = stockSnapshot.data();
+      console.log(stockDataFirebase);
+      //put stockData into right format 
+      stockDataFirebase.results = formatChartData(stockDataFirebase.results);
+      setStockResults(stockDataFirebase.results);
+
+      //if you want to write some data uncomment below and:
+      // change stockdata to the data you want to upload
+      // change the below firebase.set command to the correct stock you want to upload data to 
+      // uncomment here 
+      // console.log("before upload");
+      // const res = await firebase.firestore().collection('stocks').doc(stock).set(stockdata);
+      // console.log("success ");
+      // to here 
+    }
+    getStockData();
+  }, []);
+  
   return (
     <View style={styles.container}>
       <View  style={styles.graph}>
@@ -23,7 +61,10 @@ export default function DetailsScreen({route, navigation}) {
           <VictoryLine 
             style={{data: { stroke: "red" }}} 
             theme={VictoryTheme.material} 
-            data={data} 
+            data={stockresults} 
+            x={0}
+            y={1}
+            interpolation="natural"
           />
         </VictoryGroup>
       </View>
@@ -49,9 +90,11 @@ export default function DetailsScreen({route, navigation}) {
       </View>
           
       <StatusBar />
+            
     </View>
   );
 }
+
 
 
 const styles = StyleSheet.create({
@@ -91,3 +134,4 @@ const styles = StyleSheet.create({
 
   }
 });
+
