@@ -27,6 +27,7 @@ function formatChartData(data) {
 //pull data from firestore and feed to chart
 export default function DetailsScreen({route, navigation}) {
   const [stockresults, setStockResults] = useState([0,0]);
+  const [stockdesc, setStockDesc] = useState("");
   const stockData = route.params.data;
   const buy = "Purchase";
   const sell = "Sell";
@@ -41,6 +42,7 @@ export default function DetailsScreen({route, navigation}) {
       //put stockData into right format
       stockDataFirebase.results = formatChartData(stockDataFirebase.results);
       setStockResults(stockDataFirebase.results);
+      setStockDesc(stockDataFirebase.description);
 
       //if you want to write some data uncomment below and:
       // change stockdata to the data you want to upload
@@ -63,7 +65,7 @@ export default function DetailsScreen({route, navigation}) {
                              flyoutStyle={{stroke: "none",fill: "none"}}
                              style={{fill: "white"}}/>}
             
-            labels={({ datum }) => datum.label}
+            labels={({ datum }) => datum.x + datum.label}
             style={{data: { stroke: "red" }}}
             theme={VictoryTheme.material}
             data={stockresults}
@@ -105,9 +107,12 @@ export default function DetailsScreen({route, navigation}) {
           </View>
       </View>
 
-      {/* News */}
+      {/* News and Description  */}
       <View style={styles.stocks}>
+          <Text style={{color: "white", fontSize: 16, margin: 8}}>Description</Text>
+          <Text style={{color: "white", fontSize: 12, margin: 8}}>{stockdesc}</Text>
           <Text style={{color: "white", fontSize: 16, margin: 8}}>News</Text>
+          <Text style={{color: "white", fontSize: 12, margin: 8}}>Articles will appear here</Text>
       </View>
       <StatusBar />
     </View>
