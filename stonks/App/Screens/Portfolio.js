@@ -46,7 +46,11 @@ export default function Portfolio({navigation}) {
       if (portfolio) {
         let newStockList = []; 
         Object.entries(portfolio).forEach(
-          ([name, qty]) => {newStockList.push({...fullStockDict[name], count: qty}); }
+          ([name, qty]) => {
+            if (qty > 0) {
+              newStockList.push({...fullStockDict[name], count: qty});
+            }
+          }
         ); 
         setStockList(newStockList);
       }

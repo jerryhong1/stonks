@@ -69,7 +69,7 @@ export default function ModalScreen({route, navigation}) {
       <View style={styles.header}>
         <Text style={{ color: "white", fontSize: 30, marginTop: 50}}>{stockData.ticker}</Text>
         <Text style={{ color: "white", fontSize: 16 }}>Buying power: ${balance}</Text>
-        { portfolio[stockData.ticker] && 
+        { portfolio[stockData.ticker] !== undefined && 
           <Text style={{ color: "white", fontSize: 16 }}>Already bought: {portfolio[stockData.ticker]}</Text> 
         } 
       </View>

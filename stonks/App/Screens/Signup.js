@@ -44,7 +44,11 @@ export default function Signup({navigation}) {
         return Promise.all([
           userDoc,
           user,
-          userDoc.set({balance: defaultBalance, username: username}, {merge: true})
+          userDoc.set({
+            balance: defaultBalance,
+            portfolio: {},
+            username: username
+          }, {merge: true})
         ]);
       })
       .then(([userDoc, user]) => {
