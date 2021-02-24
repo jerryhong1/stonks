@@ -6,6 +6,15 @@ import firebase from 'firebase';
 
 import Buttons from '../Styles/Buttons';
 
+//converts milliseconds to date time 
+function convertMillisToDay(millis) {
+  console.log("here");
+  console.log(millis);
+  var date = new Date(millis); 
+  console.log(date.toString());
+  return date.toString()
+
+}
 
 function formatChartData(data) {
   var chartData = [];
@@ -26,11 +35,10 @@ export default function DetailsScreen({route, navigation}) {
   // Get stock data from firebase
   useEffect(() => {
     const getStockData = async () => {
-      const stock = "GME";  // not sure how to determine which stock we are on
+      const stock = stockData.ticker;  // not sure how to determine which stock we are on
       const stockDoc = firebase.firestore().collection('stocks').doc(stock);
       const stockSnapshot = await stockDoc.get();
       const stockDataFirebase = stockSnapshot.data();
-      console.log(stockDataFirebase);
       //put stockData into right format
       stockDataFirebase.results = formatChartData(stockDataFirebase.results);
       setStockResults(stockDataFirebase.results);
