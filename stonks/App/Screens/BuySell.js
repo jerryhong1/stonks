@@ -4,7 +4,7 @@ import firebase from 'firebase';
 
 import Buttons from '../Styles/Buttons';
 
-// Buy/Sell screen for a single stock, given by the route params. For now, it can only buy.
+// Buy/Sell screen for a single stock, given by the route params.
 export default function ModalScreen({route, navigation}) {
   const [balance, setBalance] = useState(0);
   const [qty, setQty] = useState(0);
@@ -13,7 +13,7 @@ export default function ModalScreen({route, navigation}) {
   const buyOrSell = route.params.buyOrSell;
   
   function handleQty(qty) {
-    setQty(qty ? qty : 0);
+    setQty(qty ? parseInt(qty) : 0);
   }
 
   function handleBuySell() {
@@ -63,14 +63,15 @@ export default function ModalScreen({route, navigation}) {
   
   const cost = qty * stockData.currPrice;
   const buyingDisabled = (buyOrSell === "Purchase") && (qty === 0 || cost > balance);
-  const sellingDisabled = (buyOrSell === "Sell") && (qty === 0 || qty > portfolio[stockData.ticker]);
+  const sellingDisabled = (buyOrSell === "Sell") && (!portfolio[stockData.ticker] || qty === 0 || qty > portfolio[stockData.ticker]);
+  console.log(qty);
   return(
     <KeyboardAvoidingView style={styles.container}>
       <View style={styles.header}>
         <Text style={{ color: "white", fontSize: 30, marginTop: 50}}>{stockData.ticker}</Text>
         <Text style={{ color: "white", fontSize: 16 }}>Buying power: ${balance}</Text>
-        { portfolio[stockData.ticker] !== undefined && 
-          <Text style={{ color: "white", fontSize: 16 }}>Already bought: {portfolio[stockData.ticker]}</Text> 
+        { portfolio[stockData.ticker] ? 
+          <Text style={{ color: "white", fontSize: 16 }}>Already bought: {portfolio[stockData.ticker]}</Text> : null
         } 
       </View>
       <View style={styles.content}>
@@ -81,9 +82,10 @@ export default function ModalScreen({route, navigation}) {
           placeholderTextColor='grey'
           onChangeText = {handleQty}
         />
-        {/* Displays error meessages based on whether the user is buying or selling. */}
+        {/* Displays error messages based on whether the user is buying or selling. */}
         {qty!== 0 && <Text style={{ color: "white", fontSize: 16 }}>${stockData.currPrice} × {qty} = ${cost}</Text>}
         {buyOrSell === "Purchase" && qty * stockData.currPrice > balance && <Text style={{ color: "red", fontSize: 16 }}>Not enough balance.</Text>}
+        {buyOrSell === "Sell" && !portfolio[stockData.ticker] && <Text style={{ color: "red", fontSize: 16 }}>No stocks to sell.</Text>}
         {buyOrSell === "Sell" && qty > portfolio[stockData.ticker] && <Text style={{ color: "red", fontSize: 16 }}>Not enough stocks to sell.</Text>}
         
         {/* Purchase and Cancel. */}

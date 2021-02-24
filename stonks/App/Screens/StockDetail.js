@@ -68,22 +68,28 @@ export default function DetailsScreen({route, navigation}) {
             <Text style = {{fontWeight: "bold"}}>{stockData.ticker} </Text>
           ({stockData.company}) </Text>
           <Text style = {{color: "white", fontSize: 30, marginTop: 5}} > {'$' + stockData.currPrice} </Text>
-          <TouchableOpacity style={Buttons.smallButton}
-            onPress={() => navigation.navigate('BuySell', {
-              stockData: stockData,
-              buyOrSell: buy,
-            })}
-          >
-            <Text style={Buttons.buttontext}>Buy</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={Buttons.smallButton}
-            onPress={() => navigation.navigate('BuySell', {
-              stockData: stockData,
-              buyOrSell: sell,
-            })}
-          >
-            <Text style={Buttons.buttontext}>Sell</Text>
-          </TouchableOpacity>
+          <View style={styles.buySell}>
+            <View>
+              <TouchableOpacity style={Buttons.smallButton}
+                onPress={() => navigation.navigate('BuySell', {
+                  stockData: stockData,
+                  buyOrSell: buy,
+                })}
+              >
+                <Text style={Buttons.buttontext}>Buy</Text>
+              </TouchableOpacity>
+            </View>
+            <View>
+              <TouchableOpacity style={Buttons.smallButton}
+                onPress={() => navigation.navigate('BuySell', {
+                  stockData: stockData,
+                  buyOrSell: sell,
+                })}
+              >
+                <Text style={Buttons.buttontext}>Sell</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
       </View>
 
       {/* News */}
@@ -130,6 +136,10 @@ const styles = StyleSheet.create({
       borderBottomColor: "white",
       borderWidth: 1,
 
+  },
+  buySell: {
+    flex: 1,
+    flexDirection: "row"
   }
 });
 
