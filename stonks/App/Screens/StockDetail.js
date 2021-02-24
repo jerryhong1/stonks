@@ -1,5 +1,5 @@
 import React, { useEffect, useState, setState}  from 'react';
-import { VictoryChart, VictoryGroup, VictoryLine, VictoryTheme } from "victory-native";
+import { VictoryChart, VictoryGroup, VictoryLine, VictoryTheme, VictoryVoronoiContainer, VictoryTooltip } from "victory-native";
 import { StyleSheet, Text, View, Dimensions, TouchableOpacity } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import firebase from 'firebase';
@@ -8,19 +8,18 @@ import Buttons from '../Styles/Buttons';
 
 //converts milliseconds to date time 
 function convertMillisToDay(millis) {
-  console.log("here");
-  console.log(millis);
   var date = new Date(millis); 
-  console.log(date.toString());
-  return date.toString()
-
+  var prettyDate = date.toString().slice(4, 10) + " " + date.toString().slice(16, 21)
+  return prettyDate; //returns string in format [month date time] ie Feb 22 12:00
 }
 
 function formatChartData(data) {
   var chartData = [];
   for (var i = 0; i < data.length; i++) {
-    var datapoint = [i, data[i].vw]
+    var date = convertMillisToDay(data[i].t) // t is the he Unix Msec timestamp for the start of the aggregate window
+    var datapoint = {x: i, y: data[i].vw, label: date}
     chartData.push(datapoint)
+    console.log(datapoint);
   }
   return chartData;
 }
@@ -35,7 +34,7 @@ export default function DetailsScreen({route, navigation}) {
   // Get stock data from firebase
   useEffect(() => {
     const getStockData = async () => {
-      const stock = stockData.ticker;  // not sure how to determine which stock we are on
+      const stock = stockData.ticker; 
       const stockDoc = firebase.firestore().collection('stocks').doc(stock);
       const stockSnapshot = await stockDoc.get();
       const stockDataFirebase = stockSnapshot.data();
@@ -58,15 +57,21 @@ export default function DetailsScreen({route, navigation}) {
   return (
     <View style={styles.container}>
       <View  style={styles.graph}>
-        <VictoryGroup theme={VictoryTheme.material} height={200}>
+        <VictoryGroup theme={VictoryTheme.material} height={200} containerComponent={<VictoryVoronoiContainer />}>
           <VictoryLine
+            labelComponent={ <VictoryTooltip renderInPortal={false}
+                             flyoutStyle={{stroke: "none",fill: "none"}}
+                             style={{fill: "white"}}/>}
+            
+            labels={({ datum }) => datum.label}
             style={{data: { stroke: "red" }}}
             theme={VictoryTheme.material}
             data={stockresults}
-            x={0}
-            y={1}
+            x="x"
+            y="y"
             interpolation="natural"
           />
+
         </VictoryGroup>
       </View>
 
