@@ -1,5 +1,5 @@
 import React, { useState, setState} from 'react';
-import { StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity, Image, Keyboard, FlatList} from 'react-native';
+import { StyleSheet, Text, SafeAreaView, View, TextInput, Dimensions, TouchableOpacity, Image, Keyboard, FlatList} from 'react-native';
 
 import Buttons from "../Styles/Buttons";
 import {Ionicons} from '@expo/vector-icons';
@@ -13,7 +13,7 @@ export default function Search({navigation}) {
   const [text, setText] = useState("");
   
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
 
       <View style = {styles.search}> 
         <Text style = {styles.headerText}> Search for stocks </Text> 
@@ -25,24 +25,21 @@ export default function Search({navigation}) {
             placeholderTextColor='grey'
             value = {text}
             onChangeText = { (input) => setText(input)}
+            onSubmitEditing = { () => {console.log("Searching!!"); setText(""); Keyboard.dismiss();}}
           />
-          {/* Note: This would be best removed, and the searching should occur in real-time as the user is inputting text */}
-          <TouchableOpacity
-            onPress = { () => {console.log("Searching!!"); setText(""); Keyboard.dismiss();}}
-          >
-            <Ionicons name="ios-search-outline" size={35} color="white" />
-          </TouchableOpacity> 
+          
         </View>
       </View>
 
 
       <View style = {styles.stockResults}> 
-        <StockList />
+        <Text style = {styles.suggestedText}> Suggested </Text> 
+        <StockList searchText={text.toLowerCase()}/>
       </View>
 
 
 
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -80,6 +77,10 @@ const styles = StyleSheet.create({
   },
   stockResults: {
     height: "80%",
+  },
+  suggestedText: {
+    color: 'grey',
+    fontSize: 18,
   }
   
 });

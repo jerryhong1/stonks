@@ -32,7 +32,7 @@ export default function DetailsScreen({route, navigation}) {
   const buy = "Purchase";
   const sell = "Sell";
 
-  // Get stock data from firebase
+  // Get stock data for a particular stock from firebase //TODO: Once StockList pulls from firebase, should this still write to firebase?
   useEffect(() => {
     const getStockData = async () => {
       const stock = stockData.ticker; 
