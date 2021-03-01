@@ -61,7 +61,7 @@ export default function DetailsScreen({route, navigation}) {
       // change the below firebase.set command to the correct stock you want to upload data to
       // uncomment here
       // console.log("before upload");
-      // const res = await firebase.firestore().collection('stocks').doc(stock).set(stockdata);
+      // const res = await firebase.firestore().collection('stocks').doc(stock).set(stockdata, {merge: true});
       // console.log("success ");
       // to here
     }
