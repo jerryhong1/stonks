@@ -44,7 +44,7 @@ export default function ModalScreen({route, navigation}) {
     // 5. Display message indicating purchased stocks and navigate to portfolio.
     alert(`You just ${buyOrSell === "Purchase"? "bought" : "sold"} ${qty} stock(s) of ${stockData.company} at $${stockData.currPrice} for $${Math.abs(total_cost)}`);
     
-    navigation.navigate('Portfolio');
+    navigation.navigate('TabScreen');
   }
 
   // Get username and balance from firebase
@@ -65,7 +65,9 @@ export default function ModalScreen({route, navigation}) {
   const buyingDisabled = (buyOrSell === "Purchase") && (qty === 0 || cost > balance);
   const sellingDisabled = (buyOrSell === "Sell") && (!portfolio[stockData.ticker] || qty === 0 || qty > portfolio[stockData.ticker]);
   console.log(qty);
-  return(
+
+
+  return (
     <KeyboardAvoidingView style={styles.container}>
       <View style={styles.header}>
         <Text style={{ color: "white", fontSize: 30, marginTop: 50}}>{stockData.ticker}</Text>
@@ -90,17 +92,19 @@ export default function ModalScreen({route, navigation}) {
         
         {/* Purchase and Cancel. */}
         <TouchableOpacity 
-          style={buyingDisabled || sellingDisabled ? Buttons.disabled : Buttons.button} disabled={buyingDisabled, sellingDisabled} 
+          style={buyingDisabled || sellingDisabled ? Buttons.disabled : Buttons.button} 
+          disabled={buyingDisabled || sellingDisabled}  // TODO: CHECK THIS THERE WAS AN ERROR SO I JUST MADE DID AN OR  
           onPress={handleBuySell}
         > 
-            <Text style={buyingDisabled ? Buttons.buttontextdisabled : Buttons.buttontext}> {buyOrSell}</Text>
+          <Text style={buyingDisabled ? Buttons.buttontextdisabled : Buttons.buttontext}> {buyOrSell}</Text>
         </TouchableOpacity>
+        
         <TouchableOpacity style={Buttons.secondary} onPress={() => navigation.goBack()}> 
             <Text style={Buttons.buttontext}> Cancel </Text>
         </TouchableOpacity>
       </View> 
     </KeyboardAvoidingView>
-  )
+  );
 }
 
 const styles = StyleSheet.create({

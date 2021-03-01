@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity, Image, FlatList} from 'react-native';
+import { StyleSheet, Text, View, TextInput, SafeAreaView, Dimensions, TouchableOpacity, Image, FlatList} from 'react-native';
 import firebase from 'firebase';
 
 import Buttons from "../Styles/Buttons";
@@ -74,7 +74,7 @@ export default function Portfolio({navigation}) {
     console.log("Stock List", stockList);
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
 
             {/* graph view */}
             <View style={styles.graph}> 
@@ -97,7 +97,7 @@ export default function Portfolio({navigation}) {
                 <EmptyState navigation={navigation} />
                 }
             </View>
-        </View>
+        </SafeAreaView>
     );
 }
 

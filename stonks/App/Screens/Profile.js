@@ -1,5 +1,5 @@
-import React, { useEffect, useState, setState} from 'react';
-import { StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity, Image } from 'react-native';
+import React, { useEffect, useState} from 'react';
+import { StyleSheet, Text, View, TextInput, SafeAreaView, Dimensions, TouchableOpacity, Image } from 'react-native';
 import firebase from 'firebase';
 
 import Buttons from '../Styles/Buttons';
@@ -26,7 +26,7 @@ export default function Profile({navigation}) {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.propicContainer}>
         {/* TODO: save/get profile pics in firestore */}
         <Image style={styles.propic} source={require('../../imgs/tempPropic.jpg')} />
@@ -46,7 +46,7 @@ export default function Profile({navigation}) {
           </View>
         </TouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
