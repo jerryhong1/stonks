@@ -19,7 +19,7 @@ function formatChartData(data) {
     var date = convertMillisToDay(data[i].t) // t is the he Unix Msec timestamp for the start of the aggregate window
     var datapoint = {x: i, y: data[i].vw, label: date}
     chartData.push(datapoint)
-    console.log(datapoint);
+    // console.log(datapoint);
   }
   return chartData;
 }

@@ -24,10 +24,12 @@ export default function Profile({navigation}) {
     }
     
     // Makes the Portfolio view update the data when you navigate back after you buy and sell a stock
-    navigation.addListener('focus', () => {
+    const unsubscribe = navigation.addListener('focus', () => {
       getUserData();
       console.log("REFOCUSED Profile Screen");
-  });
+    });
+
+    return unsubscribe;
 
   }, []);
 

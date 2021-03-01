@@ -39,16 +39,20 @@ export default function Portfolio({navigation}) {
         }
 
         // Makes the Portfolio view update the data when you navigate back after you buy and sell a stock
-        navigation.addListener('focus', () => {
+        const unsubscribe = navigation.addListener('focus', () => {
             getUserData();
-            console.log("REFOCUSED Portfolio screen");
+            console.log("REFOCUSED Portfolio s creen");
         });
+
+        // cleanup on unmount
+        return unsubscribe;
 
     }, []); 
 
     useEffect(() => {
       // Update the stock list with just stocks that the user owns. TODO: empty state.
       if (portfolio) {
+        console.log("DID WE ENTER PORTFOLIO STATE CHANGE??");
         let newStockList = []; 
         Object.entries(portfolio).forEach(
           ([name, qty]) => {
@@ -57,6 +61,7 @@ export default function Portfolio({navigation}) {
             }
           }
         ); 
+        console.log("new stock list", newStockList);
         setStockList(newStockList);
       }
     }, [portfolio])
@@ -65,6 +70,7 @@ export default function Portfolio({navigation}) {
     // Update the "total assets" based on stocks owned and balance.
     useEffect(() => {
       if (portfolio) {
+        console.log("DID WE ENTER BALANCE STATE CHANGE??");
         let stockAssets = 0;
         Object.entries(portfolio).forEach(
           ([name, qty]) => {
@@ -75,8 +81,8 @@ export default function Portfolio({navigation}) {
       }
     }, [balance, portfolio])
     
-    console.log("Portfolio", portfolio);
-    console.log("Stock List", stockList);
+    // console.log("Portfolio", portfolio);
+    console.log("Stock List for rendering list!!", stockList);
 
     return (
         <SafeAreaView style={styles.container}>

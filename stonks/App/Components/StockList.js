@@ -22,7 +22,7 @@ const fullStockList = Object.values(fullStockDict)
 // NOTE: this also needs to accept a parameter from search that filters 
 export default function StockList({userStockList, searchText = null}) {
     // TEMP DATA FOR BOTH SCREENS
-    console.log('Stock List from parent component', userStockList);
+    // console.log('Stock List from parent component', userStockList);
     const [stockList, setStockList] = useState(userStockList ? userStockList : fullStockList);
 
     const renderStockItem = ({ index, item }) => {
@@ -37,7 +37,7 @@ export default function StockList({userStockList, searchText = null}) {
     // Filter by searchtext
     const searchStockList = () => {
         if (searchText) {
-            console.log("STOCK LIST SEJAL " , stockList);
+            // console.log("STOCK LIST SEJAL " , stockList);
             var filtered = stockList.filter(function (stock) {
                 return (stock.company.toLowerCase().includes(searchText) | stock.ticker.toLowerCase().includes(searchText));
             });
