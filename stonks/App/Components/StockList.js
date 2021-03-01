@@ -20,10 +20,9 @@ const fullStockList = Object.values(fullStockDict)
 // The key difference is the latter also includes a quantity of owned stocks.
 
 // NOTE: this also needs to accept a parameter from search that filters 
-export default function StockList({userStockList, searchText = null}) {
+export default function StockList({userStockList = null, searchText = null}) {
     // TEMP DATA FOR BOTH SCREENS
-    // console.log('Stock List from parent component', userStockList);
-    const [stockList, setStockList] = useState(userStockList ? userStockList : fullStockList);
+    const stockList = userStockList ? userStockList : fullStockList;
 
     const renderStockItem = ({ index, item }) => {
         return <StockItem data={item}/> 
@@ -37,7 +36,6 @@ export default function StockList({userStockList, searchText = null}) {
     // Filter by searchtext
     const searchStockList = () => {
         if (searchText) {
-            // console.log("STOCK LIST SEJAL " , stockList);
             var filtered = stockList.filter(function (stock) {
                 return (stock.company.toLowerCase().includes(searchText) | stock.ticker.toLowerCase().includes(searchText));
             });
@@ -46,7 +44,6 @@ export default function StockList({userStockList, searchText = null}) {
             return stockList;
         }
     }
-
 
     // NOT USED YET -- GET ALL THE STOCK DATA FROM FIRESTORE AND DEPRECATE FAKE DATA.
     // useEffect(() => {

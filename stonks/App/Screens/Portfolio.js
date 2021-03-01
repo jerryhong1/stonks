@@ -34,6 +34,7 @@ export default function Portfolio({navigation}) {
             const userDoc = firebase.firestore().collection('users').doc(user.uid);
             const userSnapshot = await userDoc.get();
             const userData = userSnapshot.data();
+            console.log("User Data", userData);
             setBalance(userData.balance);
             setPortfolio(userData.portfolio);
         }
@@ -52,7 +53,6 @@ export default function Portfolio({navigation}) {
     useEffect(() => {
       // Update the stock list with just stocks that the user owns. TODO: empty state.
       if (portfolio) {
-        console.log("DID WE ENTER PORTFOLIO STATE CHANGE??");
         let newStockList = []; 
         Object.entries(portfolio).forEach(
           ([name, qty]) => {
@@ -82,7 +82,7 @@ export default function Portfolio({navigation}) {
     }, [balance, portfolio])
     
     // console.log("Portfolio", portfolio);
-    console.log("Stock List for rendering list!!", stockList);
+    // console.log("Stock List for rendering list!!", stockList);
 
     return (
         <SafeAreaView style={styles.container}>
