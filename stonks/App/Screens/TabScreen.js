@@ -1,5 +1,4 @@
-import React from 'react';
-import { StyleSheet, Text, View, Button, Image} from 'react-native';
+import React, {useEffect} from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import Portfolio from './Portfolio';
@@ -30,7 +29,8 @@ export default function TabScreen() {
           tabBarIcon: () => (
             <FontAwesome name='line-chart' size={28} color='white' />
           ),
-        }}
+        }
+      }
       />
       <Tab.Screen 
         name='Search' 

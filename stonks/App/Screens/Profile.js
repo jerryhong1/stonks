@@ -22,7 +22,13 @@ export default function Profile({navigation}) {
       setUsername(userData.username);
       setBalance(userData.balance);
     }
-    getUserData();
+    
+    // Makes the Portfolio view update the data when you navigate back after you buy and sell a stock
+    navigation.addListener('focus', () => {
+      getUserData();
+      console.log("REFOCUSED Profile Screen");
+  });
+
   }, []);
 
   return (

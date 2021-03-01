@@ -5,6 +5,7 @@ import firebase from 'firebase';
 import Buttons from "../Styles/Buttons";
 import StockList, { fullStockDict }  from "../Components/StockList";
 
+
 function EmptyState({navigation}) {
     return (
     <>
@@ -33,11 +34,15 @@ export default function Portfolio({navigation}) {
             const userDoc = firebase.firestore().collection('users').doc(user.uid);
             const userSnapshot = await userDoc.get();
             const userData = userSnapshot.data();
-            
             setBalance(userData.balance);
             setPortfolio(userData.portfolio);
         }
-        getUserData();
+
+        // Makes the Portfolio view update the data when you navigate back after you buy and sell a stock
+        navigation.addListener('focus', () => {
+            getUserData();
+            console.log("REFOCUSED Portfolio screen");
+        });
 
     }, []); 
 

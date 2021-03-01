@@ -16,7 +16,7 @@ import BuySellModal from './App/Screens/BuySell';
 const RootStack = createStackNavigator();
 const MainStack = createStackNavigator();
 
-function MainApp() {
+function MainStackApp() {
   return (
     <MainStack.Navigator initialRouteName='Home'>
       <MainStack.Screen name='Home' component={HomeScreen} options={{ headerShown: false }}/>
@@ -36,13 +36,13 @@ function MainApp() {
 function App() {
   return (
     <NavigationContainer>
-      <RootStack.Navigator mode="modal">
+      <RootStack.Navigator>
         <RootStack.Screen
           name="Main"
-          component={MainApp}
+          component={MainStackApp}
           options={{ headerShown: false }}
         />
-        <RootStack.Screen name="BuySell" component={BuySellModal} options={{ headerShown: false }}/>
+        <RootStack.Screen name="BuySell" component={BuySellModal} options={{ headerShown: false }} mode="modal"/>
       </RootStack.Navigator>
     </NavigationContainer>
   );
