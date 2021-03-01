@@ -13,7 +13,7 @@ function EmptyState({navigation}) {
         <TouchableOpacity style={Buttons.smallButton}
             onPress={() => navigation.navigate('Search')}
         >
-            <Text style={Buttons.buttontext}>Browse stocks</Text>
+            <Text style={Buttons.buttontext}> Buy stocks</Text>
         </TouchableOpacity>
     </>
     )
@@ -95,7 +95,7 @@ export default function Portfolio({navigation}) {
             {/* Your portfolio statistics */}
             <View style={styles.urPrtflio}> 
                 <Text style = {{color: "white", fontSize: 16, fontWeight: 'bold'}} >{`Your Portfolio`} </Text> 
-                <Text style = {{color: "white", fontSize: 30, marginTop: 5}} >${totalAssets} </Text> 
+                <Text style = {{color: "white", fontSize: 24, marginTop: 5}} > Total Value of Assets: ${totalAssets} </Text> 
                 <Text style = {{color: "white", fontSize: 16, marginTop: 5}} >${balance} of buying power</Text>
                 <Text style = {{color: "green", fontSize: 16, marginTop: 5}} >↗ $50.00 (5%) </Text>
             </View>
