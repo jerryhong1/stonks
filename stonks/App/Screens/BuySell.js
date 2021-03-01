@@ -39,7 +39,7 @@ export default function ModalScreen({route, navigation}) {
     userDoc.set({
       balance: new_balance,
       portfolio: portfolio,
-    });
+    }, {merge: true});
     
     // 5. Display message indicating purchased stocks and navigate to portfolio.
     alert(`You just ${buyOrSell === "Purchase"? "bought" : "sold"} ${qty} stock(s) of ${stockData.company} at $${stockData.currPrice} for $${Math.abs(total_cost)}`);
