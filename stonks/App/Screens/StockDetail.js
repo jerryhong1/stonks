@@ -3,6 +3,7 @@ import { VictoryChart, VictoryGroup, VictoryLine, VictoryTheme, VictoryVoronoiCo
 import { StyleSheet, Text, View, Dimensions, TouchableOpacity } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import firebase from 'firebase';
+import Svg, {Line} from 'react-native-svg';
 
 import Buttons from '../Styles/Buttons';
 
@@ -16,7 +17,7 @@ function convertMillisToDay(millis) {
 function formatChartData(data) {
   var chartData = [];
   for (var i = 0; i < data.length; i++) {
-    var date = convertMillisToDay(data[i].t) // t is the he Unix Msec timestamp for the start of the aggregate window
+    var date = convertMillisToDay(data[i].t) // t is the Unix Msec timestamp for the start of the aggregate window
     var datapoint = {x: i, y: data[i].vw, label: date}
     chartData.push(datapoint)
     // console.log(datapoint);
@@ -24,10 +25,21 @@ function formatChartData(data) {
   return chartData;
 }
 
+class CustomFlyout extends React.Component {
+  render() {
+    const {x, y} = this.props;
+    return ( //svg height and width are hard coded right now 
+      <Svg height="800" width="500" style="overflow: visible"> 
+        <Line x1={x} y1="0" x2={x} y2="300" stroke="gray" strokeWidth="1" />
+      </Svg>
+    );
+  }
+}
+
 //pull data from firestore and feed to chart
 export default function DetailsScreen({route, navigation}) {
   const [stockresults, setStockResults] = useState([0,0]);
-  const [stockdesc, setStockDesc] = useState("");
+  const [stockdesc, setStockDesc] = useState(""); 
   const stockData = route.params.data;
   const buy = "Purchase";
   const sell = "Sell";
@@ -49,7 +61,7 @@ export default function DetailsScreen({route, navigation}) {
       // change the below firebase.set command to the correct stock you want to upload data to
       // uncomment here
       // console.log("before upload");
-      // const res = await firebase.firestore().collection('stocks').doc(stock).set(stockdata);
+      // const res = await firebase.firestore().collection('stocks').doc(stock).set(stockdata, {merge: true});
       // console.log("success ");
       // to here
     }
@@ -59,12 +71,11 @@ export default function DetailsScreen({route, navigation}) {
   return (
     <View style={styles.container}>
       <View  style={styles.graph}>
-        <VictoryGroup theme={VictoryTheme.material} height={200} containerComponent={<VictoryVoronoiContainer />}>
-          <VictoryLine
-            labelComponent={ <VictoryTooltip renderInPortal={false}
-                             flyoutStyle={{stroke: "none",fill: "none"}}
+        <VictoryGroup theme={VictoryTheme.material} height={150} domainPadding={{y: [8, 8]}} padding={{ top: 5, bottom: 5 }} containerComponent={<VictoryVoronoiContainer/>}>
+          <VictoryLine 
+            labelComponent={ <VictoryTooltip renderInPortal={false} flyoutComponent={<CustomFlyout/>}
+                             flyoutStyle={{stroke: "none",fill: "none"}} y={60}
                              style={{fill: "white"}}/>}
-            
             labels={({ datum }) => datum.x + datum.label}
             style={{data: { stroke: "red" }}}
             theme={VictoryTheme.material}
