@@ -79,7 +79,6 @@ export default function Portfolio({navigation}) {
     // Update the "total assets" based on stocks owned and balance.
     useEffect(() => {
       if (portfolio) {
-        // console.log("DID WE ENTER BALANCE STATE CHANGE??");
         let stockAssets = 0;
         Object.entries(portfolio).forEach(
           ([name, qty]) => {
@@ -90,9 +89,6 @@ export default function Portfolio({navigation}) {
       }
     }, [balance, portfolio])
     
-    // console.log("Portfolio", portfolio);
-    // console.log("Stock List for rendering list!!", stockList);
-
     return (
         <SafeAreaView style={styles.container}>
 
