@@ -26,28 +26,37 @@ export default function Portfolio({navigation}) {
     const [portfolio, setPortfolio] = useState({});
     const [stockList, setStockList] = useState([]);
     
-    
-    // Get username, balance, and portfolio from firebase
-    useEffect(() => {
-        const getUserData = async () => {
+    const reloadUserData = async () => {
+        try {
             const user = firebase.auth().currentUser;  // Not safe, but fine for now
             const userDoc = firebase.firestore().collection('users').doc(user.uid);
             const userSnapshot = await userDoc.get();
             const userData = userSnapshot.data();
             console.log("User Data", userData);
+
             setBalance(userData.balance);
             setPortfolio(userData.portfolio);
-        }
+            // return userData;
 
-        // Makes the Portfolio view update the data when you navigate back after you buy and sell a stock
-        const unsubscribe = navigation.addListener('focus', () => {
-            getUserData();
-            console.log("REFOCUSED Portfolio s creen");
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+
+    // Get username, balance, and portfolio from firebase
+    useEffect(() => {
+
+        // CLEANER WAY of keeping portfolio view real-time after Buy/Sell (instead of on the page / navigation.addListener('focus') )
+        // Listener is on the data not the screen, so no weird render / re-loads
+        const user = firebase.auth().currentUser;  // Not safe, but fine for now
+        const userDocRef = firebase.firestore().collection('users').doc(user.uid);
+        const unsubscribe = userDocRef.onSnapshot(() => {
+            reloadUserData();
         });
 
-        // cleanup on unmount
+        // Cleanup
         return unsubscribe;
-
     }, []); 
 
     useEffect(() => {
