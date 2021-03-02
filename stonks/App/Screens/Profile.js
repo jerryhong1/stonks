@@ -38,7 +38,7 @@ export default function Profile({navigation}) {
         });
 
         // Cleanup
-        return unsubscribe;
+        return () => unsubscribe();
 
     }, []);
 

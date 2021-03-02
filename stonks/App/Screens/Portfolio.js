@@ -32,12 +32,10 @@ export default function Portfolio({navigation}) {
             const userDoc = firebase.firestore().collection('users').doc(user.uid);
             const userSnapshot = await userDoc.get();
             const userData = userSnapshot.data();
-            console.log("User Data", userData);
+            // console.log("User Data", userData);
 
             setBalance(userData.balance);
             setPortfolio(userData.portfolio);
-            // return userData;
-
         } catch (error) {
             console.log(error);
         }
@@ -53,12 +51,12 @@ export default function Portfolio({navigation}) {
         const userDocRef = firebase.firestore().collection('users').doc(user.uid);
         reloadUserData();
 
-        const unsubscribe = userDocRef.onSnapshot(() => {
+        let unsubscribe = userDocRef.onSnapshot(() => {
             reloadUserData();
         });
 
         // Cleanup
-        return unsubscribe;
+        return () => {unsubscribe();}
     }, []); 
 
     useEffect(() => {
