@@ -67,7 +67,7 @@ export default function LoginPage({navigation}) {
         />
         <TextInput
           style={styles.inputField}
-          placeholder='Password (8+ characters)'
+          placeholder='Password (6+ characters)'
           secureTextEntry
           placeholderTextColor='grey'
           onChangeText = {handlePassword}
