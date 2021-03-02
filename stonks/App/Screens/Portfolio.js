@@ -70,7 +70,7 @@ export default function Portfolio({navigation}) {
     // Update the "total assets" based on stocks owned and balance.
     useEffect(() => {
       if (portfolio) {
-        console.log("DID WE ENTER BALANCE STATE CHANGE??");
+        // console.log("DID WE ENTER BALANCE STATE CHANGE??");
         let stockAssets = 0;
         Object.entries(portfolio).forEach(
           ([name, qty]) => {
@@ -94,8 +94,8 @@ export default function Portfolio({navigation}) {
 
             {/* Your portfolio statistics */}
             <View style={styles.urPrtflio}> 
-                <Text style = {{color: "white", fontSize: 16, fontWeight: 'bold'}} >{`Your Portfolio`} </Text> 
-                <Text style = {{color: "white", fontSize: 24, marginTop: 5}} > Total Value of Assets: ${totalAssets} </Text> 
+                <Text style = {{color: "white", fontSize: 16}} >{`Your Portfolio`} </Text> 
+                <Text style = {{color: "white", fontSize: 24, marginTop: 5, fontWeight: 'bold'}} >Total Value of Assets: ${totalAssets} </Text> 
                 <Text style = {{color: "white", fontSize: 16, marginTop: 5}} >${balance} of buying power</Text>
                 <Text style = {{color: "green", fontSize: 16, marginTop: 5}} >↗ $50.00 (5%) </Text>
             </View>
