@@ -24,7 +24,7 @@ function MainApp() {
       <MainStack.Screen name='Login' component={Login}  options={{ headerShown: false }}/>
       <MainStack.Screen name='Signup' component={Signup} />
       <MainStack.Screen name='LoginPage' component={LoginPage} />
-      <MainStack.Screen name='TabScreen' component={TabScreen}  options={{ headerShown: false }}/>
+      <MainStack.Screen name='TabScreen' component={TabScreen}  options={{ headerShown: false, gestureEnabled: false}}/> 
       <MainStack.Screen name='Portfolio' component={Portfolio} />
       <MainStack.Screen name='StockDetail' component={StockDetail} />
     </MainStack.Navigator>
