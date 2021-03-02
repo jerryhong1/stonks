@@ -21,12 +21,11 @@ function MainStackApp() {
     <MainStack.Navigator initialRouteName='Home'>
       <MainStack.Screen name='Home' component={HomeScreen} options={{ headerShown: false }}/>
       <MainStack.Screen name='Welcome' component={Welcome}  options={{ headerShown: false }}/>
-      <MainStack.Screen name='Login' component={Login}  options={{ headerShown: false }}/>
       <MainStack.Screen name='Signup' component={Signup} />
       <MainStack.Screen name='LoginPage' component={LoginPage} />
       <MainStack.Screen name='TabScreen' component={TabScreen}  options={{ headerShown: false, gestureEnabled: false}}/> 
-      <MainStack.Screen name='Portfolio' component={Portfolio} />
       <MainStack.Screen name='StockDetail' component={StockDetail} />
+      <MainStack.Screen name="BuySell" component={BuySellModal} options={{ headerShown: false }} mode="modal"/>
     </MainStack.Navigator>
   );
 }
@@ -42,7 +41,6 @@ function App() {
           component={MainStackApp}
           options={{ headerShown: false }}
         />
-        <RootStack.Screen name="BuySell" component={BuySellModal} options={{ headerShown: false }} mode="modal"/>
       </RootStack.Navigator>
     </NavigationContainer>
   );
