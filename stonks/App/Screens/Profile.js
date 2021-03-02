@@ -30,6 +30,7 @@ export default function Profile({navigation}) {
     useEffect(() => { 
         const user = firebase.auth().currentUser; 
         const userDocRef = firebase.firestore().collection('users').doc(user.uid);
+        reloadUserData();
         
         // Attaching the listener
         const unsubscribe = userDocRef.onSnapshot(() => {

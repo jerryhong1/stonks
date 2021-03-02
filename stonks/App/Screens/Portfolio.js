@@ -51,6 +51,8 @@ export default function Portfolio({navigation}) {
         // Listener is on the data not the screen, so no weird render / re-loads
         const user = firebase.auth().currentUser;  // Not safe, but fine for now
         const userDocRef = firebase.firestore().collection('users').doc(user.uid);
+        reloadUserData();
+
         const unsubscribe = userDocRef.onSnapshot(() => {
             reloadUserData();
         });
