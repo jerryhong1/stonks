@@ -113,7 +113,7 @@ export default function Signup({navigation}) {
 
         <TextInput
           style={styles.inputField}
-          placeholder='Password (8+ characters)'
+          placeholder='Password (6+ characters)'
           placeholderTextColor='grey'
           secureTextEntry
           onChangeText = {handlePassword}
