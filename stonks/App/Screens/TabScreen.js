@@ -6,10 +6,8 @@ import Portfolio from './Portfolio';
 import Profile from './Profile';
 import Search from './Search';
 
-
 import {Ionicons} from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
-
 
 const Tab = createBottomTabNavigator();
 
@@ -22,9 +20,9 @@ export default function TabScreen() {
         activeBackgroundColor: '#1EDD4E',
       }}
     >
-      <Tab.Screen 
-        name='Stocks' 
-        component={Portfolio} 
+      <Tab.Screen
+        name='Stocks'
+        component={Portfolio}
         options={{
           tabBarLabel: 'Stocks',
           tabBarIcon: () => (
@@ -32,23 +30,23 @@ export default function TabScreen() {
           ),
         }}
       />
-      <Tab.Screen 
-        name='Search' 
+      <Tab.Screen
+        name='Search'
         component={Search}
         options={{
           tabBarLabel: 'Search',
           tabBarIcon: () => (
-            <Ionicons name='ios-search-outline' size={28} color='white' />                
+            <Ionicons name='ios-search-outline' size={28} color='white' />
           ),
         }}
       />
-      <Tab.Screen 
-        name='Profile' 
+      <Tab.Screen
+        name='Profile'
         component={Profile}
         options={{
           tabBarLabel: 'Profile',
           tabBarIcon: () => (
-            <FontAwesome name='user-circle-o' size={28} color='white' />                
+            <FontAwesome name='user-circle-o' size={28} color='white' />
           ),
         }}
       />

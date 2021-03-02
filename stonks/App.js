@@ -2,7 +2,6 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-
 import Signup from './App/Screens/Signup';
 import Welcome from './App/Screens/Welcome';
 import HomeScreen from './App/Screens/HomeScreen';
@@ -31,18 +30,16 @@ function MainApp() {
   );
 }
 
-
-
 function App() {
   return (
     <NavigationContainer>
-      <RootStack.Navigator mode="modal">
+      <RootStack.Navigator mode='modal'>
         <RootStack.Screen
-          name="Main"
+          name='Main'
           component={MainApp}
           options={{ headerShown: false }}
         />
-        <RootStack.Screen name="BuySell" component={BuySellModal} options={{ headerShown: false }}/>
+        <RootStack.Screen name='BuySell' component={BuySellModal} options={{ headerShown: false }}/>
       </RootStack.Navigator>
     </NavigationContainer>
   );

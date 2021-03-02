@@ -4,28 +4,11 @@ import firebase from 'firebase';
 
 import Buttons from '../Styles/Buttons';
 
-
 export default function Signup({navigation}) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-
-  function handleName(name) {
-    setName(name);
-  }
-
-  function handleEmail(email) {
-    setEmail(email);
-  }
-
-  function handleUsername(username) {
-    setUsername(username);
-  }
-
-  function handlePassword(password) {
-    setPassword(password);
-  }
 
   function accountSignup(name, email, username, password){
     const defaultBalance = 1000;
@@ -90,7 +73,7 @@ export default function Signup({navigation}) {
           style={styles.inputField}
           placeholder='Name'
           placeholderTextColor='grey'
-          onChangeText = {handleName}
+          onChangeText = {setName}
           returnKeyType = 'next'
         />
 
@@ -99,7 +82,7 @@ export default function Signup({navigation}) {
           placeholder='Email'
           keyboardType='email-address'
           placeholderTextColor='grey'
-          onChangeText = {handleEmail}
+          onChangeText = {setEmail}
           returnKeyType = 'next'
         />
 
@@ -107,7 +90,7 @@ export default function Signup({navigation}) {
           style={styles.inputField}
           placeholder='Username'
           placeholderTextColor='grey'
-          onChangeText = {handleUsername}
+          onChangeText = {setUsername}
           returnKeyType = 'next'
         />
 
@@ -116,7 +99,7 @@ export default function Signup({navigation}) {
           placeholder='Password (6+ characters)'
           placeholderTextColor='grey'
           secureTextEntry
-          onChangeText = {handlePassword}
+          onChangeText = {setPassword}
           returnKeyType = 'done'
         />
       </View>
@@ -151,7 +134,7 @@ const styles = StyleSheet.create({
     margin: 20,
   },
   text: {
-      color: 'white',
+    color: 'white',
   },
   inputField: {
     backgroundColor: 'white',

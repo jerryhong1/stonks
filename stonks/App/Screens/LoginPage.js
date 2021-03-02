@@ -5,7 +5,6 @@ import 'firebase/firestore';
 
 import Buttons from '../Styles/Buttons';
 
-
 export default function LoginPage({navigation}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

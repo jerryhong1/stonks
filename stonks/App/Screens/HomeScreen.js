@@ -7,7 +7,6 @@ import {firebaseInit} from '../Lib/Firebase';
 import Login from './Login';
 import Buttons from '../Styles/Buttons';
 
-
 export default function HomeScreen({navigation}) {
   const [shouldShow, setShouldShow] = useState(false);
 

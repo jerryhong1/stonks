@@ -1,7 +1,6 @@
 import firebase from 'firebase';
 import 'firebase/firestore';
 
-
 // This function should only be called once (right now, at HomeScreen)
 // It will throw an error if called multiple times.
 function firebaseInit() {

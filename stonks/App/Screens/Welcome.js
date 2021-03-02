@@ -6,7 +6,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import Buttons from '../Styles/Buttons';
 
-
 export default function Welcome({route, navigation}) {
   const {name, email, username, balance} = route.params;
   const [curUser, setUsername] = useState(name);
@@ -34,9 +33,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   subtitle: {
-      color: 'white',
-      margin: 20,
-      fontSize: 18,
+    color: 'white',
+    margin: 20,
+    fontSize: 18,
   },
   title: {
     color: 'white',

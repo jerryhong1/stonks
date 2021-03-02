@@ -30,18 +30,18 @@ export default function Profile({navigation}) {
       <View style={styles.propicContainer}>
         {/* TODO: save/get profile pics in firestore */}
         <Image style={styles.propic} source={require('../../imgs/tempPropic.jpg')} />
-      <Text style = {{color: 'white', fontSize: 24, fontWeight:"500"}}>{name}</Text>
+        <Text style = {{color: 'white', fontSize: 24, fontWeight:'500'}}>{name}</Text>
         <Text style = {{color: 'grey', fontSize: 18,marginBottom: 8}}> {username} </Text>
         <Text style = {{color: 'white', fontSize: 18, marginBottom: 12}}> Your balance is ${balance}. </Text>
-        <TouchableOpacity style={{...Buttons.smallButton, backgroundColor: "red"}}
+        <TouchableOpacity style={{...Buttons.smallButton, backgroundColor: 'red'}}
           onPress={() => {
             firebase.auth().signOut()
               .then(() => navigation.navigate('Login'))
               .catch(console.err);
           }}
         >
-          <View  style={{flexDirection: "row", alignItems: "center"}} > 
-            <Ionicons name="exit-outline" size={24} color="white" style={{marginRight: 10}} />
+          <View  style={{flexDirection: 'row', alignItems: 'center'}} >
+            <Ionicons name='exit-outline' size={24} color='white' style={{marginRight: 10}} />
             <Text style={Buttons.buttontext}>Sign out</Text>
           </View>
         </TouchableOpacity>

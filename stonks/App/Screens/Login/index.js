@@ -4,7 +4,6 @@ import { styles } from './styles';
 
 import Buttons from '../../Styles/Buttons';
 
-
 function Login ({navigation} ) {
   return (
     <View style={styles.container}>
