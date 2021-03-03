@@ -92,7 +92,7 @@ export default function DetailsScreen({route, navigation}) {
 
   function createLineGraph() {
       return (
-        <VictoryGroup theme={VictoryTheme.material} height={150} domainPadding={{y: [8, 8]}} padding={{ top: 5, bottom: 5 }} containerComponent={<VictoryVoronoiContainer/>}>
+        <VictoryGroup theme={VictoryTheme.material} height={150} domainPadding={{y: [8, 8]}} padding={{ top: 5, bottom: 12 }} containerComponent={<VictoryVoronoiContainer/>}>
           <VictoryLine 
             labelComponent={ <VictoryTooltip renderInPortal={false} flyoutComponent={<CustomFlyout/>}
                              flyoutStyle={{stroke: "none", fill: "black"}} y={60}
@@ -113,11 +113,12 @@ export default function DetailsScreen({route, navigation}) {
       <VictoryCandlestick
         height={150}  
         domainPadding={{y: [8, 8]}} 
-        padding={{ top: 5, bottom: 5 }} 
+        padding={{ top: 5, bottom: 10 }} 
         containerComponent={<VictoryVoronoiContainer/>}
         theme={VictoryTheme.material} 
         candleColors={{ positive: "green", negative: "red" }}
         data={candlestickChartData}
+        style={{data: {stroke: "white", strokeWidth: 1}}}
       />
 
     );
