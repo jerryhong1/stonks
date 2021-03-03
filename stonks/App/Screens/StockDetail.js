@@ -95,7 +95,7 @@ export default function DetailsScreen({route, navigation}) {
         <VictoryGroup theme={VictoryTheme.material} height={150} domainPadding={{y: [8, 8]}} padding={{ top: 5, bottom: 5 }} containerComponent={<VictoryVoronoiContainer/>}>
           <VictoryLine 
             labelComponent={ <VictoryTooltip renderInPortal={false} flyoutComponent={<CustomFlyout/>}
-                             flyoutStyle={{stroke: "none",fill: "none"}} y={60}
+                             flyoutStyle={{stroke: "none", fill: "black"}} y={60}
                              style={{fill: "white"}}/>}
             labels={({ datum }) => datum.x + datum.label}
             style={{data: { stroke: "red" }}}
@@ -103,7 +103,6 @@ export default function DetailsScreen({route, navigation}) {
             data={lineChartData}
             x="x"
             y="y"
-            interpolation="natural"
           />
         </VictoryGroup>
       );
@@ -111,12 +110,15 @@ export default function DetailsScreen({route, navigation}) {
 
   function createCandlestickGraph() {
     return (
-      <VictoryGroup theme={VictoryTheme.material} height={150} domainPadding={{y: [8, 8]}} padding={{ top: 5, bottom: 5 }} containerComponent={<VictoryVoronoiContainer/>}>
-        <VictoryCandlestick
-          candleColors={{ positive: "red", negative: "green" }} //for some reason the chart is not reflecting this?!?!!? :/
-          data={candlestickChartData}
-        />
-      </VictoryGroup>
+      <VictoryCandlestick
+        height={150}  
+        domainPadding={{y: [8, 8]}} 
+        padding={{ top: 5, bottom: 5 }} 
+        containerComponent={<VictoryVoronoiContainer/>}
+        theme={VictoryTheme.material} 
+        candleColors={{ positive: "green", negative: "red" }}
+        data={candlestickChartData}
+      />
 
     );
 }
@@ -126,7 +128,7 @@ export default function DetailsScreen({route, navigation}) {
       <View style={styles.button}>
       <Button
           onPress={() => {
-            {chartFormat == "line"?setChartFormat("candlestick"): setChartFormat("line")}
+            {chartFormat == "line"? setChartFormat("candlestick") : setChartFormat("line")}
             
           }}
           color="#ffffff"
@@ -134,16 +136,18 @@ export default function DetailsScreen({route, navigation}) {
         />
       </View>
       <View style={styles.graph}>
-        {chartFormat == "line"?createLineGraph(): createCandlestickGraph()}
+        {chartFormat == "line"? createLineGraph() : createCandlestickGraph()}
       </View>
 
        {/* Info about the stock */}
        <View style={styles.stockInfo}>
-          <Text style = {{color: "white", fontSize: 16}} >
-            <Text style = {{fontWeight: "bold"}}>{stockData.ticker} </Text>
-          ({stockData.company}) </Text>
-          <Text style = {{color: "white", fontSize: 30, marginTop: 5}} > {'$' + stockData.currPrice} </Text>
-          <View style={styles.buySell}>
+         <View>
+            <Text style = {{color: "white", fontSize: 16}} >
+              <Text style = {{fontWeight: "bold"}}>{stockData.ticker} </Text>
+            • {stockData.company}</Text>
+            <Text style = {{color: "white", fontSize: 30, marginTop: 4}} >{'$' + stockData.currPrice}</Text>
+         </View>
+         <View style={styles.buySell}>
             <View>
               <TouchableOpacity style={Buttons.smallButton}
                 onPress={() => navigation.navigate('BuySell', {
@@ -169,10 +173,10 @@ export default function DetailsScreen({route, navigation}) {
 
       {/* News and Description  */}
       <View style={styles.stocks}>
-          <Text style={{color: "white", fontSize: 16, margin: 8}}>Description</Text>
-          <Text style={{color: "white", fontSize: 12, margin: 8}}>{stockdesc}</Text>
-          <Text style={{color: "white", fontSize: 16, margin: 8}}>News</Text>
-          <Text style={{color: "white", fontSize: 12, margin: 8}}>Articles will appear here</Text>
+          <Text style={{color: "white", fontSize: 16, marginVertical: 8, marginHorizontal: 12}}>Description</Text>
+          <Text style={{color: "white", fontSize: 12, marginBottom: 8, marginHorizontal: 12}}>{stockdesc}</Text>
+          <Text style={{color: "white", fontSize: 16, marginVertical: 8, marginHorizontal: 12}}>News</Text>
+          <Text style={{color: "white", fontSize: 12, marginBottom: 8, marginHorizontal: 12}}>Articles will appear here</Text>
       </View>
       <StatusBar />
     </View>
@@ -202,8 +206,8 @@ const styles = StyleSheet.create({
       borderWidth: 1,
   },
   stockInfo: {
-      padding: 8,
-      flex: 1.5,
+      flex: 2,
+      padding: 12,
       backgroundColor: "black",
       width: "100%",
       borderBottomColor: "white",
@@ -216,13 +220,11 @@ const styles = StyleSheet.create({
       flex: 4,
       backgroundColor: "black",
       width: "100%",
-      borderBottomColor: "white",
-      borderWidth: 1,
-
   },
   buySell: {
     flex: 1,
-    flexDirection: "row"
+    flexDirection: "row",
+    marginTop: 4,
   }
 });
 
