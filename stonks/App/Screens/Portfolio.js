@@ -13,7 +13,7 @@ function EmptyState({navigation}) {
         <TouchableOpacity style={Buttons.smallButton}
             onPress={() => navigation.navigate('Search')}
         >
-            <Text style={Buttons.buttontext}>Browse stocks</Text>
+            <Text style={Buttons.buttontext}> Buy stocks</Text>
         </TouchableOpacity>
     </>
     )
@@ -26,28 +26,37 @@ export default function Portfolio({navigation}) {
     const [portfolio, setPortfolio] = useState({});
     const [stockList, setStockList] = useState([]);
     
-    
-    // Get username, balance, and portfolio from firebase
-    useEffect(() => {
-        const getUserData = async () => {
+    const reloadUserData = async () => {
+        try {
             const user = firebase.auth().currentUser;  // Not safe, but fine for now
             const userDoc = firebase.firestore().collection('users').doc(user.uid);
             const userSnapshot = await userDoc.get();
             const userData = userSnapshot.data();
-            console.log("User Data", userData);
+            // console.log("User Data", userData);
+
             setBalance(userData.balance);
             setPortfolio(userData.portfolio);
+        } catch (error) {
+            console.log(error);
         }
+    }
 
-        // Makes the Portfolio view update the data when you navigate back after you buy and sell a stock
-        const unsubscribe = navigation.addListener('focus', () => {
-            getUserData();
-            console.log("REFOCUSED Portfolio s creen");
+
+    // Get username, balance, and portfolio from firebase
+    useEffect(() => {
+
+        // CLEANER WAY of keeping portfolio view real-time after Buy/Sell (instead of on the page / navigation.addListener('focus') )
+        // Listener is on the data not the screen, so no weird render / re-loads
+        const user = firebase.auth().currentUser;  // Not safe, but fine for now
+        const userDocRef = firebase.firestore().collection('users').doc(user.uid);
+        reloadUserData();
+
+        let unsubscribe = userDocRef.onSnapshot(() => {
+            reloadUserData();
         });
 
-        // cleanup on unmount
-        return unsubscribe;
-
+        // Cleanup
+        return () => {unsubscribe();}
     }, []); 
 
     useEffect(() => {
@@ -70,7 +79,6 @@ export default function Portfolio({navigation}) {
     // Update the "total assets" based on stocks owned and balance.
     useEffect(() => {
       if (portfolio) {
-        console.log("DID WE ENTER BALANCE STATE CHANGE??");
         let stockAssets = 0;
         Object.entries(portfolio).forEach(
           ([name, qty]) => {
@@ -81,9 +89,6 @@ export default function Portfolio({navigation}) {
       }
     }, [balance, portfolio])
     
-    // console.log("Portfolio", portfolio);
-    // console.log("Stock List for rendering list!!", stockList);
-
     return (
         <SafeAreaView style={styles.container}>
 
@@ -94,8 +99,8 @@ export default function Portfolio({navigation}) {
 
             {/* Your portfolio statistics */}
             <View style={styles.urPrtflio}> 
-                <Text style = {{color: "white", fontSize: 16, fontWeight: 'bold'}} >{`Your Portfolio`} </Text> 
-                <Text style = {{color: "white", fontSize: 30, marginTop: 5}} >${totalAssets} </Text> 
+                <Text style = {{color: "white", fontSize: 16}} >{`Your Portfolio`} </Text> 
+                <Text style = {{color: "white", fontSize: 24, marginTop: 5, fontWeight: 'bold'}} >Total Value of Assets: ${totalAssets} </Text> 
                 <Text style = {{color: "white", fontSize: 16, marginTop: 5}} >${balance} of buying power</Text>
                 <Text style = {{color: "green", fontSize: 16, marginTop: 5}} >↗ $50.00 (5%) </Text>
             </View>
