@@ -37,8 +37,6 @@ export default function Search({navigation}) {
         <StockList searchText={text.toLowerCase()}/>
       </View>
 
-
-
     </SafeAreaView>
   );
 }
@@ -64,13 +62,14 @@ const styles = StyleSheet.create({
   headerText: {
     color: 'white',
     fontSize: 26,
-    fontWeight: "bold",
+    fontWeight: "600",
+    marginBottom: 8
   },
   textInputField: {
-    width: Dimensions.get('window').width * .7,
+    width: Dimensions.get('window').width - 24,
     borderRadius: 5,
-    margin: 5,
-    padding: 5, 
+    margin: 4,
+    padding: 8, 
     borderColor: "white",
     borderWidth : 1,
     color: 'white'
@@ -81,6 +80,8 @@ const styles = StyleSheet.create({
   suggestedText: {
     color: 'grey',
     fontSize: 18,
+    marginLeft: 12,
+    marginBottom: 8
   }
   
 });
