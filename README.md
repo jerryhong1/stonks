@@ -22,7 +22,7 @@ cd stonks
 If you haven't already installed expo (and other dependencies), you will need to do so.
 
 ```
-npm install expo victory-native firebase react-native-svg @react-navigation/native react-native-reanimated react-native-gesture-handler react-native-screens react-native-safe-area-context @react-native-community/masked-view
+npm install expo expo-image-picker victory-native firebase react-native-svg @react-navigation/native react-native-reanimated react-native-gesture-handler react-native-screens react-native-safe-area-context @react-native-community/masked-view
 ```
 
 Finally, build and run the app using expo.

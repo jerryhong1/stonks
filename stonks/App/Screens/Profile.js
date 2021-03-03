@@ -1,5 +1,7 @@
 import React, { useEffect, useState} from 'react';
-import { StyleSheet, Text, View, TextInput, SafeAreaView, Dimensions, TouchableOpacity, Image } from 'react-native';
+import { Button, StyleSheet, Text, View, TextInput, SafeAreaView, Dimensions, TouchableOpacity, Image } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+
 import firebase from 'firebase';
 
 import Buttons from '../Styles/Buttons';
@@ -9,7 +11,7 @@ export default function Profile({navigation}) {
     const [name, setName] = useState('');
     const [username, setUsername] = useState('');
     const [balance, setBalance] = useState(0);
-
+    const [propic, setPropic] = useState();
 
     const reloadUserData = async () => {
         try {
@@ -21,9 +23,28 @@ export default function Profile({navigation}) {
             setName(user.displayName);
             setUsername(userData.username);
             setBalance(userData.balance);
+            setPropic(userData.propic);
         } catch (error) {
             console.log(error);
         }
+    }
+    const selectImage = async() => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+          });
+      
+          console.log("New propic", result);
+      
+          if (!result.cancelled) {
+            setPropic(result.uri);
+            const user = firebase.auth().currentUser;  // Not safe, but fine for now
+            const userDoc = firebase.firestore().collection('users').doc(user.uid);
+            userDoc.set({propic: result.uri}, {merge: true});
+          }
+        
     }
 
     // Get username and balance from firebase in real-time after Buy/Sell
@@ -48,8 +69,24 @@ export default function Profile({navigation}) {
         <SafeAreaView style={styles.container}>
         <View style={styles.propicContainer}>
             {/* TODO: save/get profile pics in firestore */}
-            <Image style={styles.propic} source={require('../../imgs/tempPropic.jpg')} />
-        <Text style = {{color: 'white', fontSize: 24, fontWeight:"500"}}>{name}</Text>
+                <Image
+                    source={propic? {uri: propic} : require('../../imgs/profile.png')}
+                    style={styles.propic}
+                />
+    
+                <TouchableOpacity 
+                    onPress={selectImage}
+                    style={{
+                        alignItems: 'center',
+                        marginTop: 8,
+                        marginBottom: 24,
+                        color: 'grey'
+                      }}
+                > 
+                    <Text style={{color: 'white'}}>Change Profile Picture</Text>
+                </TouchableOpacity>
+                
+        <Text style = {{color: 'white', fontSize: 24, marginBottom: 8, fontWeight:"500"}}>{name}</Text>
             <Text style = {{color: 'grey', fontSize: 18,marginBottom: 8}}> {username} </Text>
             <Text style = {{color: 'white', fontSize: 18, marginBottom: 12}}> Your balance is ${balance}. </Text>
             <TouchableOpacity style={{...Buttons.smallButton, backgroundColor: "red"}}
