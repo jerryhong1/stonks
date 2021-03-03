@@ -78,8 +78,8 @@ export default function Profile({navigation}) {
                     onPress={selectImage}
                     style={{
                         alignItems: 'center',
-                        padding: 10,
-                        margin: 30,
+                        marginTop: 8,
+                        marginBottom: 24,
                         color: 'grey'
                       }}
                 > 
