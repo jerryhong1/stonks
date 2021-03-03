@@ -1,26 +1,46 @@
 import React, { useEffect, useState, setState}  from 'react';
-import { VictoryChart, VictoryGroup, VictoryLine, VictoryTheme, VictoryVoronoiContainer, VictoryTooltip } from "victory-native";
-import { StyleSheet, Text, View, Dimensions, TouchableOpacity } from 'react-native';
+import { VictoryChart, VictoryGroup, VictoryLine, VictoryTheme, VictoryVoronoiContainer, VictoryTooltip, VictoryCandlestick } from "victory-native";
+import { StyleSheet, Text, View, Dimensions, TouchableOpacity, Button } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import firebase from 'firebase';
 import Svg, {Line} from 'react-native-svg';
 
 import Buttons from '../Styles/Buttons';
 
+function formatAMPM(date) {
+  var hours = date.getHours();
+  var minutes = date.getMinutes();
+  var ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12;
+  hours = hours ? hours : 12; // the hour '0' should be '12'
+  minutes = minutes < 10 ? '0'+minutes : minutes;
+  var strTime = hours + ':' + minutes + ' ' + ampm;
+  return strTime;
+}
+
 //converts milliseconds to date time 
 function convertMillisToDay(millis) {
   var date = new Date(millis); 
-  var prettyDate = date.toString().slice(4, 10) + " " + date.toString().slice(16, 21)
-  return prettyDate; //returns string in format [month date time] ie Feb 22 12:00
+  var prettyDate = date.toString().slice(4, 10) + " " + formatAMPM(date)
+  return prettyDate; //returns string in format [month date time] ie Feb 22 2:00 PM
 }
 
-function formatChartData(data) {
+function formatLineChartData(data) {
   var chartData = [];
   for (var i = 0; i < data.length; i++) {
-    var date = convertMillisToDay(data[i].t) // t is the Unix Msec timestamp for the start of the aggregate window
+    var date = convertMillisToDay(data[i].t) + "\n $" + (data[i].vw.toFixed(2)).toString()// t is the Unix Msec timestamp for the start of the aggregate window
     var datapoint = {x: i, y: data[i].vw, label: date}
     chartData.push(datapoint)
-    // console.log(datapoint);
+  }
+  return chartData;
+}
+
+function formatCandlestickChartData(data) {
+  var chartData = [];
+  for (var i = 0; i < data.length; i++) {
+    var timestamp = data[i].t //t is the Unix Msec timestamp for the start of the aggregate window
+    var datapoint = {x: new Date(timestamp), open: data[i].o, close: data[i].c, high: data[i].h, low: data[i].l}
+    chartData.push(datapoint)
   }
   return chartData;
 }
@@ -38,11 +58,13 @@ class CustomFlyout extends React.Component {
 
 //pull data from firestore and feed to chart
 export default function DetailsScreen({route, navigation}) {
-  const [stockresults, setStockResults] = useState([0,0]);
+  const [lineChartData, setLineChartData] = useState([0,0]);
+  const [candlestickChartData, setCandlestickChartData] = useState([0,0,0,0,0]);
   const [stockdesc, setStockDesc] = useState(""); 
   const stockData = route.params.data;
   const buy = "Purchase";
   const sell = "Sell";
+  const [chartFormat, setChartFormat] = useState("line");   
 
   // Get stock data for a particular stock from firebase //TODO: Once StockList pulls from firebase, should this still write to firebase?
   useEffect(() => {
@@ -52,8 +74,8 @@ export default function DetailsScreen({route, navigation}) {
       const stockSnapshot = await stockDoc.get();
       const stockDataFirebase = stockSnapshot.data();
       //put stockData into right format
-      stockDataFirebase.results = formatChartData(stockDataFirebase.results);
-      setStockResults(stockDataFirebase.results);
+      setLineChartData(formatLineChartData(stockDataFirebase.results));
+      setCandlestickChartData(formatCandlestickChartData(stockDataFirebase.results));
       setStockDesc(stockDataFirebase.description);
 
       //if you want to write some data uncomment below and:
@@ -68,9 +90,8 @@ export default function DetailsScreen({route, navigation}) {
     getStockData();
   }, []);
 
-  return (
-    <View style={styles.container}>
-      <View  style={styles.graph}>
+  function createLineGraph() {
+      return (
         <VictoryGroup theme={VictoryTheme.material} height={150} domainPadding={{y: [8, 8]}} padding={{ top: 5, bottom: 5 }} containerComponent={<VictoryVoronoiContainer/>}>
           <VictoryLine 
             labelComponent={ <VictoryTooltip renderInPortal={false} flyoutComponent={<CustomFlyout/>}
@@ -79,13 +100,41 @@ export default function DetailsScreen({route, navigation}) {
             labels={({ datum }) => datum.x + datum.label}
             style={{data: { stroke: "red" }}}
             theme={VictoryTheme.material}
-            data={stockresults}
+            data={lineChartData}
             x="x"
             y="y"
             interpolation="natural"
           />
-
         </VictoryGroup>
+      );
+  }
+
+  function createCandlestickGraph() {
+    return (
+      <VictoryGroup theme={VictoryTheme.material} height={150} domainPadding={{y: [8, 8]}} padding={{ top: 5, bottom: 5 }} containerComponent={<VictoryVoronoiContainer/>}>
+        <VictoryCandlestick
+          candleColors={{ positive: "red", negative: "green" }} //for some reason the chart is not reflecting this?!?!!? :/
+          data={candlestickChartData}
+        />
+      </VictoryGroup>
+
+    );
+}
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.button}>
+      <Button
+          onPress={() => {
+            {chartFormat == "line"?setChartFormat("candlestick"): setChartFormat("line")}
+            
+          }}
+          color="#ffffff"
+          title={chartFormat == "line"?"Candlestick": "Line"}
+        />
+      </View>
+      <View style={styles.graph}>
+        {chartFormat == "line"?createLineGraph(): createCandlestickGraph()}
       </View>
 
        {/* Info about the stock */}
@@ -139,6 +188,11 @@ const styles = StyleSheet.create({
     alignContent: "space-between",
     flexDirection: 'column',
     width: Dimensions.get('window').width,
+  },
+  button: {
+    alignItems: 'flex-end',
+    flexDirection: "row-reverse",
+    backgroundColor:'#1E6738',
   },
   graph: {
       flex: 2,
