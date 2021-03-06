@@ -68,7 +68,6 @@ export default function Profile({navigation}) {
     return (
         <SafeAreaView style={styles.container}>
         <View style={styles.propicContainer}>
-            {/* TODO: save/get profile pics in firestore */}
                 <Image
                     source={propic? {uri: propic} : require('../../imgs/profile.png')}
                     style={styles.propic}
