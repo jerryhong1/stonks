@@ -3,6 +3,7 @@ import { KeyboardAvoidingView, StyleSheet, Text, View, TextInput, Dimensions, To
 import firebase from 'firebase';
 import 'firebase/firestore';
 
+import {tryStockUpdate} from '../Lib/StockUpdater';
 import Buttons from '../Styles/Buttons';
 
 
@@ -36,6 +37,7 @@ export default function LoginPage({navigation}) {
         const userData = userSnapshot.data();
 
         // Display Portfolio page
+        tryStockUpdate();
         navigation.navigate('TabScreen', {
           name: user.displayName,
           email: user.email,

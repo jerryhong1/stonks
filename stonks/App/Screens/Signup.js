@@ -2,6 +2,7 @@ import React, { useState, setState} from 'react';
 import { KeyboardAvoidingView, StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity } from 'react-native';
 import firebase from 'firebase';
 
+import {tryStockUpdate} from '../Lib/StockUpdater';
 import Buttons from '../Styles/Buttons';
 
 
@@ -62,6 +63,7 @@ export default function Signup({navigation}) {
       })
       .then((user) => {
         // Display welcome page
+        tryStockUpdate();
         navigation.navigate('Welcome', {
           name: name,
           email: email,

@@ -4,15 +4,15 @@ import { StyleSheet, Text, View, Button, ActivityIndicator} from 'react-native';
 import firebase from 'firebase';
 
 import {firebaseInit} from '../Lib/Firebase';
+import {stockUpdater} from '../Lib/StockUpdater';
 import Login from './Login';
 import Buttons from '../Styles/Buttons';
-
 
 export default function HomeScreen({navigation}) {
   const [shouldShow, setShouldShow] = useState(false);
 
   // Call once only on mount
-  useEffect( () => {
+  useEffect(() => {
     // Initialize app
     if (firebase.apps.length === 0) {
       firebaseInit();
@@ -31,6 +31,10 @@ export default function HomeScreen({navigation}) {
         setShouldShow(true);
       }
     });
+
+    // Update stock data once per minute
+    const unsub = stockUpdater();
+    return unsub;
   }, []);
 
   return (
