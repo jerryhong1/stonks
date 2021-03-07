@@ -12,6 +12,7 @@ export default function Profile({navigation}) {
     const [username, setUsername] = useState('');
     const [balance, setBalance] = useState(0);
     const [propic, setPropic] = useState();
+    const [transactions, setTransactions] = useState([]);
 
     const reloadUserData = async () => {
         try {
@@ -24,6 +25,7 @@ export default function Profile({navigation}) {
             setUsername(userData.username);
             setBalance(userData.balance);
             setPropic(userData.propic);
+            setTransactions(userData.transactions);
         } catch (error) {
             console.log(error);
         }
@@ -63,7 +65,40 @@ export default function Profile({navigation}) {
 
     }, []);
 
+    function getList() {
+        let allTransactions = transactions;
 
+        const transactionList = [];
+        for (let i = 0; i < allTransactions.length; i++){
+          let curTransaction = allTransactions[i];
+
+          if (curTransaction) {
+            let boughtOrSold = curTransaction["buyOrSell"] === "Purchase"?  "Bought" : "Sold";
+            transactionList[i] = (
+                <Text key={i} style={styles.transactions}> 
+                    {
+                    boughtOrSold + " " + Math.abs(curTransaction["qtyChanged"]) + 
+                    " stock(s) of " + curTransaction["stock"] + " for " + curTransaction["price"]
+                    + " on " + Date(curTransaction["timestamp"]).toDateString()
+                    }
+                </Text>
+            );
+          }
+        }
+        
+        let retVal = (
+          <Text> There are no transactions.</Text>
+        );
+        
+        if (transactionList.length > 0){
+          retVal = (
+            <View>
+              <View>{transactionList}</View>
+            </View>
+          );
+        }
+        return retVal;
+    }
 
     return (
         <SafeAreaView style={styles.container}>
@@ -88,6 +123,9 @@ export default function Profile({navigation}) {
         <Text style = {{color: 'white', fontSize: 24, marginBottom: 8, fontWeight:"500"}}>{name}</Text>
             <Text style = {{color: 'grey', fontSize: 18,marginBottom: 8}}> {username} </Text>
             <Text style = {{color: 'white', fontSize: 18, marginBottom: 12}}> Your balance is ${balance}. </Text>
+            <View> 
+                {getList()}
+            </View>
             <TouchableOpacity style={{...Buttons.smallButton, backgroundColor: "red"}}
             onPress={() => {
                 firebase.auth().signOut()
@@ -131,5 +169,13 @@ const styles = StyleSheet.create({
         color: 'white',
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    transactions: {
+        color: 'white',
+        margin: 10,
+        borderColor: 'white',
+        borderStyle: 'solid',
+        borderWidth: 1,
+        padding: 5,
     }
 });
