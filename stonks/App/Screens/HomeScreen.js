@@ -69,7 +69,7 @@ export default function HomeScreen({navigation}) {
     });
 
     // Update stock data once per minute
-    const updateInterval = 60000; // 1 minute
+    const updateInterval = 10000; // 1 minute
     stockUpdate();
     let type = 'timeout';
     let interval = 0;
