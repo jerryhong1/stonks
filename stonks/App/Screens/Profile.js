@@ -1,5 +1,5 @@
 import React, { useEffect, useState} from 'react';
-import { Button, StyleSheet, Text, View, TextInput, SafeAreaView, Dimensions, TouchableOpacity, Image } from 'react-native';
+import { Button, StyleSheet, Text, View, TextInput, SafeAreaView, Dimensions, TouchableHighlight, TouchableOpacity, Image } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 
 import firebase from 'firebase';
@@ -25,7 +25,7 @@ export default function Profile({navigation}) {
             setUsername(userData.username);
             setBalance(userData.balance);
             setPropic(userData.propic);
-            setTransactions(userData.transactions);
+            setTransactions(userData.transactions.reverse()); // report with the most recent at the top
         } catch (error) {
             console.log(error);
         }
@@ -76,13 +76,19 @@ export default function Profile({navigation}) {
             let date = new Date(curTransaction["timestamp"])
             transactionList[i] = (
                 <View key={i} style={styles.transactions}> 
-                    <Text style={styles.transactionText}> 
-                        {curTransaction["stock"] + " " + boughtOrSold + "\t\t\t\t\t\t\t\t" + 
-                        posOrNeg + "$" + curTransaction["price"] * Math.abs(curTransaction["qtyChanged"])}
-                    </Text>
-                    <Text style={styles.transactionText2}>
-                        {Math.abs(curTransaction["qtyChanged"]) + " share(s) \t " + date.toDateString()} 
-                    </Text>
+                    <View style={{flex: '1'}}>
+                        <Text style={styles.transactionTextLeft}> 
+                            {curTransaction["stock"] + " " + boughtOrSold + "\n"}
+                            <Text style={{color: 'grey'}}> 
+                                {Math.abs(curTransaction["qtyChanged"]) + " share(s) \t " + date.toLocaleDateString()} 
+                            </Text>
+                        </Text>
+                    </View>
+                    <View>
+                        <Text style={styles.transactionTextRight}>
+                            {posOrNeg + "$" + curTransaction["price"] * Math.abs(curTransaction["qtyChanged"])}
+                        </Text>
+                    </View>
                 </View>
             );
           }
@@ -104,40 +110,32 @@ export default function Profile({navigation}) {
 
     return (
         <SafeAreaView style={styles.container}>
-        <View style={styles.propicContainer}>
+        <View style={styles.profileAndName}>
             <View>
-                <Image
-                    source={propic? {uri: propic} : require('../../imgs/profile.png')}
-                    style={styles.propic}
-                />
-    
-                <TouchableOpacity 
-                    onPress={selectImage}
-                    style={{
-                        alignItems: 'center',
-                        marginTop: 8,
-                        marginBottom: 24,
-                        color: 'grey'
-                      }}
-                > 
-                    <Text style={{color: 'white'}}>Change Profile Picture</Text>
-                </TouchableOpacity>
+                <TouchableHighlight onPress={selectImage}>
+                    <Image
+                        source={propic? {uri: propic} : require('../../imgs/profile.png')}
+                        style={styles.propic}
+                    />
+                    
+                 </TouchableHighlight>
             </View>
             <View style={styles.username}> 
-                <Text style = {{color: 'white', fontSize: 24, marginBottom: 8, fontWeight:'500'}}> {name}</Text>
-                <Text style = {{color: 'grey', fontSize: 18,marginBottom: 8}}> {username} </Text>
+                <Text style = {{color: 'white', fontSize: 24, marginBottom: 8, fontWeight:'500'}}>{name}</Text>
+                <Text style = {{color: 'grey', fontSize: 18,marginBottom: 8}}>{username}</Text>
             </View>        
         </View>
         <View style={styles.profileInfo}> 
-            <Text style = {{color: 'white', fontSize: 18, marginTop: -50, marginBottom: 12}}> Your balance</Text>
-            <Text style = {{color: 'white', fontSize: 40, marginBottom: 20}}> ${balance} </Text>
-
+            <Text style = {{color: 'white', fontSize: 18, marginBottom: 8, fontWeight: '500'}}>Your balance</Text>
+            <Text style = {{color: 'white', fontSize: 40, marginBottom: 20}}>${balance}</Text>
+            {transactions ? 
             <View style={styles.transactionList}> 
                 <Text style={styles.transactionHistory}>Transaction History</Text>
                 {getList()}
             </View> 
+            : null }
         </View> 
-        <TouchableOpacity style={{...Buttons.smallButton, backgroundColor: 'red', marginTop: 20, width: 120, alignSelf: 'center'}}
+        <TouchableOpacity style={{...Buttons.smallButton, backgroundColor: 'red', marginTop: 24, marginBottom: 24, width: 120, alignSelf: 'center'}}
             onPress={() => {
                 firebase.auth().signOut()
                 .then(() => navigation.navigate('Login'))
@@ -158,9 +156,10 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#000',
         flexDirection: 'column',
+        alignContent: 'flex-start',
         width: '100%'
     },
-    propicContainer: {
+    profileAndName: {
         flexDirection: 'row',
         flex: 1,
         alignItems: 'center',
@@ -169,18 +168,19 @@ const styles = StyleSheet.create({
     propic: {
         height: undefined,
         width: 100,
-        marginLeft: 15,
+        marginLeft: 16,
         aspectRatio: 1,
         borderRadius: 50,
         marginBottom: 16,
     },
     username: {
-        alignItems: 'center',
         marginLeft: 30,
         marginTop: -30,
     },
     profileInfo: {
         flex: 2,
+        marginLeft: 16,
+        marginRight: 16,
         color: 'white',
         alignItems: 'flex-start',
     },
@@ -189,7 +189,8 @@ const styles = StyleSheet.create({
         borderStyle: 'solid',
         color: 'white', 
         fontSize: 18, 
-        marginBottom: 12
+        marginBottom: 12,
+        fontWeight: '500',
     },
     transactions: {
         width: '100%',
@@ -197,28 +198,26 @@ const styles = StyleSheet.create({
         borderBottomColor: 'grey',
         borderWidth: 0.3,
         flexDirection: 'row',
-        paddingHorizontal: 20,
-        paddingVertical: 15, 
-        flexDirection: 'column',
-        overflow: 'scroll'
+        alignContent: 'space-between',
+        alignItems: 'center',
+        paddingVertical: 8,
     },
-    transactionText: {
+    transactionTextLeft: {
         color: 'white',
         width: '100%',
-        flexDirection: 'row',
-        paddingHorizontal: 20,
+        paddingHorizontal: 16,
         marginBottom: 5,
-        fontWeight: 'bold',
+        lineHeight: 20,
         fontSize: 14,
     },
-    transactionText2: {
-        color: 'grey',
-        paddingHorizontal: 20,
-        fontSize: 12,
+    transactionTextRight: {
+        color: 'white',
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginRight: 12
     },
     transactionList: {
         flexDirection: 'column',
-        flex: 2,
         width: '100%',
     }
 });
