@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, TextInput, SafeAreaView, Dimensions, TouchableO
 import firebase from 'firebase';
 
 import Buttons from "../Styles/Buttons";
+import * as S from "../Styles/main";
 import StockList, { fullStockDict }  from "../Components/StockList";
 
 
@@ -90,8 +91,7 @@ export default function Portfolio({navigation}) {
     }, [balance, portfolio])
     
     return (
-        <SafeAreaView style={styles.container}>
-
+        <S.SafeAreaContainer>
             {/* graph view */}
             <View style={styles.graph}> 
                 <Image source={require('../../imgs/stonksGoUp.png')}/>
@@ -99,10 +99,10 @@ export default function Portfolio({navigation}) {
 
             {/* Your portfolio statistics */}
             <View style={styles.urPrtflio}> 
-                <Text style = {{color: "white", fontSize: 16}} >{`Total Value of Assets`} </Text> 
-                <Text style = {{color: "white", fontSize: 32, marginTop: 5, fontWeight: 'bold'}} >${totalAssets} </Text> 
-                <Text style = {{color: "green", fontSize: 16, marginTop: 5}} >↗ $50.00 (5%) </Text>
-                <Text style = {{color: "white", fontSize: 16, marginTop: 5}} >${balance} of buying power</Text>
+                <S.H4>{`Total Value of Assets`}</S.H4> 
+                <S.H1>${totalAssets} </S.H1> 
+                <S.Body1 style = {{color: "#`1EDD4E"}} >↗ $50.00 (5%) </S.Body1>
+                <S.Body1 style = {{marginTop: 4}} >${balance} of buying power</S.Body1>
             </View>
             
             {/* Your stocks list TODO: feed in list from docs */}
@@ -113,20 +113,11 @@ export default function Portfolio({navigation}) {
                 <EmptyState navigation={navigation} />
                 }
             </View>
-        </SafeAreaView>
+        </S.SafeAreaContainer>
     );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'black',
-    alignItems: 'center',
-    justifyContent: 'center',
-    alignContent: "space-between",
-    flexDirection: 'column',
-    width: Dimensions.get('window').width,
-  },
   graph: {
       flex: 2,
       backgroundColor: "black",
@@ -151,7 +142,6 @@ const styles = StyleSheet.create({
       width: "100%", 
       borderBottomColor: "white",
       borderWidth: 1,
-
   },
   navBar: {
       flex: 0,
