@@ -125,7 +125,7 @@ export default function ModalScreen({route, navigation}) {
         <Text style={{ color: "white", fontSize: 30, marginTop: 50, marginBottom: 5, fontWeight: 'bold'}}>{buyOrSell === 'Purchase' ? 'Buying' : 'Selling'} {stockData.ticker}</Text>
         <Text style={{ color: "grey", fontSize: 16 }}>Your buying power: ${balance}</Text>
         { portfolio[stockData.ticker] ? 
-          <Text style={{ color: "grey", fontSize: 16 }}>Already bought: {portfolio[stockData.ticker]}</Text> : null
+          <Text style={{ color: "grey", fontSize: 16 }}>Shares already owned: {portfolio[stockData.ticker]}</Text> : null
         } 
       </View>
 
@@ -174,6 +174,12 @@ export default function ModalScreen({route, navigation}) {
 		</View> 
         
 
+		<View style={{height: '10%', justifyContent: 'center'}}> 
+			{/* Displays error messages based on whether the user is buying or selling. */}
+			{buyOrSell === "Purchase" && qty * stockData.currPrice > balance && <Text style={{ color: "red", fontSize: 16 }}>Not enough balance.</Text>}
+			{buyOrSell === "Sell" && !portfolio[stockData.ticker] && <Text style={{ color: "red", fontSize: 16 }}>No stocks to sell.</Text>}
+			{buyOrSell === "Sell" && qty > portfolio[stockData.ticker] && <Text style={{ color: "red", fontSize: 16 }}>Not enough stocks to sell.</Text>}
+        </View>
         
 
         {/* Purchase and Cancel. */}
@@ -186,12 +192,6 @@ export default function ModalScreen({route, navigation}) {
         </TouchableOpacity>
 
 
-        {/* Displays error messages based on whether the user is buying or selling. */}
-        {qty!== 0 && <Text style={{ color: "white", fontSize: 16 }}>${stockData.currPrice} × {qty} = ${cost}</Text>}
-        {buyOrSell === "Purchase" && qty * stockData.currPrice > balance && <Text style={{ color: "red", fontSize: 16 }}>Not enough balance.</Text>}
-        {buyOrSell === "Sell" && !portfolio[stockData.ticker] && <Text style={{ color: "red", fontSize: 16 }}>No stocks to sell.</Text>}
-        {buyOrSell === "Sell" && qty > portfolio[stockData.ticker] && <Text style={{ color: "red", fontSize: 16 }}>Not enough stocks to sell.</Text>}
-        
         
         <TouchableOpacity style={Buttons.secondary} onPress={() => navigation.goBack()}> 
             <Text style={Buttons.buttontext}> Cancel </Text>
