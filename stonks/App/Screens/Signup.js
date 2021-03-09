@@ -48,6 +48,7 @@ export default function Signup({navigation}) {
           userDoc.set({
             balance: defaultBalance,
             portfolio: {},
+            transactions: [],
             username: username
           }, {merge: true})
         ]);

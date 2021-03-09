@@ -3,12 +3,14 @@ import { StyleSheet, Text, TextInput, View, TouchableOpacity, Dimensions, Keyboa
 import firebase from 'firebase';
 
 import Buttons from '../Styles/Buttons';
+// import { consolidateStreamedStyles } from 'styled-components';
 
 // Buy/Sell screen for a single stock, given by the route params.
 export default function ModalScreen({route, navigation}) {
   const [balance, setBalance] = useState(0);
   const [qty, setQty] = useState(0);
   const [portfolio, setPortfolio] = useState({});
+  const [transactions, setTransactions] = useState([]);
   const stockData = route.params.stockData;
   const buyOrSell = route.params.buyOrSell;
   
@@ -16,7 +18,7 @@ export default function ModalScreen({route, navigation}) {
     setQty(qty ? parseInt(qty) : 0);
   }
 
-  function handleBuySell() {
+  const handleBuySell = async() => {
     // 1. Add stock to portfolio if not there (only happens on buy)
     if (!portfolio[stockData.ticker]) {
       portfolio[stockData.ticker] = 0;
@@ -31,14 +33,18 @@ export default function ModalScreen({route, navigation}) {
       parseInt(qty) * parseInt(stockData.currPrice) : 
       -1 * parseInt(qty) * parseInt(stockData.currPrice);
     let new_balance = balance - total_cost;
-    
-    // 4. Update user's portfolio and balance in firebase.
+
+    // 4. Update user's transaction object or create if first transaction
+    let newTransaction = await updateTransaction(qtyChanged);
+
+    // 5. Update user's portfolio and balance in firebase.
     const user = firebase.auth().currentUser;  
     const userDoc = firebase.firestore().collection('users').doc(user.uid);
 
     userDoc.set({
       balance: new_balance,
       portfolio: portfolio,
+      transactions: newTransaction,
     }, {merge: true});
     
     // 5. Display message indicating purchased stocks and navigate to portfolio.
@@ -47,7 +53,36 @@ export default function ModalScreen({route, navigation}) {
     navigation.navigate('TabScreen');
   }
 
-  // Get username and balance from firebase
+  async function updateTransaction (qtyChanged) {
+    let updatedTransaction = transactions;
+
+    if (Object.keys(updatedTransaction).length === 0){
+      console.log("No transactions yet");
+      updatedTransaction = [{
+        portfolio: portfolio,
+        stock: stockData.ticker,
+        qtyChanged: qtyChanged,
+        price: stockData.currPrice,
+        buyOrSell: buyOrSell,
+        timestamp: Date.now(),
+      }];
+      console.log("First Transaction object: ", updatedTransaction);
+    }
+    else {
+      updatedTransaction.push({
+        portfolio: portfolio,
+        stock: stockData.ticker,
+        qtyChanged: qtyChanged,
+        price: stockData.currPrice,
+        buyOrSell: buyOrSell,
+        timestamp: Date.now(),
+      });
+      console.log("New Transaction object: ", updatedTransaction);
+    }
+    return updatedTransaction;
+  }
+
+  // Get username, balance, portfolio, and transactions from firebase
   useEffect(() => {
     const getUserData = async () => {
       const user = firebase.auth().currentUser;  // Not safe, but fine for now
@@ -57,6 +92,7 @@ export default function ModalScreen({route, navigation}) {
       
       setBalance(userData.balance);
       setPortfolio(userData.portfolio);
+      setTransactions(userData.transactions);
     }
     getUserData();
   }, []); 
@@ -93,7 +129,7 @@ export default function ModalScreen({route, navigation}) {
         {/* Purchase and Cancel. */}
         <TouchableOpacity 
           style={buyingDisabled || sellingDisabled ? Buttons.disabled : Buttons.button} 
-          disabled={buyingDisabled || sellingDisabled}  // TODO: CHECK THIS THERE WAS AN ERROR SO I JUST MADE DID AN OR  
+          disabled={buyingDisabled || sellingDisabled} 
           onPress={handleBuySell}
         > 
           <Text style={buyingDisabled ? Buttons.buttontextdisabled : Buttons.buttontext}> {buyOrSell}</Text>

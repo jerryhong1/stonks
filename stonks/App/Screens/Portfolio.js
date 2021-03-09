@@ -99,10 +99,10 @@ export default function Portfolio({navigation}) {
 
             {/* Your portfolio statistics */}
             <View style={styles.urPrtflio}> 
-                <Text style = {{color: "white", fontSize: 16}} >{`Your Portfolio`} </Text> 
-                <Text style = {{color: "white", fontSize: 24, marginTop: 5, fontWeight: 'bold'}} >Total Value of Assets: ${totalAssets} </Text> 
-                <Text style = {{color: "white", fontSize: 16, marginTop: 5}} >${balance} of buying power</Text>
+                <Text style = {{color: "white", fontSize: 16}} >{`Total Value of Assets`} </Text> 
+                <Text style = {{color: "white", fontSize: 32, marginTop: 5, fontWeight: 'bold'}} >${totalAssets} </Text> 
                 <Text style = {{color: "green", fontSize: 16, marginTop: 5}} >↗ $50.00 (5%) </Text>
+                <Text style = {{color: "white", fontSize: 16, marginTop: 5}} >${balance} of buying power</Text>
             </View>
             
             {/* Your stocks list TODO: feed in list from docs */}
