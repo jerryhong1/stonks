@@ -13,7 +13,7 @@ function EmptyState({navigation}) {
         <TouchableOpacity style={Buttons.smallButton}
             onPress={() => navigation.navigate('Search')}
         >
-            <Text style={Buttons.buttontext}> Buy stocks</Text>
+            <Text style={Buttons.buttontext}> Buy tocks</Text>
         </TouchableOpacity>
     </>
     )
@@ -25,6 +25,7 @@ export default function Portfolio({navigation}) {
     const [balance, setBalance] = useState(0);
     const [portfolio, setPortfolio] = useState({});
     const [stockList, setStockList] = useState([]);
+    const [changeInAssets, setChangeInAssets] = useState(0);
     
     const reloadUserData = async () => {
         try {
@@ -86,6 +87,7 @@ export default function Portfolio({navigation}) {
           } 
         );
         setTotalAssets(stockAssets + balance);
+        setChangeInAssets(stockAssets + balance - 1000);
       }
     }, [balance, portfolio])
     
@@ -101,7 +103,9 @@ export default function Portfolio({navigation}) {
             <View style={styles.urPrtflio}> 
                 <Text style = {{color: "white", fontSize: 16}} >{`Total Value of Assets`} </Text> 
                 <Text style = {{color: "white", fontSize: 32, marginTop: 5, fontWeight: 'bold'}} >${totalAssets} </Text> 
-                <Text style = {{color: "green", fontSize: 16, marginTop: 5}} >↗ $50.00 (5%) </Text>
+                <Text style = {{color: changeInAssets < 0? "red" : "green", fontSize: 16, marginTop: 5}} >
+                  {changeInAssets < 0? "↘" : "↗"} ${Math.abs(changeInAssets)} ({100*(changeInAssets/totalAssets)}%) 
+                </Text>
                 <Text style = {{color: "white", fontSize: 16, marginTop: 5}} >${balance} of buying power</Text>
             </View>
             

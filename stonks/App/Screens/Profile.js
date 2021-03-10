@@ -113,11 +113,13 @@ export default function Profile({navigation}) {
         <View style={styles.profileAndName}>
             <View>
                 <TouchableHighlight onPress={selectImage}>
+                    <View> 
                     <Image
                         source={propic? {uri: propic} : require('../../imgs/profile.png')}
                         style={styles.propic}
                     />
-                    
+                    <Text style={{color: 'white'}}>Change Profile Picture</Text>
+                    </View> 
                  </TouchableHighlight>
             </View>
             <View style={styles.username}> 
