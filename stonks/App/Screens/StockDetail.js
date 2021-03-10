@@ -4,6 +4,9 @@ import { StyleSheet, Text, View, Dimensions, TouchableOpacity, Button } from 're
 import { StatusBar } from 'expo-status-bar';
 import firebase from 'firebase';
 import Svg, {Line} from 'react-native-svg';
+import DropDownPicker from 'react-native-dropdown-picker';
+import Icon from 'react-native-vector-icons/Feather';
+
 
 import Buttons from '../Styles/Buttons';
 
@@ -64,7 +67,9 @@ export default function DetailsScreen({route, navigation}) {
   const stockData = route.params.data;
   const buy = "Purchase";
   const sell = "Sell";
-  const [chartFormat, setChartFormat] = useState("line");   
+  const [chartFormat, setChartFormat] = useState("line"); 
+  
+  
 
   // Get stock data for a particular stock from firebase //TODO: Once StockList pulls from firebase, should this still write to firebase?
   useEffect(() => {
@@ -140,36 +145,44 @@ export default function DetailsScreen({route, navigation}) {
         {chartFormat == "line"? createLineGraph() : createCandlestickGraph()}
       </View>
 
-       {/* Info about the stock */}
+       {/* Middle section */}
        <View style={styles.stockInfo}>
+
+         {/* Stock Info */}
          <View>
             <Text style = {{color: "white", fontSize: 16}} >
               <Text style = {{fontWeight: "bold"}}>{stockData.ticker} </Text>
             • {stockData.company}</Text>
             <Text style = {{color: "white", fontSize: 30, marginTop: 4}} >{'$' + stockData.currPrice}</Text>
          </View>
-         <View style={styles.buySell}>
-            <View>
-              <TouchableOpacity style={Buttons.smallButton}
-                onPress={() => navigation.navigate('BuySell', {
+          {/* Drop down picker */}
+          <View style={{width: '28%'}}>
+            <DropDownPicker 
+              items={[
+                  {label: 'Buy', value: 'buy' },
+                  {label: 'Sell', value: 'sell' },
+              ]}
+              placeholder="+ Trade"
+              containerStyle={{height: 40, width: '100%'}}
+              style={{backgroundColor: '#1EDD4E'}}
+              itemStyle={styles.pickerStyle}
+              dropDownStyle={{backgroundColor: 'black'}}
+              globalTextStyle={{
+                color: 'white',
+              }}
+              onChangeItem={item => {
+                navigation.navigate('BuySell', {
                   stockData: stockData,
-                  buyOrSell: buy,
-                })}
-              >
-                <Text style={Buttons.buttontext}>Buy</Text>
-              </TouchableOpacity>
-            </View>
-            <View>
-              <TouchableOpacity style={Buttons.smallButton}
-                onPress={() => navigation.navigate('BuySell', {
-                  stockData: stockData,
-                  buyOrSell: sell,
-                })}
-              >
-                <Text style={Buttons.buttontext}>Sell</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+                  buyOrSell: item.value === 'sell' ? sell : buy,
+                })
+              }}
+              arrowColor='white'
+            />
+          </View>   
+
+          
+          
+
       </View>
 
       {/* News and Description  */}
@@ -179,6 +192,8 @@ export default function DetailsScreen({route, navigation}) {
           <Text style={{color: "white", fontSize: 16, marginVertical: 8, marginHorizontal: 12}}>News</Text>
           <Text style={{color: "white", fontSize: 12, marginBottom: 8, marginHorizontal: 12}}>Articles will appear here</Text>
       </View>
+
+      
       <StatusBar />
     </View>
   );
@@ -193,6 +208,7 @@ const styles = StyleSheet.create({
     alignContent: "space-between",
     flexDirection: 'column',
     width: Dimensions.get('window').width,
+    height: '100%'
   },
   button: {
     alignItems: 'flex-end',
@@ -207,15 +223,15 @@ const styles = StyleSheet.create({
       borderWidth: 1,
   },
   stockInfo: {
-      flex: 2,
+      flex: 1,
       padding: 12,
+      paddingBottom: 0,
       backgroundColor: "black",
       width: "100%",
-      borderBottomColor: "white",
-      borderWidth: 1,
       alignItems: "flex-start",
-      flexDirection: "column",
-      justifyContent: "center",
+      flexDirection: "row",
+      justifyContent: "space-between",
+      zIndex: 100
   },
   stocks: {
       flex: 4,
@@ -226,6 +242,11 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     marginTop: 4,
+  },
+  // super confusing how all the styles overlap in the picker so please edit lol
+  pickerStyle: {
+    backgroundColor: 'black',
+    justifyContent: 'flex-start'
   }
 });
 
