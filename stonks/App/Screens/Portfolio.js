@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TextInput, SafeAreaView, Dimensions, TouchableO
 import firebase from 'firebase';
 
 import { SafeAreaContainer } from "../Styles/container";
-import { Buttons, StonksButton } from "../Styles/Buttons";
+import { StonksButton } from "../Styles/Buttons";
 import { colors } from '../Styles/theme';
 import * as T from '../Styles/text';
 
@@ -12,14 +12,13 @@ import StockList, { fullStockDict }  from "../Components/StockList";
 
 function EmptyState({navigation}) {
     return (
-    <>
-        <Text style={{textAlign: "center", color: "white", fontSize: 20, marginTop: 24, marginBottom: 8}}>No stocks yet.</Text>
-        {/* <StonksButton
+    <View style={{marginTop: 24}}>
+        <T.H2 style={{textAlign: "center", marginBottom: 8}}>No stocks yet.</T.H2>
+        <StonksButton 
             onPress={() => navigation.navigate('Search')}
-            variant={"secondary"}
             text={"Buy Stocks"}
-        /> */}
-    </>
+        />
+    </View>
     )
 }
 
@@ -104,8 +103,8 @@ export default function Portfolio({navigation}) {
             <View style={styles.urPrtflio}> 
                 <T.H4>{`Total Value of Assets`}</T.H4> 
                 <T.H1>${totalAssets} </T.H1> 
-                <T.Body1 style = {{color: colors.GREEN}} >↗ $50.00 (5%) </T.Body1>
-                <T.Body1 style = {{marginTop: 4}} >${balance} of buying power</T.Body1>
+                <T.P style = {{color: colors.GREEN}} >↗ $50.00 (5%) </T.P>
+                <T.P style = {{marginTop: 4}} >${balance} of buying power</T.P>
             </View>
             
             {/* Your stocks list TODO: feed in list from docs */}

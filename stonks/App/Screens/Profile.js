@@ -4,8 +4,9 @@ import * as ImagePicker from 'expo-image-picker';
 
 import firebase from 'firebase';
 
-import Buttons from '../Styles/Buttons';
-import { Ionicons } from '@expo/vector-icons';
+import { StonksIconButton } from '../Styles/Buttons';
+import StockList from '../Components/TransactionList'
+import * as T from '../Styles/text'
 
 export default function Profile({navigation}) {
     const [name, setName] = useState('');
@@ -63,51 +64,6 @@ export default function Profile({navigation}) {
 
     }, []);
 
-    function getList() {
-        let allTransactions = transactions;
-
-        const transactionList = [];
-        for (let i = 0; i < allTransactions.length; i++){
-          let curTransaction = allTransactions[i];
-
-          if (curTransaction) {
-            let boughtOrSold = curTransaction["buyOrSell"] === "Purchase"? "Buy" : "Sale";
-            let posOrNeg = curTransaction["qtyChanged"] > 0 ? "+" : "-";
-            let date = new Date(curTransaction["timestamp"])
-            transactionList[i] = (
-                <View key={i} style={styles.transactions}> 
-                    <View style={{flex: '1'}}>
-                        <Text style={styles.transactionTextLeft}> 
-                            {curTransaction["stock"] + " " + boughtOrSold + "\n"}
-                            <Text style={{color: 'grey'}}> 
-                                {Math.abs(curTransaction["qtyChanged"]) + " share(s) \t " + date.toLocaleDateString()} 
-                            </Text>
-                        </Text>
-                    </View>
-                    <View>
-                        <Text style={styles.transactionTextRight}>
-                            {posOrNeg + "$" + curTransaction["price"] * Math.abs(curTransaction["qtyChanged"])}
-                        </Text>
-                    </View>
-                </View>
-            );
-          }
-        }
-        
-        let retVal = (
-          <Text> There are no transactions.</Text>
-        );
-        
-        if (transactionList.length > 0){
-          retVal = (
-            <View >
-              <View>{transactionList}</View>
-            </View>
-          );
-        }
-        return retVal;
-    }
-
     return (
         <SafeAreaView style={styles.container}>
         <View style={styles.profileAndName}>
@@ -117,36 +73,32 @@ export default function Profile({navigation}) {
                         source={propic? {uri: propic} : require('../../imgs/profile.png')}
                         style={styles.propic}
                     />
-                    
                  </TouchableHighlight>
             </View>
-            <View style={styles.username}> 
-                <Text style = {{color: 'white', fontSize: 24, marginBottom: 8, fontWeight:'500'}}>{name}</Text>
-                <Text style = {{color: 'grey', fontSize: 18,marginBottom: 8}}>{username}</Text>
+            <View style={styles.accountInfo}> 
+                <T.H2>{name}</T.H2>
+                <T.H3 style = {{color: 'grey'}}>{username}</T.H3>
+                
+                <StonksIconButton 
+                    style={{backgroundColor: 'red', marginTop: 12, marginBottom: 12}}
+                    onPress={() => {
+                        firebase.auth().signOut()
+                        .then(() => navigation.navigate('Login'))
+                        .catch(console.err);
+                    }}
+                    width={120}
+                    iconName={'exit-outline'}
+                    text={"Sign out"}
+                />
             </View>        
         </View>
-        <View style={styles.profileInfo}> 
-            <Text style = {{color: 'white', fontSize: 18, marginBottom: 8, fontWeight: '500'}}>Your balance</Text>
-            <Text style = {{color: 'white', fontSize: 40, marginBottom: 20}}>${balance}</Text>
-            {transactions ? 
-            <View style={styles.transactionList}> 
-                <Text style={styles.transactionHistory}>Transaction History</Text>
-                {getList()}
-            </View> 
-            : null }
+        <View style={styles.transactionsAndBalance}> 
+            <T.H3>Your balance</T.H3>
+            <T.H0 style={{marginBottom: 16}}>${balance}</T.H0>
+            {transactions ? <View style={styles.transactionList}>
+                <StockList transactions={transactions}/>
+            </View> : null}
         </View> 
-        <TouchableOpacity style={{...Buttons.smallButton, backgroundColor: 'red', marginTop: 24, marginBottom: 24, width: 120, alignSelf: 'center'}}
-            onPress={() => {
-                firebase.auth().signOut()
-                .then(() => navigation.navigate('Login'))
-                .catch(console.err);
-            }}
-        >
-            <View style={{flexDirection: 'row', alignItems: 'center'}} > 
-                <Ionicons name='exit-outline' size={24} color='white' style={{marginRight: 10}} />
-                <Text style={Buttons.buttontext}>Sign out</Text>
-            </View>
-        </TouchableOpacity>
         </SafeAreaView>
     );
 }
@@ -160,64 +112,33 @@ const styles = StyleSheet.create({
         width: '100%'
     },
     profileAndName: {
+        paddingTop: 16,
         flexDirection: 'row',
-        flex: 1,
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'flex-start'
     },
     propic: {
         height: undefined,
-        width: 100,
+        width: 120,
         marginLeft: 16,
         aspectRatio: 1,
-        borderRadius: 50,
-        marginBottom: 16,
+        borderRadius: 100,
+        marginBottom: 24,
     },
-    username: {
-        marginLeft: 30,
-        marginTop: -30,
+    accountInfo: {
+        marginLeft: 24,
     },
-    profileInfo: {
+    transactionsAndBalance: {
         flex: 2,
         marginLeft: 16,
         marginRight: 16,
         color: 'white',
         alignItems: 'flex-start',
     },
-    transactionHistory: {
-        borderWidth: 1,
-        borderStyle: 'solid',
-        color: 'white', 
-        fontSize: 18, 
-        marginBottom: 12,
-        fontWeight: '500',
-    },
-    transactions: {
-        width: '100%',
-        borderTopColor: 'grey',
-        borderBottomColor: 'grey',
-        borderWidth: 0.3,
-        flexDirection: 'row',
-        alignContent: 'space-between',
-        alignItems: 'center',
-        paddingVertical: 8,
-    },
-    transactionTextLeft: {
-        color: 'white',
-        width: '100%',
-        paddingHorizontal: 16,
-        marginBottom: 5,
-        lineHeight: 20,
-        fontSize: 14,
-    },
-    transactionTextRight: {
-        color: 'white',
-        fontSize: 16,
-        fontWeight: 'bold',
-        marginRight: 12
-    },
     transactionList: {
-        flexDirection: 'column',
+        flex: 3,
         width: '100%',
+        borderTopColor: 'white',
+        borderWidth: 1
     }
 });
