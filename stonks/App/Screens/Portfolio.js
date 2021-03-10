@@ -2,8 +2,11 @@ import React, {useEffect, useState} from 'react';
 import { StyleSheet, Text, View, TextInput, SafeAreaView, Dimensions, TouchableOpacity, Image, FlatList} from 'react-native';
 import firebase from 'firebase';
 
-import Buttons from "../Styles/Buttons";
-import * as S from "../Styles/main";
+import { SafeAreaContainer } from "../Styles/container";
+import { Buttons, StonksButton } from "../Styles/Buttons";
+import { colors } from '../Styles/theme';
+import * as T from '../Styles/text';
+
 import StockList, { fullStockDict }  from "../Components/StockList";
 
 
@@ -11,11 +14,11 @@ function EmptyState({navigation}) {
     return (
     <>
         <Text style={{textAlign: "center", color: "white", fontSize: 20, marginTop: 24, marginBottom: 8}}>No stocks yet.</Text>
-        <TouchableOpacity style={Buttons.smallButton}
+        {/* <StonksButton
             onPress={() => navigation.navigate('Search')}
-        >
-            <Text style={Buttons.buttontext}> Buy stocks</Text>
-        </TouchableOpacity>
+            variant={"secondary"}
+            text={"Buy Stocks"}
+        /> */}
     </>
     )
 }
@@ -91,7 +94,7 @@ export default function Portfolio({navigation}) {
     }, [balance, portfolio])
     
     return (
-        <S.SafeAreaContainer>
+        <SafeAreaContainer>
             {/* graph view */}
             <View style={styles.graph}> 
                 <Image source={require('../../imgs/stonksGoUp.png')}/>
@@ -99,10 +102,10 @@ export default function Portfolio({navigation}) {
 
             {/* Your portfolio statistics */}
             <View style={styles.urPrtflio}> 
-                <S.H4>{`Total Value of Assets`}</S.H4> 
-                <S.H1>${totalAssets} </S.H1> 
-                <S.Body1 style = {{color: "#`1EDD4E"}} >↗ $50.00 (5%) </S.Body1>
-                <S.Body1 style = {{marginTop: 4}} >${balance} of buying power</S.Body1>
+                <T.H4>{`Total Value of Assets`}</T.H4> 
+                <T.H1>${totalAssets} </T.H1> 
+                <T.Body1 style = {{color: colors.GREEN}} >↗ $50.00 (5%) </T.Body1>
+                <T.Body1 style = {{marginTop: 4}} >${balance} of buying power</T.Body1>
             </View>
             
             {/* Your stocks list TODO: feed in list from docs */}
@@ -113,7 +116,7 @@ export default function Portfolio({navigation}) {
                 <EmptyState navigation={navigation} />
                 }
             </View>
-        </S.SafeAreaContainer>
+        </SafeAreaContainer>
     );
 }
 

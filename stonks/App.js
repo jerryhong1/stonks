@@ -13,11 +13,20 @@ import TabScreen from './App/Screens/TabScreen';
 import StockDetail from './App/Screens/StockDetail';
 import BuySellModal from './App/Screens/BuySell';
 
-const RootStack = createStackNavigator();
+// const RootStack = createStackNavigator();
 const MainStack = createStackNavigator();
 
-function MainStackApp() {
+// function MainStackApp() {
+//   return (
+    
+//   );
+// }
+
+
+
+function App() {
   return (
+    <NavigationContainer>
     <MainStack.Navigator initialRouteName='Home'>
       <MainStack.Screen name='Home' component={HomeScreen} options={{ headerShown: false }}/>
       <MainStack.Screen name='Welcome' component={Welcome}  options={{ headerShown: false }}/>
@@ -28,21 +37,6 @@ function MainStackApp() {
       <MainStack.Screen name='StockDetail' component={StockDetail} />
       <MainStack.Screen name="BuySell" component={BuySellModal} options={{ headerShown: false }} mode="modal"/>
     </MainStack.Navigator>
-  );
-}
-
-
-
-function App() {
-  return (
-    <NavigationContainer>
-      <RootStack.Navigator>
-        <RootStack.Screen
-          name="Main"
-          component={MainStackApp}
-          options={{ headerShown: false }}
-        />
-      </RootStack.Navigator>
     </NavigationContainer>
   );
 }
