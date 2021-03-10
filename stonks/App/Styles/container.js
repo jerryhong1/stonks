@@ -1,6 +1,6 @@
 import styled from 'styled-components/native';
 import { Dimensions } from 'react-native';
-import { colors } from  './theme'
+import { colors } from  './colors'
 
 // styled views that represent the app screen "container"
 export const Container = styled.View`

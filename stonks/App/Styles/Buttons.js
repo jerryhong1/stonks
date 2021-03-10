@@ -1,12 +1,12 @@
 import React from 'react';
 import { Dimensions, View } from 'react-native';
-import { colors } from './theme'
+import { colors } from './colors'
 import styled from 'styled-components/native'
 import { Ionicons } from '@expo/vector-icons';
 
 
 export const StonksTouchable = styled.TouchableOpacity`
-  backgroundColor: ${props => props.variant === "secondary" ? "#000" : colors.GREEN};
+  backgroundColor: ${props => props.variant === "secondary" ? "#000" : props.disabled ? colors.GREEN + '66' : colors.GREEN};
   fontSize: 40px;
   color: ${props => props.variant === "secondary" ? "#000" : colors.GREEN};
   width: ${props => props.width || Dimensions.get('window').width * .6};

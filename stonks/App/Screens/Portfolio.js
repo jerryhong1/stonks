@@ -4,7 +4,7 @@ import firebase from 'firebase';
 
 import { SafeAreaContainer } from "../Styles/container";
 import { StonksButton } from "../Styles/Buttons";
-import { colors } from '../Styles/theme';
+import { colors } from '../Styles/colors';
 import * as T from '../Styles/text';
 
 import StockList, { fullStockDict }  from "../Components/StockList";
