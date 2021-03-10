@@ -223,15 +223,15 @@ const styles = StyleSheet.create({
       borderWidth: 1,
   },
   stockInfo: {
-      flex: 2,
+      flex: 1,
       padding: 12,
+      paddingBottom: 0,
       backgroundColor: "black",
       width: "100%",
-      borderBottomColor: "white",
-      borderWidth: 1,
       alignItems: "flex-start",
       flexDirection: "row",
       justifyContent: "space-between",
+      zIndex: 100
   },
   stocks: {
       flex: 4,
