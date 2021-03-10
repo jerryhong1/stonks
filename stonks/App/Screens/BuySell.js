@@ -4,16 +4,17 @@ import firebase from 'firebase';
 
 import Buttons from '../Styles/Buttons';
 // import { consolidateStreamedStyles } from 'styled-components';
-
+ 
 // Buy/Sell screen for a single stock, given by the route params.
 export default function ModalScreen({route, navigation}) {
   const [balance, setBalance] = useState(0);
   const [qty, setQty] = useState(0);
   const [portfolio, setPortfolio] = useState({});
+  const [marketPrice, setMarketPrice] = useState(0);
   const [transactions, setTransactions] = useState([]);
   const stockData = route.params.stockData;
   const buyOrSell = route.params.buyOrSell;
-  
+
   function handleQty(qty) {
     setQty(qty ? parseInt(qty) : 0);
   }
@@ -94,7 +95,22 @@ export default function ModalScreen({route, navigation}) {
       setPortfolio(userData.portfolio);
       setTransactions(userData.transactions);
     }
-    getUserData();
+	getUserData();
+	
+	// TODO: NONE OF THIS IS USED. Do we want to get the currPrice from props, or do we want to reload it here?
+	// get market price of current stock being transacted upon
+	const getStockValue = async () => {
+		// console.log("Ticker ", stockData.ticker);
+		const stock = stockData.ticker; 
+		const stockDoc = firebase.firestore().collection('stocks').doc(stock);
+		const stockSnapshot = await stockDoc.get();
+		const stockDataFirebase = stockSnapshot.data();
+		const stockValues = stockDataFirebase.results;
+		const lastPrice = stockValues[stockValues.length - 1].vw;
+		// console.log("CURR STOCK ", stockDataFirebase);
+		setMarketPrice(lastPrice);
+	}
+	getStockValue();
   }, []); 
   
   const cost = qty * stockData.currPrice;
@@ -106,26 +122,66 @@ export default function ModalScreen({route, navigation}) {
   return (
     <KeyboardAvoidingView style={styles.container}>
       <View style={styles.header}>
-        <Text style={{ color: "white", fontSize: 30, marginTop: 50}}>{stockData.ticker}</Text>
-        <Text style={{ color: "white", fontSize: 16 }}>Buying power: ${balance}</Text>
+        <Text style={{ color: "white", fontSize: 30, marginTop: 50, marginBottom: 5, fontWeight: 'bold'}}>{buyOrSell === 'Purchase' ? 'Buying' : 'Selling'} {stockData.ticker}</Text>
+        <Text style={{ color: "grey", fontSize: 16 }}>Your buying power: ${balance}</Text>
         { portfolio[stockData.ticker] ? 
-          <Text style={{ color: "white", fontSize: 16 }}>Already bought: {portfolio[stockData.ticker]}</Text> : null
+          <Text style={{ color: "grey", fontSize: 16 }}>Shares already owned: {portfolio[stockData.ticker]}</Text> : null
         } 
       </View>
+
       <View style={styles.content}>
-        <TextInput
-          style={styles.inputField}
-          placeholder={'Quantity to ' + buyOrSell}
-          keyboardType='number-pad'
-          placeholderTextColor='grey'
-          onChangeText = {handleQty}
-        />
-        {/* Displays error messages based on whether the user is buying or selling. */}
-        {qty!== 0 && <Text style={{ color: "white", fontSize: 16 }}>${stockData.currPrice} × {qty} = ${cost}</Text>}
-        {buyOrSell === "Purchase" && qty * stockData.currPrice > balance && <Text style={{ color: "red", fontSize: 16 }}>Not enough balance.</Text>}
-        {buyOrSell === "Sell" && !portfolio[stockData.ticker] && <Text style={{ color: "red", fontSize: 16 }}>No stocks to sell.</Text>}
-        {buyOrSell === "Sell" && qty > portfolio[stockData.ticker] && <Text style={{ color: "red", fontSize: 16 }}>Not enough stocks to sell.</Text>}
+
+	  {/* Shares to Purchase */}
+		<View style={styles.row}> 
+			<View style={styles.leftLabel}> 
+				<Text style={styles.labelText}> # of Shares to {buyOrSell} </Text> 
+			</View> 
+
+			<View style={styles.righthandView}> 
+				<TextInput
+					style={styles.inputField}
+					placeholder='Type # here'
+					keyboardType='number-pad'
+					placeholderTextColor='grey'
+					onChangeText = {handleQty}
+					color='white'
+					fontSize={18}
+				/>
+			</View>
+		</View> 
+
+		{/* Curr Market Price */}
+		<View style={styles.row}> 
+			<View style={styles.leftLabel}> 
+				<Text style={styles.labelText}> Current Market Price </Text> 
+			</View>
+
+			<View style={styles.righthandView}> 
+				<Text style={styles.labelText}>${stockData.currPrice} </Text> 
+			</View>
+		</View> 
+
+		{/* Estimated Cost */}
+		<View style={styles.row}> 
+			<View style={styles.leftLabel}> 
+				<Text style={styles.labelText}> Estimated Cost </Text> 
+			</View>
+
+			<View style={styles.righthandView}> 
+				{qty!== 0 && <Text style={styles.labelText}>${cost}</Text>}
+				{qty=== 0 && <Text style={styles.defaultEstCost}>${cost}</Text>}
+			</View>
+		</View> 
         
+
+		<View style={{height: '10%', justifyContent: 'center'}}> 
+			{/* Displays error messages based on whether the user is buying or selling. */}
+			{buyOrSell === "Purchase" && qty * stockData.currPrice > balance && <Text style={{ color: "red", fontSize: 16 }}>Not enough balance.</Text>}
+			{buyOrSell === "Sell" && !portfolio[stockData.ticker] && <Text style={{ color: "red", fontSize: 16 }}>No stocks to sell.</Text>}
+			{buyOrSell === "Sell" && qty > portfolio[stockData.ticker] && <Text style={{ color: "red", fontSize: 16 }}>Not enough stocks to sell.</Text>}
+        </View>
+        
+
         {/* Purchase and Cancel. */}
         <TouchableOpacity 
           style={buyingDisabled || sellingDisabled ? Buttons.disabled : Buttons.button} 
@@ -134,6 +190,8 @@ export default function ModalScreen({route, navigation}) {
         > 
           <Text style={buyingDisabled ? Buttons.buttontextdisabled : Buttons.buttontext}> {buyOrSell}</Text>
         </TouchableOpacity>
+
+
         
         <TouchableOpacity style={Buttons.secondary} onPress={() => navigation.goBack()}> 
             <Text style={Buttons.buttontext}> Cancel </Text>
@@ -163,11 +221,37 @@ const styles = StyleSheet.create({
     flex: 8,
     alignItems: "center"
   },
-  inputField: {
-    backgroundColor: 'white',
-    width: Dimensions.get('window').width * .6,
-    borderRadius: 10,
-    padding: 10,
-    margin: 5
+//   inputField: {
+// 	width: '100%',
+//   },
+  row: {
+	flexDirection: 'row',
+	// alignContent: 'center',
+	alignItems: 'center',
+	padding: 2,
+	margin: 4,
+	height: '5%',
+	// backgroundColor: 'pink',
+	width: Dimensions.get('window').width * .9,
+	borderTopColor: 'white',
+	// borderBottomColor: 'white',
+	borderWidth: 1,
+  },
+  leftLabel: {
+	width: '70%',
+	// backgroundColor: 'pink'
+  },
+  righthandView: {
+	width: '30%',
+	alignItems: 'flex-end',
+	// backgroundColor: 'blue',
+  },
+  labelText: {
+	color: 'white', 
+	fontSize: 18
+  },
+  defaultEstCost: {
+	color: 'grey', 
+	fontSize: 18
   },
 })
