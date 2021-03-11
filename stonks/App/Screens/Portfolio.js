@@ -13,7 +13,7 @@ function EmptyState({navigation}) {
         <TouchableOpacity style={Buttons.smallButton}
             onPress={() => navigation.navigate('Search')}
         >
-            <Text style={Buttons.buttontext}> Buy tocks</Text>
+            <Text style={Buttons.buttontext}> Buy Stocks</Text>
         </TouchableOpacity>
     </>
     )
@@ -23,6 +23,7 @@ export default function Portfolio({navigation}) {
     // total assets = balance (aka "buying power") + calculated from stock
     const [totalAssets, setTotalAssets] = useState(0);
     const [balance, setBalance] = useState(0);
+    const [startingBalance, setStartingBalance] = useState(0);
     const [portfolio, setPortfolio] = useState({});
     const [stockList, setStockList] = useState([]);
     const [changeInAssets, setChangeInAssets] = useState(0);
@@ -34,7 +35,7 @@ export default function Portfolio({navigation}) {
             const userSnapshot = await userDoc.get();
             const userData = userSnapshot.data();
             // console.log("User Data", userData);
-
+            setStartingBalance(userData.startingBalance);
             setBalance(userData.balance);
             setPortfolio(userData.portfolio);
         } catch (error) {
@@ -87,7 +88,7 @@ export default function Portfolio({navigation}) {
           } 
         );
         setTotalAssets(stockAssets + balance);
-        setChangeInAssets(stockAssets + balance - 1000);
+        setChangeInAssets(stockAssets + balance - startingBalance);
       }
     }, [balance, portfolio])
     

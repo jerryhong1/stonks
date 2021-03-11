@@ -49,7 +49,8 @@ export default function Signup({navigation}) {
             balance: defaultBalance,
             portfolio: {},
             transactions: [],
-            username: username
+            username: username,
+            startingBalance: defaultBalance,
           }, {merge: true})
         ]);
       })
