@@ -165,6 +165,7 @@ export default function DetailsScreen({route, navigation}) {
     return (
       <View>
         {articles.length > 0 && getArticleList()}
+        {articles.length ==0 && <Text style={{color: 'white', margin: 10}}> No top headlines to display for this stock. </Text>}
       </View>
     );
   }

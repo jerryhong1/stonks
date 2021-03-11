@@ -1,5 +1,5 @@
 import React, { useEffect, useState} from 'react';
-import { StyleSheet, Text, View, SafeAreaView, TouchableHighlight, TouchableOpacity, Image } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, SafeAreaView, TouchableHighlight, TouchableOpacity, Image } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import firebase from 'firebase';
 import {timeSince, formatMoney} from '../Lib/Utils';
@@ -85,7 +85,7 @@ export default function Profile({navigation}) {
                     </View>
                     <View>
                         <Text style={styles.transactionTextRight}>
-                            {formatMoney(curTransaction["price"] * Math.abs(curTransaction["qtyChanged"]))}
+                            {formatMoney(curTransaction["price"] * curTransaction["qtyChanged"])}
                         </Text>
                     </View>
                 </View>
@@ -100,7 +100,7 @@ export default function Profile({navigation}) {
         if (transactionList.length > 0){
           retVal = (
             <View >
-              <View>{transactionList}</View>
+              <ScrollView>{transactionList}</ScrollView>
             </View>
           );
         }
@@ -184,10 +184,10 @@ const styles = StyleSheet.create({
         marginRight: 16,
         color: 'white',
         alignItems: 'flex-start',
+        borderBottomWidth: 1,
+        borderBottomColor: 'white',
     },
     transactionHistory: {
-        borderWidth: 1,
-        borderStyle: 'solid',
         color: 'white', 
         fontSize: 18, 
         marginBottom: 12,
@@ -220,5 +220,6 @@ const styles = StyleSheet.create({
     transactionList: {
         flexDirection: 'column',
         width: '100%',
+        height: 320,
     }
 });
