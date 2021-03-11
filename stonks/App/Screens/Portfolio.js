@@ -99,6 +99,11 @@ export default function Portfolio({navigation}) {
             <View style={styles.graph}> 
                 <Image source={require('../../imgs/stonksGoUp.png')}/>
             </View>
+            <TouchableOpacity style={styles.education}
+              onPress={() => navigation.navigate('Education')}
+            >
+              <Text style={styles.title}>Would you like to learn more about the stock market before you start trading? </Text>
+            </TouchableOpacity>
 
             {/* Your portfolio statistics */}
             <View style={styles.urPrtflio}> 
@@ -138,6 +143,19 @@ const styles = StyleSheet.create({
       width: "100%", 
       borderBottomColor: "white",
       borderWidth: 1,
+  },
+  title: {
+    color: 'white',
+    fontSize: 24,
+    margin: 20,
+    textAlign: 'left',
+  },
+  education: {
+    width: "90%",
+    backgroundColor: '#05ad6d',
+    borderRadius: 5,
+    margin: 20,
+    height: 130,
   },
   urPrtflio: {
       padding: 16,

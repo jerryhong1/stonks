@@ -12,6 +12,7 @@ import LoginPage from './App/Screens/LoginPage';
 import TabScreen from './App/Screens/TabScreen';
 import StockDetail from './App/Screens/StockDetail';
 import BuySellModal from './App/Screens/BuySell';
+import Education from './App/Screens/Education';
 
 const RootStack = createStackNavigator();
 const MainStack = createStackNavigator();
@@ -27,6 +28,7 @@ function MainStackApp() {
       <MainStack.Screen name='TabScreen' component={TabScreen}  options={{ headerShown: false, gestureEnabled: false}}/> 
       <MainStack.Screen name='StockDetail' component={StockDetail} />
       <MainStack.Screen name="BuySell" component={BuySellModal} options={{ headerShown: false }} mode="modal"/>
+      <MainStack.Screen name="Education" component={Education} />
     </MainStack.Navigator>
   );
 }
