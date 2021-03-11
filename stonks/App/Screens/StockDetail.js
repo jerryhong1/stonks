@@ -1,11 +1,12 @@
 import React, { useEffect, useState, setState}  from 'react';
 import { VictoryGroup, VictoryLine, VictoryTheme, VictoryVoronoiContainer, VictoryTooltip, VictoryCandlestick } from "victory-native";
-import { StyleSheet, Text, View, Dimensions, Button } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, Dimensions, Button, Linking } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { formatMoney } from '../Lib/Utils';
 import firebase from 'firebase';
 import Svg, {Line} from 'react-native-svg';
 import DropDownPicker from 'react-native-dropdown-picker';
+import { getArticles } from "./News";
 
 
 function formatAMPM(date) {
@@ -66,9 +67,8 @@ export default function DetailsScreen({route, navigation}) {
   const buy = "Purchase";
   const sell = "Sell";
   const [chartFormat, setChartFormat] = useState("line"); 
+  const [articles, setArticles] = useState([]);
   
-  
-
   // Get stock data for a particular stock from firebase //TODO: Once StockList pulls from firebase, should this still write to firebase?
   useEffect(() => {
     const getStockData = async () => {
@@ -80,6 +80,9 @@ export default function DetailsScreen({route, navigation}) {
       setLineChartData(formatLineChartData(stockDataFirebase.results));
       setCandlestickChartData(formatCandlestickChartData(stockDataFirebase.results));
       setStockDesc(stockDataFirebase.description);
+
+      const response = await getArticles(stockData.company);
+      setArticles(response.articles);
 
       //if you want to write some data uncomment below and:
       // change stockdata to the data you want to upload
@@ -125,7 +128,46 @@ export default function DetailsScreen({route, navigation}) {
       />
 
     );
-}
+  }
+
+  function getArticleList(){
+    const articleList = [];
+
+    for (let i = 0; i < articles.length; i++) {
+      let link = articles[i].url;
+      let sourceName = articles[i].source.name;
+      articleList[i] = (
+        <View key={i} style={styles.articles}>
+          <View style={{flex: '1'}}> 
+            <Text style={styles.articleTitle}>
+              {articles[i].title}
+            </Text>
+            <Text style={styles.articleText}>
+              {articles[i].description}
+            </Text>
+            <Text style={{color: '#0645AD'}} onPress={() => Linking.openURL(link)}>
+              {sourceName}
+            </Text>
+          </View>
+        </View>
+      );
+    }
+
+    return (
+      <ScrollView>
+        {articleList}
+      </ScrollView>
+    );
+  };
+
+  function displayArticles() {
+    console.log("Articles: ", articles);
+    return (
+      <View>
+        {articles.length > 0 && getArticleList()}
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -177,18 +219,14 @@ export default function DetailsScreen({route, navigation}) {
               arrowColor='white'
             />
           </View>   
-
-          
-          
-
       </View>
 
       {/* News and Description  */}
       <View style={styles.stocks}>
-          <Text style={{color: "white", fontSize: 16, marginVertical: 8, marginHorizontal: 12}}>Description</Text>
-          <Text style={{color: "white", fontSize: 12, marginBottom: 8, marginHorizontal: 12}}>{stockdesc}</Text>
-          <Text style={{color: "white", fontSize: 16, marginVertical: 8, marginHorizontal: 12}}>News</Text>
-          <Text style={{color: "white", fontSize: 12, marginBottom: 8, marginHorizontal: 12}}>Articles will appear here</Text>
+          <Text style={{color: "white", fontSize: 18, marginVertical: 8, marginHorizontal: 12}}>Description</Text>
+          <Text style={{color: "white", fontSize: 14, marginBottom: 10, marginHorizontal: 12}}>{stockdesc}</Text>
+          <Text style={{color: "white", fontSize: 18, marginVertical: 8, marginHorizontal: 12}}>News</Text>
+          {displayArticles()}
       </View>
 
       
@@ -214,27 +252,46 @@ const styles = StyleSheet.create({
     backgroundColor:'#1E6738',
   },
   graph: {
-      flex: 2,
-      backgroundColor: "black",
-      width: "100%",
-      borderBottomColor: "white",
-      borderWidth: 1,
+    flex: 2,
+    backgroundColor: "black",
+    width: "100%",
+    borderBottomColor: "white",
+    borderWidth: 1,
+  },
+  articles: {
+    width: '100%',
+    borderTopColor: 'white',
+    borderBottomColor: 'white',
+    borderWidth: 0.3,
+    flexDirection: 'row',
+    alignContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+  },
+  articleTitle: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  articleText: {
+    color: 'grey',
+    marginVertical: 5,
   },
   stockInfo: {
-      flex: 1,
-      padding: 12,
-      paddingBottom: 0,
-      backgroundColor: "black",
-      width: "100%",
-      alignItems: "flex-start",
-      flexDirection: "row",
-      justifyContent: "space-between",
-      zIndex: 100
+    flex: 1,
+    padding: 12,
+    paddingBottom: 0,
+    backgroundColor: "black",
+    width: "100%",
+    alignItems: "flex-start",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    zIndex: 100
   },
   stocks: {
-      flex: 4,
-      backgroundColor: "black",
-      width: "100%",
+    flex: 4,
+    backgroundColor: "black",
+    width: "100%",
   },
   buySell: {
     flex: 1,
