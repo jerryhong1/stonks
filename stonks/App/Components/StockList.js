@@ -1,9 +1,8 @@
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, Text, TouchableOpacity, FlatList} from 'react-native';
+import { StyleSheet, FlatList} from 'react-native';
 
 import firebase from 'firebase';
 
-import Buttons from "../Styles/Buttons";
 import StockItem from "./StockItem";
 
 // TODO: deprecate this and replace with data from our "stocks" Firestore document: See useEffect below
@@ -67,7 +66,3 @@ export default function StockList({userStockList = null, searchText = null}) {
         />
     );
 }
-  
-const styles = StyleSheet.create({
-    
-});

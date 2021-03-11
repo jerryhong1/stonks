@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import { StyleSheet, Text, View, TextInput, SafeAreaView, Dimensions, TouchableOpacity, Image, FlatList} from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, Dimensions, TouchableOpacity, Image} from 'react-native';
 import firebase from 'firebase';
-
 import Buttons from "../Styles/Buttons";
 import StockList, { fullStockDict }  from "../Components/StockList";
 
@@ -103,11 +102,11 @@ export default function Portfolio({navigation}) {
             {/* Your portfolio statistics */}
             <View style={styles.urPrtflio}> 
                 <Text style = {{color: "white", fontSize: 16}} >{`Total Value of Assets`} </Text> 
-                <Text style = {{color: "white", fontSize: 32, marginTop: 5, fontWeight: 'bold'}} >${totalAssets} </Text> 
+                <Text style = {{color: "white", fontSize: 32, marginTop: 5, fontWeight: 'bold'}} >${totalAssets.toFixed(2)} </Text> 
                 <Text style = {{color: changeInAssets < 0? "red" : "green", fontSize: 16, marginTop: 5}} >
-                  {changeInAssets < 0? "↘" : "↗"} ${Math.abs(changeInAssets)} ({100*(changeInAssets/totalAssets)}%) 
+                  {changeInAssets < 0? "↘" : "↗"} ${Math.abs(changeInAssets).toFixed(2)} ({(100*(changeInAssets/totalAssets)).toFixed(2)}%) 
                 </Text>
-                <Text style = {{color: "white", fontSize: 16, marginTop: 5}} >${balance} of buying power</Text>
+                <Text style = {{color: "white", fontSize: 16, marginTop: 5}} >${balance.toFixed(2)} of buying power</Text>
             </View>
             
             {/* Your stocks list TODO: feed in list from docs */}

@@ -131,7 +131,7 @@ export default function ModalScreen({route, navigation}) {
 
       <View style={styles.content}>
 
-	  {/* Shares to Purchase */}
+    {/* Shares to Purchase */}
 		<View style={styles.row}> 
 			<View style={styles.leftLabel}> 
 				<Text style={styles.labelText}> # of Shares to {buyOrSell} </Text> 

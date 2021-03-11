@@ -1,5 +1,5 @@
 import React, { useEffect, useState} from 'react';
-import { Button, StyleSheet, Text, View, TextInput, SafeAreaView, Dimensions, TouchableHighlight, TouchableOpacity, Image } from 'react-native';
+import { Button, StyleSheet, Text, View, SafeAreaView, TouchableHighlight, TouchableOpacity, Image } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 
 import firebase from 'firebase';
@@ -129,7 +129,7 @@ export default function Profile({navigation}) {
         </View>
         <View style={styles.profileInfo}> 
             <Text style = {{color: 'white', fontSize: 18, marginBottom: 8, fontWeight: '500'}}>Your balance</Text>
-            <Text style = {{color: 'white', fontSize: 40, marginBottom: 20}}>${balance}</Text>
+            <Text style = {{color: 'white', fontSize: 40, marginBottom: 20}}>${balance.toFixed(2)}</Text>
             {transactions ? 
             <View style={styles.transactionList}> 
                 <Text style={styles.transactionHistory}>Transaction History</Text>

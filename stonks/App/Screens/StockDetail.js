@@ -1,14 +1,11 @@
 import React, { useEffect, useState, setState}  from 'react';
-import { VictoryChart, VictoryGroup, VictoryLine, VictoryTheme, VictoryVoronoiContainer, VictoryTooltip, VictoryCandlestick } from "victory-native";
-import { StyleSheet, Text, View, Dimensions, TouchableOpacity, Button } from 'react-native';
+import { VictoryGroup, VictoryLine, VictoryTheme, VictoryVoronoiContainer, VictoryTooltip, VictoryCandlestick } from "victory-native";
+import { StyleSheet, Text, View, Dimensions, Button } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import firebase from 'firebase';
 import Svg, {Line} from 'react-native-svg';
 import DropDownPicker from 'react-native-dropdown-picker';
-import Icon from 'react-native-vector-icons/Feather';
 
-
-import Buttons from '../Styles/Buttons';
 
 function formatAMPM(date) {
   var hours = date.getHours();
