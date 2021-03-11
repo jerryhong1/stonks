@@ -2,7 +2,7 @@ import React, { useState, setState} from 'react';
 import { StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import DialogInput from 'react-native-dialog-input';
 import firebase from 'firebase';
-
+import { formatMoney } from '../Lib/Utils';
 import Buttons from '../Styles/Buttons';
 
 
@@ -29,7 +29,7 @@ export default function Welcome({route, navigation}) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}> Welcome to Stonks{curUser ? `, ${curUser}` : ''}. </Text>
-      <Text style={styles.subtitle}> You have ${defaultBalance} in your account. </Text>
+      <Text style={styles.subtitle}> You have {formatMoney(defaultBalance)} in your account. </Text>
       <DialogInput isDialogVisible={dialogVisible}
         title={"What is your preferred starting balance?"}
         message={"We recommend starting with at least $1000."}

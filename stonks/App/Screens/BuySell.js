@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import { StyleSheet, Text, TextInput, View, TouchableOpacity, Dimensions, KeyboardAvoidingView } from 'react-native';
 import firebase from 'firebase';
-
 import Buttons from '../Styles/Buttons';
+import {formatMoney} from '../Lib/Utils';
 // import { consolidateStreamedStyles } from 'styled-components';
  
 // Buy/Sell screen for a single stock, given by the route params.
@@ -49,7 +49,7 @@ export default function ModalScreen({route, navigation}) {
     }, {merge: true});
     
     // 5. Display message indicating purchased stocks and navigate to portfolio.
-    alert(`You just ${buyOrSell === "Purchase"? "bought" : "sold"} ${qty} stock(s) of ${stockData.company} at $${stockData.currPrice} for $${Math.abs(total_cost)}`);
+    alert(`You just ${buyOrSell === "Purchase"? "bought" : "sold"} ${qty} stock(s) of ${stockData.company} at ${formatMoney(stockData.currPrice)} for ${formatMoney(total_cost)}`);
     
     navigation.navigate('TabScreen');
   }
@@ -123,7 +123,7 @@ export default function ModalScreen({route, navigation}) {
     <KeyboardAvoidingView style={styles.container}>
       <View style={styles.header}>
         <Text style={{ color: "white", fontSize: 30, marginTop: 50, marginBottom: 5, fontWeight: 'bold'}}>{buyOrSell === 'Purchase' ? 'Buying' : 'Selling'} {stockData.ticker}</Text>
-        <Text style={{ color: "grey", fontSize: 16 }}>Your buying power: ${balance}</Text>
+        <Text style={{ color: "grey", fontSize: 16 }}>Your buying power: {formatMoney(balance)}</Text>
         { portfolio[stockData.ticker] ? 
           <Text style={{ color: "grey", fontSize: 16 }}>Shares already owned: {portfolio[stockData.ticker]}</Text> : null
         } 
@@ -157,7 +157,7 @@ export default function ModalScreen({route, navigation}) {
 			</View>
 
 			<View style={styles.righthandView}> 
-				<Text style={styles.labelText}>${stockData.currPrice} </Text> 
+				<Text style={styles.labelText}>{formatMoney(stockData.currPrice)} </Text> 
 			</View>
 		</View> 
 
@@ -168,8 +168,8 @@ export default function ModalScreen({route, navigation}) {
 			</View>
 
 			<View style={styles.righthandView}> 
-				{qty!== 0 && <Text style={styles.labelText}>${cost}</Text>}
-				{qty=== 0 && <Text style={styles.defaultEstCost}>${cost}</Text>}
+				{qty!== 0 && <Text style={styles.labelText}>{formatMoney(cost)}</Text>}
+				{qty=== 0 && <Text style={styles.defaultEstCost}>{formatMoney(cost)}</Text>}
 			</View>
 		</View> 
         
