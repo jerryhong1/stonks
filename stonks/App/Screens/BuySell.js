@@ -3,6 +3,7 @@ import { StyleSheet, Text, TextInput, View, TouchableOpacity, Dimensions, Keyboa
 import firebase from 'firebase';
 import Buttons from '../Styles/Buttons';
 import {formatMoney} from '../Lib/Utils';
+import { fullStockDict }  from "../Components/StockList";
 // import { consolidateStreamedStyles } from 'styled-components';
  
 // Buy/Sell screen for a single stock, given by the route params.
@@ -12,6 +13,7 @@ export default function ModalScreen({route, navigation}) {
   const [portfolio, setPortfolio] = useState({});
   const [marketPrice, setMarketPrice] = useState(0);
   const [transactions, setTransactions] = useState([]);
+  const [totalAssets, setTotalAssets] = useState(0);
   const stockData = route.params.stockData;
   const buyOrSell = route.params.buyOrSell;
 
@@ -66,8 +68,8 @@ export default function ModalScreen({route, navigation}) {
         price: stockData.currPrice,
         buyOrSell: buyOrSell,
         timestamp: Date.now(),
+        assetTotal: totalAssets,
       }];
-      console.log("First Transaction object: ", updatedTransaction);
     }
     else {
       updatedTransaction.push({
@@ -77,8 +79,8 @@ export default function ModalScreen({route, navigation}) {
         price: stockData.currPrice,
         buyOrSell: buyOrSell,
         timestamp: Date.now(),
+        assetTotal: totalAssets,
       });
-      console.log("New Transaction object: ", updatedTransaction);
     }
     return updatedTransaction;
   }
@@ -112,6 +114,18 @@ export default function ModalScreen({route, navigation}) {
 	}
 	getStockValue();
   }, []); 
+
+  useEffect(() => {
+    if (portfolio) {
+      let stockAssets = 0;
+      Object.entries(portfolio).forEach(
+        ([name, qty]) => {
+          stockAssets += fullStockDict[name].currPrice * qty;
+        } 
+      );
+      setTotalAssets(stockAssets + balance);
+    }
+  }, [balance, portfolio])
   
   const cost = qty * stockData.currPrice;
   const buyingDisabled = (buyOrSell === "Purchase") && (qty === 0 || cost > balance);
