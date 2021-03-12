@@ -63,7 +63,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#05ad6d',
         borderRadius: 5,
         margin: 20,
-        height: 150,
         overflow: 'scroll',
     }
 });
