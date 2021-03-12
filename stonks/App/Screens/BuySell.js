@@ -145,16 +145,17 @@ export default function ModalScreen({route, navigation}) {
 
       <View style={styles.content}>
 
-    {/* Shares to Purchase */}
+	  {/* Shares to Purchase */}
 		<View style={styles.row}> 
 			<View style={styles.leftLabel}> 
-				<Text style={styles.labelText}> # of Shares to {buyOrSell} </Text> 
+				<Text style={styles.labelText}># of Shares to {buyOrSell} </Text> 
 			</View> 
 
 			<View style={styles.righthandView}> 
 				<TextInput
+          autoFocus
 					style={styles.inputField}
-					placeholder='Type # here'
+					placeholder='0'
 					keyboardType='number-pad'
 					placeholderTextColor='grey'
 					onChangeText = {handleQty}
@@ -167,7 +168,7 @@ export default function ModalScreen({route, navigation}) {
 		{/* Curr Market Price */}
 		<View style={styles.row}> 
 			<View style={styles.leftLabel}> 
-				<Text style={styles.labelText}> Current Market Price </Text> 
+				<Text style={styles.labelText}>Current Market Price </Text> 
 			</View>
 
 			<View style={styles.righthandView}> 
@@ -176,14 +177,13 @@ export default function ModalScreen({route, navigation}) {
 		</View> 
 
 		{/* Estimated Cost */}
-		<View style={styles.row}> 
+		<View style={{...styles.row, borderWidth: 0}}> 
 			<View style={styles.leftLabel}> 
-				<Text style={styles.labelText}> Estimated Cost </Text> 
+				<Text style={styles.labelText}>Estimated Cost </Text> 
 			</View>
 
 			<View style={styles.righthandView}> 
-				{qty!== 0 && <Text style={styles.labelText}>{formatMoney(cost)}</Text>}
-				{qty=== 0 && <Text style={styles.defaultEstCost}>{formatMoney(cost)}</Text>}
+      {<Text style={qty === 0 ? styles.defaultEstCost : {...styles.labelText, fontWeight: '600'}}>{formatMoney(cost)}</Text>}
 			</View>
 		</View> 
         
@@ -240,30 +240,26 @@ const styles = StyleSheet.create({
 //   },
   row: {
 	flexDirection: 'row',
-	// alignContent: 'center',
 	alignItems: 'center',
-	padding: 2,
+	paddingVertical: 8,
 	margin: 4,
-	height: '5%',
-	// backgroundColor: 'pink',
+	height: 48,
 	width: Dimensions.get('window').width * .9,
-	borderTopColor: 'white',
-	// borderBottomColor: 'white',
+	borderBottomColor: 'white',
 	borderWidth: 1,
   },
   leftLabel: {
 	width: '70%',
-	// backgroundColor: 'pink'
   },
   righthandView: {
 	width: '30%',
 	alignItems: 'flex-end',
-	// backgroundColor: 'blue',
   },
   labelText: {
 	color: 'white', 
 	fontSize: 18
   },
+
   defaultEstCost: {
 	color: 'grey', 
 	fontSize: 18

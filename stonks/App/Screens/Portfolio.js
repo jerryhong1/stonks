@@ -1,21 +1,25 @@
 import React, {useEffect, useState} from 'react';
 import { StyleSheet, Text, View, SafeAreaView, Dimensions, TouchableOpacity, Image} from 'react-native';
 import firebase from 'firebase';
-import Buttons from '../Styles/Buttons';
+
+import { SafeAreaContainer } from "../Styles/container";
+import { StonksButton } from "../Styles/Buttons";
+import { colors } from '../Styles/colors';
+import * as T from '../Styles/text';
+
 import StockList, { fullStockDict }  from "../Components/StockList";
 import {formatMoney} from '../Lib/Utils';
 
 
 function EmptyState({navigation}) {
     return (
-    <>
-        <Text style={{textAlign: "center", color: "white", fontSize: 20, marginTop: 24, marginBottom: 8}}>No stocks yet.</Text>
-        <TouchableOpacity style={Buttons.smallButton}
+    <View style={{marginTop: 24}}>
+        <T.H2 style={{textAlign: "center", marginBottom: 8}}>No stocks yet.</T.H2>
+        <StonksButton 
             onPress={() => navigation.navigate('Search')}
-        >
-            <Text style={Buttons.buttontext}> Buy Stocks</Text>
-        </TouchableOpacity>
-    </>
+            text={"Buy Stocks"}
+        />
+    </View>
     )
 }
 
@@ -93,8 +97,7 @@ export default function Portfolio({navigation}) {
     }, [balance, portfolio])
     
     return (
-        <SafeAreaView style={styles.container}>
-
+        <SafeAreaContainer>
             {/* graph view */}
             <View style={styles.graph}> 
                 <Image source={require('../../imgs/stonksGoUp.png')}/>
@@ -107,12 +110,10 @@ export default function Portfolio({navigation}) {
 
             {/* Your portfolio statistics */}
             <View style={styles.urPrtflio}> 
-                <Text style = {{color: "white", fontSize: 16}} >{`Total Value of Assets`} </Text> 
-                <Text style = {{color: "white", fontSize: 32, marginTop: 5, fontWeight: 'bold'}} >{formatMoney(totalAssets)} </Text> 
-                <Text style = {{color: changeInAssets < 0? "red" : "green", fontSize: 16, marginTop: 5}} >
-                  {changeInAssets < 0? "↘" : "↗"} {formatMoney(changeInAssets)} ({(100*(changeInAssets/totalAssets)).toFixed(2)}%) 
-                </Text>
-                <Text style = {{color: "white", fontSize: 16, marginTop: 5}} >{formatMoney(balance)} of buying power</Text>
+                <T.H4>{`Total Value of Assets`}</T.H4> 
+                <T.H1>{formatMoney(totalAssets)} </T.H1> 
+                <T.P style = {{color: changeInAssets < 0 ? colors.RED : colors.GREEN}} >{changeInAssets < 0? "↘" : "↗"} {formatMoney(changeInAssets)} ({(100*(changeInAssets/totalAssets)).toFixed(2)}%) </T.P>
+                <T.P style = {{marginTop: 4}} >{formatMoney(balance)} of buying power</T.P>
             </View>
             
             {/* Your stocks list TODO: feed in list from docs */}
@@ -123,20 +124,11 @@ export default function Portfolio({navigation}) {
                 <EmptyState navigation={navigation} />
                 }
             </View>
-        </SafeAreaView>
+        </SafeAreaContainer>
     );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'black',
-    alignItems: 'center',
-    justifyContent: 'center',
-    alignContent: "space-between",
-    flexDirection: 'column',
-    width: Dimensions.get('window').width,
-  },
   graph: {
       flex: 2,
       backgroundColor: "black",
@@ -174,7 +166,6 @@ const styles = StyleSheet.create({
       width: "100%", 
       borderBottomColor: "white",
       borderWidth: 1,
-
   },
   navBar: {
       flex: 0,

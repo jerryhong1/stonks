@@ -2,7 +2,6 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-
 import Signup from './App/Screens/Signup';
 import Welcome from './App/Screens/Welcome';
 import HomeScreen from './App/Screens/HomeScreen';
@@ -17,11 +16,11 @@ import Investment from './App/Screens/EducationScreens/Investment';
 import Stock from './App/Screens/EducationScreens/Stock';
 import Market from './App/Screens/EducationScreens/Market';
 
-const RootStack = createStackNavigator();
 const MainStack = createStackNavigator();
 
-function MainStackApp() {
+function App() {
   return (
+    <NavigationContainer> 
     <MainStack.Navigator initialRouteName='Home'>
       <MainStack.Screen name='Home' component={HomeScreen} options={{ headerShown: false }}/>
       <MainStack.Screen name='Welcome' component={Welcome}  options={{ headerShown: false }}/>
@@ -37,21 +36,6 @@ function MainStackApp() {
       <MainStack.Screen name="Market" component={Market} />
 
     </MainStack.Navigator>
-  );
-}
-
-
-
-function App() {
-  return (
-    <NavigationContainer>
-      <RootStack.Navigator>
-        <RootStack.Screen
-          name="Main"
-          component={MainStackApp}
-          options={{ headerShown: false }}
-        />
-      </RootStack.Navigator>
     </NavigationContainer>
   );
 }

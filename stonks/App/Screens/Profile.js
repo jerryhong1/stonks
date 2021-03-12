@@ -3,9 +3,11 @@ import { Button, ScrollView, StyleSheet, Text, View, SafeAreaView, TouchableHigh
 import { VictoryChart, VictoryLine, VictoryTheme, VictoryVoronoiContainer } from "victory-native";
 import * as ImagePicker from 'expo-image-picker';
 import firebase from 'firebase';
+
+import { StonksIconButton } from '../Styles/Buttons';
+import StockList from '../Components/TransactionList'
+import * as T from '../Styles/text'
 import {timeSince, formatMoney} from '../Lib/Utils';
-import Buttons from '../Styles/Buttons';
-import { Ionicons } from '@expo/vector-icons';
 
 export default function Profile({navigation}) {
     const [name, setName] = useState('');
@@ -66,50 +68,6 @@ export default function Profile({navigation}) {
 
     }, []);
 
-    function getList() {
-        let allTransactions = transactions;
-
-        const transactionList = [];
-        for (let i = 0; i < allTransactions.length; i++){
-          let curTransaction = allTransactions[i];
-
-          if (curTransaction) {
-            let boughtOrSold = curTransaction["buyOrSell"] === "Purchase"? "Buy" : "Sale";
-            let posOrNeg = curTransaction["qtyChanged"] > 0 ? "+" : "-";
-            let date = new Date(curTransaction["timestamp"])
-            transactionList[i] = (
-                <View key={i} style={styles.transactions}> 
-                    <View style={{flex: '1'}}>
-                        <Text style={styles.transactionTextLeft}> 
-                            {curTransaction["stock"] + " " + boughtOrSold + "\n"}
-                            <Text style={{color: 'grey'}}> 
-                                {Math.abs(curTransaction["qtyChanged"]) + " share(s) \t " + timeSince(date)} 
-                            </Text>
-                        </Text>
-                    </View>
-                    <View>
-                        <Text style={styles.transactionTextRight}>
-                            {formatMoney(curTransaction["price"] * curTransaction["qtyChanged"])}
-                        </Text>
-                    </View>
-                </View>
-            );
-          }
-        }
-        
-        let retVal = (
-          <Text> There are no transactions.</Text>
-        );
-        
-        if (transactionList.length > 0){
-          retVal = (
-            <View >
-              <ScrollView>{transactionList}</ScrollView>
-            </View>
-          );
-        }
-        return retVal;
-    }
 
     function formatLineChartData(data) {
         var chartData = [];
@@ -157,23 +115,34 @@ export default function Profile({navigation}) {
             <View>
                 <TouchableHighlight onPress={selectImage}>
                     <View> 
-                    <Image
-                        source={propic? {uri: propic} : require('../../imgs/profile.png')}
-                        style={styles.propic}
-                    />
-                    <Text style={{color: 'white'}}>Change Profile Picture</Text>
+                        <Image
+                            source={propic? {uri: propic} : require('../../imgs/profile.png')}
+                            style={styles.propic}
+                        />
+                        <T.Body2 style={{marginTop: -8}}>Change Profile Picture</T.Body2>
                     </View> 
                  </TouchableHighlight>
             </View>
-            <View style={styles.username}> 
-                <Text style = {{color: 'white', fontSize: 24, marginBottom: 8, fontWeight:'500'}}>{name}</Text>
-                <Text style = {{color: 'grey', fontSize: 18,marginBottom: 8}}>{username}</Text>
+            <View style={styles.accountInfo}> 
+                <T.H2>{name}</T.H2>
+                <T.H3 style = {{color: 'grey'}}>{username}</T.H3>
+                
+                <StonksIconButton 
+                    style={{backgroundColor: 'red', marginTop: 12, marginBottom: 12}}
+                    onPress={() => {
+                        firebase.auth().signOut()
+                        .then(() => navigation.navigate('Login'))
+                        .catch(console.err);
+                    }}
+                    width={120}
+                    iconName={'exit-outline'}
+                    text={"Sign out"}
+                />
             </View>        
         </View>
-        <View style={styles.profileInfo}> 
-            <Text style = {{color: 'white', fontSize: 18, marginBottom: 8, fontWeight: '500'}}>Your balance</Text>
-            <Text style = {{color: 'white', fontSize: 40, marginBottom: 20}}>{formatMoney(balance)}</Text>
-
+        <View style={styles.transactionsAndBalance}> 
+            <T.H3>Your balance</T.H3>
+            <T.H0 style={{marginBottom: 16}}>{formatMoney(balance)}</T.H0>
             <View style={{flexDirection: 'row', width: '100%', justifyContent: 'space-between'}}>
                 <View style={styles.button}>
                     <Button
@@ -198,22 +167,9 @@ export default function Profile({navigation}) {
             </View>
             
             <View {...display === "transactions"? styles.transactionList : styles.graph}>
-               {display === "transactions"? getList() : createGraph()}
+               {display === "transactions"? <StockList transactions={transactions}/> : createGraph()}
             </View>
-
         </View> 
-        <TouchableOpacity style={{...Buttons.smallButton, backgroundColor: 'red', marginTop: 24, marginBottom: 24, width: 120, alignSelf: 'center'}}
-            onPress={() => {
-                firebase.auth().signOut()
-                .then(() => navigation.navigate('Login'))
-                .catch(console.err);
-            }}
-        >
-            <View style={{flexDirection: 'row', alignItems: 'center'}} > 
-                <Ionicons name='exit-outline' size={24} color='white' style={{marginRight: 10}} />
-                <Text style={Buttons.buttontext}>Sign out</Text>
-            </View>
-        </TouchableOpacity>
         </SafeAreaView>
     );
 }
@@ -227,22 +183,21 @@ const styles = StyleSheet.create({
         width: '100%'
     },
     profileAndName: {
+        paddingTop: 16,
         flexDirection: 'row',
-        flex: 1,
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'flex-start'
     },
     propic: {
         height: undefined,
-        width: 100,
+        width: 120,
         marginLeft: 16,
         aspectRatio: 1,
-        borderRadius: 50,
-        marginBottom: 16,
+        borderRadius: 100,
+        marginBottom: 24,
     },
-    username: {
-        marginLeft: 30,
-        marginTop: -30,
+    accountInfo: {
+        marginLeft: 24,
     },
     graph: {
         flex: 2,
@@ -260,39 +215,10 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: 'white',
     },
-    transactionHistory: {
-        color: 'white', 
-        fontSize: 18, 
-        marginBottom: 12,
-        fontWeight: '500',
-    },
-    transactions: {
-        width: '100%',
-        borderTopColor: 'grey',
-        borderBottomColor: 'grey',
-        borderWidth: 0.3,
-        flexDirection: 'row',
-        alignContent: 'space-between',
-        alignItems: 'center',
-        paddingVertical: 8,
-    },
-    transactionTextLeft: {
-        color: 'white',
-        width: '100%',
-        paddingHorizontal: 16,
-        marginBottom: 5,
-        lineHeight: 20,
-        fontSize: 14,
-    },
-    transactionTextRight: {
-        color: 'white',
-        fontSize: 16,
-        fontWeight: 'bold',
-        marginRight: 12
-    },
     transactionList: {
-        flexDirection: 'column',
+        flex: 3,
         width: '100%',
-        height: 320,
+        borderTopColor: 'white',
+        borderWidth: 1
     }
 });
