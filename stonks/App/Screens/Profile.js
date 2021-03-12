@@ -1,9 +1,8 @@
 import React, { useEffect, useState} from 'react';
-import { Button, StyleSheet, Text, View, SafeAreaView, TouchableHighlight, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, TouchableHighlight, TouchableOpacity, Image } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-
 import firebase from 'firebase';
-
+import {timeSince, formatMoney} from '../Lib/Utils';
 import Buttons from '../Styles/Buttons';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -80,13 +79,13 @@ export default function Profile({navigation}) {
                         <Text style={styles.transactionTextLeft}> 
                             {curTransaction["stock"] + " " + boughtOrSold + "\n"}
                             <Text style={{color: 'grey'}}> 
-                                {Math.abs(curTransaction["qtyChanged"]) + " share(s) \t " + date.toLocaleDateString()} 
+                                {Math.abs(curTransaction["qtyChanged"]) + " share(s) \t " + timeSince(date)} 
                             </Text>
                         </Text>
                     </View>
                     <View>
                         <Text style={styles.transactionTextRight}>
-                            {posOrNeg + "$" + curTransaction["price"] * Math.abs(curTransaction["qtyChanged"])}
+                            {formatMoney(curTransaction["price"] * Math.abs(curTransaction["qtyChanged"]))}
                         </Text>
                     </View>
                 </View>
@@ -129,7 +128,7 @@ export default function Profile({navigation}) {
         </View>
         <View style={styles.profileInfo}> 
             <Text style = {{color: 'white', fontSize: 18, marginBottom: 8, fontWeight: '500'}}>Your balance</Text>
-            <Text style = {{color: 'white', fontSize: 40, marginBottom: 20}}>${balance.toFixed(2)}</Text>
+            <Text style = {{color: 'white', fontSize: 40, marginBottom: 20}}>{formatMoney(balance)}</Text>
             {transactions ? 
             <View style={styles.transactionList}> 
                 <Text style={styles.transactionHistory}>Transaction History</Text>

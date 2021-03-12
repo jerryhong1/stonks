@@ -2,6 +2,7 @@ import React, { useEffect, useState, setState}  from 'react';
 import { VictoryGroup, VictoryLine, VictoryTheme, VictoryVoronoiContainer, VictoryTooltip, VictoryCandlestick } from "victory-native";
 import { StyleSheet, Text, View, Dimensions, Button } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import { formatMoney } from '../Lib/Utils';
 import firebase from 'firebase';
 import Svg, {Line} from 'react-native-svg';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -150,7 +151,7 @@ export default function DetailsScreen({route, navigation}) {
             <Text style = {{color: "white", fontSize: 16}} >
               <Text style = {{fontWeight: "bold"}}>{stockData.ticker} </Text>
             • {stockData.company}</Text>
-            <Text style = {{color: "white", fontSize: 30, marginTop: 4}} >{'$' + stockData.currPrice}</Text>
+            <Text style = {{color: "white", fontSize: 30, marginTop: 4}} >{formatMoney(stockData.currPrice)}</Text>
          </View>
           {/* Drop down picker */}
           <View style={{width: '28%'}}>
