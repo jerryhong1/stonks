@@ -2,7 +2,6 @@ import React, { useState, setState} from 'react';
 import { KeyboardAvoidingView, StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity } from 'react-native';
 import firebase from 'firebase';
 import 'firebase/firestore';
-
 import {tryStockUpdate} from '../Lib/StockUpdater';
 import Buttons from '../Styles/Buttons';
 
@@ -92,7 +91,7 @@ export default function LoginPage({navigation}) {
             firebase.auth().sendPasswordResetEmail(email).then(function() {
               alert(`Password reset email sent to ${email}.`);
             }).catch(function(error) {
-              alert('Error with password reset email')
+              alert('Error with password reset email', error)
             });
           }
         }

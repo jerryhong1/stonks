@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { StyleSheet, Text, View, TextInput, SafeAreaView, Dimensions, TouchableOpacity, Image, FlatList} from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, Dimensions, TouchableOpacity, Image} from 'react-native';
 import firebase from 'firebase';
 
 import { SafeAreaContainer } from "../Styles/container";
@@ -8,6 +8,7 @@ import { colors } from '../Styles/colors';
 import * as T from '../Styles/text';
 
 import StockList, { fullStockDict }  from "../Components/StockList";
+import {formatMoney} from '../Lib/Utils';
 
 
 function EmptyState({navigation}) {
@@ -26,8 +27,10 @@ export default function Portfolio({navigation}) {
     // total assets = balance (aka "buying power") + calculated from stock
     const [totalAssets, setTotalAssets] = useState(0);
     const [balance, setBalance] = useState(0);
+    const [startingBalance, setStartingBalance] = useState(0);
     const [portfolio, setPortfolio] = useState({});
     const [stockList, setStockList] = useState([]);
+    const [changeInAssets, setChangeInAssets] = useState(0);
     
     const reloadUserData = async () => {
         try {
@@ -36,7 +39,7 @@ export default function Portfolio({navigation}) {
             const userSnapshot = await userDoc.get();
             const userData = userSnapshot.data();
             // console.log("User Data", userData);
-
+            setStartingBalance(userData.startingBalance);
             setBalance(userData.balance);
             setPortfolio(userData.portfolio);
         } catch (error) {
@@ -89,6 +92,7 @@ export default function Portfolio({navigation}) {
           } 
         );
         setTotalAssets(stockAssets + balance);
+        setChangeInAssets(stockAssets + balance - startingBalance);
       }
     }, [balance, portfolio])
     
@@ -98,13 +102,18 @@ export default function Portfolio({navigation}) {
             <View style={styles.graph}> 
                 <Image source={require('../../imgs/stonksGoUp.png')}/>
             </View>
+            <TouchableOpacity style={styles.education}
+              onPress={() => navigation.navigate('Education')}
+            >
+              <Text style={styles.title}>Would you like to learn more about the stock market before you start trading? </Text>
+            </TouchableOpacity>
 
             {/* Your portfolio statistics */}
             <View style={styles.urPrtflio}> 
                 <T.H4>{`Total Value of Assets`}</T.H4> 
-                <T.H1>${totalAssets} </T.H1> 
-                <T.P style = {{color: colors.GREEN}} >↗ $50.00 (5%) </T.P>
-                <T.P style = {{marginTop: 4}} >${balance} of buying power</T.P>
+                <T.H1>{formatMoney(totalAssets)} </T.H1> 
+                <T.P style = {{color: changeInAssets < 0 ? colors.RED : colors.GREEN}} >{changeInAssets < 0? "↘" : "↗"} {formatMoney(changeInAssets)} ({(100*(changeInAssets/totalAssets)).toFixed(2)}%) </T.P>
+                <T.P style = {{marginTop: 4}} >{formatMoney(balance)} of buying power</T.P>
             </View>
             
             {/* Your stocks list TODO: feed in list from docs */}
@@ -126,6 +135,19 @@ const styles = StyleSheet.create({
       width: "100%", 
       borderBottomColor: "white",
       borderWidth: 1,
+  },
+  title: {
+    color: 'white',
+    fontSize: 24,
+    margin: 20,
+    textAlign: 'left',
+  },
+  education: {
+    width: "90%",
+    backgroundColor: '#05ad6d',
+    borderRadius: 5,
+    margin: 20,
+    height: 130,
   },
   urPrtflio: {
       padding: 16,

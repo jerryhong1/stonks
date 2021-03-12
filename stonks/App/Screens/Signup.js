@@ -1,7 +1,6 @@
 import React, { useState, setState} from 'react';
 import { KeyboardAvoidingView, StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity } from 'react-native';
 import firebase from 'firebase';
-
 import {tryStockUpdate} from '../Lib/StockUpdater';
 import Buttons from '../Styles/Buttons';
 
@@ -49,7 +48,8 @@ export default function Signup({navigation}) {
             balance: defaultBalance,
             portfolio: {},
             transactions: [],
-            username: username
+            username: username,
+            startingBalance: defaultBalance,
           }, {merge: true})
         ]);
       })
@@ -77,7 +77,7 @@ export default function Signup({navigation}) {
         const errorMessage = error.message;
 
         alert(errorMessage);
-        console.log('Account creation failed with error', error.code);
+        console.log('Account creation failed with error', errorCode);
       });
   }
 

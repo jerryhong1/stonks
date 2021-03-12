@@ -1,12 +1,13 @@
 import React, { useEffect, useState} from 'react';
-import { Button, StyleSheet, Text, View, TextInput, SafeAreaView, Dimensions, TouchableHighlight, TouchableOpacity, Image } from 'react-native';
+import { Button, ScrollView, StyleSheet, Text, View, SafeAreaView, TouchableHighlight, TouchableOpacity, Image } from 'react-native';
+import { VictoryChart, VictoryLine, VictoryTheme, VictoryVoronoiContainer } from "victory-native";
 import * as ImagePicker from 'expo-image-picker';
-
 import firebase from 'firebase';
 
 import { StonksIconButton } from '../Styles/Buttons';
 import StockList from '../Components/TransactionList'
 import * as T from '../Styles/text'
+import {timeSince, formatMoney} from '../Lib/Utils';
 
 export default function Profile({navigation}) {
     const [name, setName] = useState('');
@@ -14,6 +15,8 @@ export default function Profile({navigation}) {
     const [balance, setBalance] = useState(0);
     const [propic, setPropic] = useState();
     const [transactions, setTransactions] = useState([]);
+    const [display, setDisplay] = useState("transactions"); 
+    const [lineChartData, setLineChartData] = useState([0,0]);
 
     const reloadUserData = async () => {
         try {
@@ -27,6 +30,7 @@ export default function Profile({navigation}) {
             setBalance(userData.balance);
             setPropic(userData.propic);
             setTransactions(userData.transactions.reverse()); // report with the most recent at the top
+            setLineChartData(formatLineChartData(userData.transactions));
         } catch (error) {
             console.log(error);
         }
@@ -64,15 +68,59 @@ export default function Profile({navigation}) {
 
     }, []);
 
+
+    function formatLineChartData(data) {
+        var chartData = [];
+        for (var i = 0; i < data.length; i++) {
+          var timestamp = data[i].timestamp;
+          var datapoint = {x: new Date(timestamp), y: data[i].assetTotal};
+          chartData.push(datapoint);
+        }
+        return chartData;
+    }
+
+    const chartTheme = {
+        axis: {
+          style: {
+            tickLabels: {
+                fill: 'white',
+                padding: 10,
+            },
+            axis: {
+                stroke: "#756f6a"
+            },
+          },
+        },
+    };
+
+    function createGraph() {
+        return (
+            <VictoryChart theme={chartTheme} containerComponent={<VictoryVoronoiContainer/>}>
+                
+                <VictoryLine
+                    height={300} 
+                    domainPadding={{y: [8, 8]}} 
+                    padding={{ top: 5, bottom: 10 }} 
+                    theme={VictoryTheme.material} 
+                    data={lineChartData}
+                    style={{data: {stroke: "white", strokeWidth: 1}}}
+                />
+            </VictoryChart> 
+        );
+    }
+
     return (
         <SafeAreaView style={styles.container}>
         <View style={styles.profileAndName}>
             <View>
                 <TouchableHighlight onPress={selectImage}>
-                    <Image
-                        source={propic? {uri: propic} : require('../../imgs/profile.png')}
-                        style={styles.propic}
-                    />
+                    <View> 
+                        <Image
+                            source={propic? {uri: propic} : require('../../imgs/profile.png')}
+                            style={styles.propic}
+                        />
+                        <T.Body2 style={{marginTop: -8}}>Change Profile Picture</T.Body2>
+                    </View> 
                  </TouchableHighlight>
             </View>
             <View style={styles.accountInfo}> 
@@ -94,10 +142,33 @@ export default function Profile({navigation}) {
         </View>
         <View style={styles.transactionsAndBalance}> 
             <T.H3>Your balance</T.H3>
-            <T.H0 style={{marginBottom: 16}}>${balance}</T.H0>
-            {transactions ? <View style={styles.transactionList}>
-                <StockList transactions={transactions}/>
-            </View> : null}
+            <T.H0 style={{marginBottom: 16}}>{formatMoney(balance)}</T.H0>
+            <View style={{flexDirection: 'row', width: '100%', justifyContent: 'space-between'}}>
+                <View style={styles.button}>
+                    <Button
+                        onPress={() => {
+                            {setDisplay("transactions")}
+                            
+                        }}
+                        color="#ffffff"
+                        title={"Transaction History"}
+                        />
+                </View>
+                <View style={styles.button}>
+                    <Button
+                        onPress={() => {
+                            {setDisplay("graph")}
+                            
+                        }}
+                        color="#ffffff"
+                        title={"Transaction Graph"}
+                        />
+                </View>
+            </View>
+            
+            <View {...display === "transactions"? styles.transactionList : styles.graph}>
+               {display === "transactions"? <StockList transactions={transactions}/> : createGraph()}
+            </View>
         </View> 
         </SafeAreaView>
     );
@@ -128,12 +199,21 @@ const styles = StyleSheet.create({
     accountInfo: {
         marginLeft: 24,
     },
-    transactionsAndBalance: {
+    graph: {
+        flex: 2,
+        backgroundColor: "black",
+        width: "100%",
+        borderBottomColor: "white",
+        borderWidth: 1,
+    },
+    profileInfo: {
         flex: 2,
         marginLeft: 16,
         marginRight: 16,
         color: 'white',
         alignItems: 'flex-start',
+        borderBottomWidth: 1,
+        borderBottomColor: 'white',
     },
     transactionList: {
         flex: 3,

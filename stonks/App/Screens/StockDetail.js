@@ -1,11 +1,13 @@
 import React, { useEffect, useState, setState}  from 'react';
-import { VictoryChart, VictoryGroup, VictoryLine, VictoryTheme, VictoryVoronoiContainer, VictoryTooltip, VictoryCandlestick } from "victory-native";
-import { StyleSheet, Text, View, Dimensions, TouchableOpacity, Button } from 'react-native';
+import { VictoryGroup, VictoryLine, VictoryTheme, VictoryVoronoiContainer, VictoryTooltip, VictoryCandlestick } from "victory-native";
+import { ScrollView, StyleSheet, Text, View, Dimensions, Button, Linking } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import { formatMoney } from '../Lib/Utils';
 import firebase from 'firebase';
 import Svg, {Line} from 'react-native-svg';
+import DropDownPicker from 'react-native-dropdown-picker';
+import { getArticles } from "./News";
 
-import Buttons from '../Styles/Buttons';
 
 function formatAMPM(date) {
   var hours = date.getHours();
@@ -64,8 +66,9 @@ export default function DetailsScreen({route, navigation}) {
   const stockData = route.params.data;
   const buy = "Purchase";
   const sell = "Sell";
-  const [chartFormat, setChartFormat] = useState("line");   
-
+  const [chartFormat, setChartFormat] = useState("line"); 
+  const [articles, setArticles] = useState([]);
+  
   // Get stock data for a particular stock from firebase //TODO: Once StockList pulls from firebase, should this still write to firebase?
   useEffect(() => {
     const getStockData = async () => {
@@ -77,6 +80,9 @@ export default function DetailsScreen({route, navigation}) {
       setLineChartData(formatLineChartData(stockDataFirebase.results));
       setCandlestickChartData(formatCandlestickChartData(stockDataFirebase.results));
       setStockDesc(stockDataFirebase.description);
+
+      const response = await getArticles(stockData.company);
+      setArticles(response.articles);
 
       //if you want to write some data uncomment below and:
       // change stockdata to the data you want to upload
@@ -122,7 +128,47 @@ export default function DetailsScreen({route, navigation}) {
       />
 
     );
-}
+  }
+
+  function getArticleList(){
+    const articleList = [];
+
+    for (let i = 0; i < articles.length; i++) {
+      let link = articles[i].url;
+      let sourceName = articles[i].source.name;
+      articleList[i] = (
+        <View key={i} style={styles.articles}>
+          <View style={{flex: '1'}}> 
+            <Text style={styles.articleTitle}>
+              {articles[i].title}
+            </Text>
+            <Text style={styles.articleText}>
+              {articles[i].description}
+            </Text>
+            <Text style={{color: '#0645AD'}} onPress={() => Linking.openURL(link)}>
+              {sourceName}
+            </Text>
+          </View>
+        </View>
+      );
+    }
+
+    return (
+      <ScrollView>
+        {articleList}
+      </ScrollView>
+    );
+  };
+
+  function displayArticles() {
+    console.log("Articles: ", articles);
+    return (
+      <View>
+        {articles.length > 0 && getArticleList()}
+        {articles.length === 0 && <Text style={{color: 'white', margin: 10}}> No top headlines to display for this stock. </Text>}
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -140,45 +186,51 @@ export default function DetailsScreen({route, navigation}) {
         {chartFormat == "line"? createLineGraph() : createCandlestickGraph()}
       </View>
 
-       {/* Info about the stock */}
+       {/* Middle section */}
        <View style={styles.stockInfo}>
+
+         {/* Stock Info */}
          <View>
             <Text style = {{color: "white", fontSize: 16}} >
               <Text style = {{fontWeight: "bold"}}>{stockData.ticker} </Text>
             • {stockData.company}</Text>
-            <Text style = {{color: "white", fontSize: 30, marginTop: 4}} >{'$' + stockData.currPrice}</Text>
+            <Text style = {{color: "white", fontSize: 30, marginTop: 4}} >{formatMoney(stockData.currPrice)}</Text>
          </View>
-         <View style={styles.buySell}>
-            <View>
-              <TouchableOpacity style={Buttons.smallButton}
-                onPress={() => navigation.navigate('BuySell', {
+          {/* Drop down picker */}
+          <View style={{width: '28%'}}>
+            <DropDownPicker 
+              items={[
+                  {label: 'Buy', value: 'buy' },
+                  {label: 'Sell', value: 'sell' },
+              ]}
+              placeholder="+ Trade"
+              containerStyle={{height: 40, width: '100%'}}
+              style={{backgroundColor: '#1EDD4E'}}
+              itemStyle={styles.pickerStyle}
+              dropDownStyle={{backgroundColor: 'black'}}
+              globalTextStyle={{
+                color: 'white',
+              }}
+              onChangeItem={item => {
+                navigation.navigate('BuySell', {
                   stockData: stockData,
-                  buyOrSell: buy,
-                })}
-              >
-                <Text style={Buttons.buttontext}>Buy</Text>
-              </TouchableOpacity>
-            </View>
-            <View>
-              <TouchableOpacity style={Buttons.smallButton}
-                onPress={() => navigation.navigate('BuySell', {
-                  stockData: stockData,
-                  buyOrSell: sell,
-                })}
-              >
-                <Text style={Buttons.buttontext}>Sell</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+                  buyOrSell: item.value === 'sell' ? sell : buy,
+                })
+              }}
+              arrowColor='white'
+            />
+          </View>   
       </View>
 
       {/* News and Description  */}
       <View style={styles.stocks}>
-          <Text style={{color: "white", fontSize: 16, marginVertical: 8, marginHorizontal: 12}}>Description</Text>
-          <Text style={{color: "white", fontSize: 12, marginBottom: 8, marginHorizontal: 12}}>{stockdesc}</Text>
-          <Text style={{color: "white", fontSize: 16, marginVertical: 8, marginHorizontal: 12}}>News</Text>
-          <Text style={{color: "white", fontSize: 12, marginBottom: 8, marginHorizontal: 12}}>Articles will appear here</Text>
+          <Text style={{color: "white", fontSize: 18, marginVertical: 8, marginHorizontal: 12}}>Description</Text>
+          <Text style={{color: "white", fontSize: 14, marginBottom: 10, marginHorizontal: 12}}>{stockdesc}</Text>
+          <Text style={{color: "white", fontSize: 18, marginVertical: 8, marginHorizontal: 12}}>News</Text>
+          {displayArticles()}
       </View>
+
+      
       <StatusBar />
     </View>
   );
@@ -193,6 +245,7 @@ const styles = StyleSheet.create({
     alignContent: "space-between",
     flexDirection: 'column',
     width: Dimensions.get('window').width,
+    height: '100%'
   },
   button: {
     alignItems: 'flex-end',
@@ -200,32 +253,56 @@ const styles = StyleSheet.create({
     backgroundColor:'#1E6738',
   },
   graph: {
-      flex: 2,
-      backgroundColor: "black",
-      width: "100%",
-      borderBottomColor: "white",
-      borderWidth: 1,
+    flex: 2,
+    backgroundColor: "black",
+    width: "100%",
+    borderBottomColor: "white",
+    borderWidth: 1,
+  },
+  articles: {
+    width: '100%',
+    borderTopColor: 'white',
+    borderBottomColor: 'white',
+    borderWidth: 0.3,
+    flexDirection: 'row',
+    alignContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+  },
+  articleTitle: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  articleText: {
+    color: 'grey',
+    marginVertical: 5,
   },
   stockInfo: {
-      flex: 2,
-      padding: 12,
-      backgroundColor: "black",
-      width: "100%",
-      borderBottomColor: "white",
-      borderWidth: 1,
-      alignItems: "flex-start",
-      flexDirection: "column",
-      justifyContent: "center",
+    flex: 1,
+    padding: 12,
+    paddingBottom: 0,
+    backgroundColor: "black",
+    width: "100%",
+    alignItems: "flex-start",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    zIndex: 100
   },
   stocks: {
-      flex: 4,
-      backgroundColor: "black",
-      width: "100%",
+    flex: 4,
+    backgroundColor: "black",
+    width: "100%",
   },
   buySell: {
     flex: 1,
     flexDirection: "row",
     marginTop: 4,
+  },
+  // super confusing how all the styles overlap in the picker so please edit lol
+  pickerStyle: {
+    backgroundColor: 'black',
+    justifyContent: 'flex-start'
   }
 });
 
