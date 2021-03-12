@@ -8,6 +8,9 @@ import Svg, {Line} from 'react-native-svg';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { getArticles } from "./News";
 
+const KEY = "VfpjQL3hxlS56WBVpmcslVQ5jCwm7U2m"
+const URL = "https://api.polygon.io/v2/aggs/" //base url for aggs calls 
+
 
 function formatAMPM(date) {
   var hours = date.getHours();
@@ -27,15 +30,6 @@ function convertMillisToDay(millis) {
   return prettyDate; //returns string in format [month date time] ie Feb 22 2:00 PM
 }
 
-function formatLineChartData(data) {
-  var chartData = [];
-  for (var i = 0; i < data.length; i++) {
-    var date = convertMillisToDay(data[i].t) + "\n $" + (data[i].vw.toFixed(2)).toString()// t is the Unix Msec timestamp for the start of the aggregate window
-    var datapoint = {x: i, y: data[i].vw, label: date}
-    chartData.push(datapoint)
-  }
-  return chartData;
-}
 
 function formatCandlestickChartData(data) {
   var chartData = [];
@@ -60,8 +54,9 @@ class CustomFlyout extends React.Component {
 
 //pull data from firestore and feed to chart
 export default function DetailsScreen({route, navigation}) {
-  const [lineChartData, setLineChartData] = useState([0,0]);
-  const [candlestickChartData, setCandlestickChartData] = useState([0,0,0,0,0]);
+  const [lineChartData, setLineChartData] = useState([0,0]); //ALL available data we have 
+  const [candlestickChartData, setCandlestickChartData] = useState([0,0,0,0,0]);  //ALL available data we have
+  const [lineChartDataDisplay, setLineChartDataDisplay] = useState([0,0]); //data to be DISPLAYED
   const [stockdesc, setStockDesc] = useState(""); 
   const stockData = route.params.data;
   const buy = "Purchase";
@@ -80,7 +75,6 @@ export default function DetailsScreen({route, navigation}) {
       setLineChartData(formatLineChartData(stockDataFirebase.results));
       setCandlestickChartData(formatCandlestickChartData(stockDataFirebase.results));
       setStockDesc(stockDataFirebase.description);
-
       const response = await getArticles(stockData.company);
       setArticles(response.articles);
 
@@ -96,6 +90,25 @@ export default function DetailsScreen({route, navigation}) {
     getStockData();
   }, []);
 
+  /*
+  formats the data from firebase into a readable format by chart: 
+  x: int 
+  y: volumne weighted price for interval 
+  label: Month day time AM/PM \n price. example: Feb 26 1:00PM \n $34.44
+  date: msec timestamp -> this is used to sort data when timeframe is specified  
+  */
+  function formatLineChartData(data) {
+    var chartData = [];
+    for (var i = 0; i < data.length; i++) {
+      var date = new Date((data[i].t));
+      var label = convertMillisToDay(date) + "\n $" + (data[i].vw.toFixed(2)).toString()// t is the Unix Msec timestamp for the start of the aggregate window
+      var datapoint = {x: i, y: data[i].vw, label: label, date: date}
+      chartData.push(datapoint)
+    }
+    setLineChartDataDisplay(lineChartData);
+    return chartData;
+  }
+
   function createLineGraph() {
       return (
         <VictoryGroup theme={VictoryTheme.material} height={150} domainPadding={{y: [8, 8]}} padding={{ top: 5, bottom: 12 }} containerComponent={<VictoryVoronoiContainer/>}>
@@ -106,7 +119,7 @@ export default function DetailsScreen({route, navigation}) {
             labels={({ datum }) => datum.x + datum.label}
             style={{data: { stroke: "red" }}}
             theme={VictoryTheme.material}
-            data={lineChartData}
+            data={lineChartDataDisplay}
             x="x"
             y="y"
           />
@@ -160,8 +173,31 @@ export default function DetailsScreen({route, navigation}) {
     );
   };
 
+  /* a function to pull data from polygon and upload to firebase 
+  note you manually enter utcstart and utc end 
+  make sure you are uploading the correct desired granularity
+  press upload button to begin upload 
+  :D 
+  */
+  async function uploadData() {
+    var utcStart = new Date("2021-03-01"); //manually update this 
+    var utcEnd = new Date("2021-03-10"); //manually update this 
+    //https://api.polygon.io/v2/aggs/ticker/AAPL/range/5/minute/2020-10-14/2020-10-14?unadjusted=true&sort=asc&limit=5000&apiKey=VfpjQL3hxlS56WBVpmcslVQ5jCwm7U2m
+    var fullCall = URL + "ticker/" + stockData.ticker + "/range/30/minute/" + "2021-03-01" + "/" + "2021-03-12" + "?unadjusted=true&sort=asc&limit=5000&apiKey=" + KEY;
+    let response = await fetch(fullCall);
+    let data = await response.json();
+    var toUpload = { 
+      results: []
+    };
+    toUpload.results = data.results;
+    console.log('toUpload: ', toUpload);
+    console.log('pulled stock');
+    await firebase.firestore().collection('stocks').doc(stockData.ticker).set(toUpload, {merge: true});
+    console.log("success uploading", stockData.ticker, "data to firestore");
+  }
+
   function displayArticles() {
-    console.log("Articles: ", articles);
+    //console.log("Articles: ", articles);
     return (
       <View>
         {articles.length > 0 && getArticleList()}
@@ -170,17 +206,93 @@ export default function DetailsScreen({route, navigation}) {
     );
   }
 
+  /*  Stock timeframe granularities 
+      1D -> displays data in 5 min increments 
+      1W -> displays data in 1 hour increments 
+      1M -> displays data in 1 hour increments  
+  */
+  function setLineDataGranularity(granularity) {
+    console.log("inside gran function, ", granularity);
+    let dateRange = getDateRange(granularity);
+    var startDate = dateRange[0]; 
+    var endDate = dateRange[1];
+    console.log("startDate: ", startDate);
+    console.log("endDate: ", endDate);
+    var filteredChartData = [];
+    for (var i = 0; i < lineChartData.length; i++) {
+      console.log(lineChartData[i].date);
+      if (granularity == "1D") { // no need to remove timestamps since we get 5 min data anyways 
+        if (lineChartData[i].date <=  endDate && lineChartData[i].date >= startDate ) {
+          filteredChartData.push(lineChartData[i]);
+        }
+      } else if (granularity == "1W") {
+        if (lineChartData[i].date <=  endDate && lineChartData[i].date >= startDate && lineChartData[i].date.getMinutes() == 0 ) { //gets days in week range 
+          filteredChartData.push(lineChartData[i]);
+        }
+      } else if (granularity == "1M") {
+        if (lineChartData[i].date <=  endDate && lineChartData[i].date >= startDate && lineChartData[i].date.getUTCHours() == 0) { //gets days in week range 
+          console.log(lineChartData[i].date);
+          filteredChartData.push(lineChartData[i]);
+        }
+      }
+    }
+    //let result2 = filteredChartData.map(a => a.date.toString());
+    //console.log("filtered dates:");
+    //console.log(result2);
+    setLineChartDataDisplay(filteredChartData);
+  }
+
+  /*
+  given a granularity, returns the date range needed to display 
+  NOTE: because polygon only gives us last day data, when 1D is selected we can only show data from 2 days ago :'(
+  */
+  function getDateRange(granularity) {
+    let res = [];
+    var endDate = new Date();
+    endDate.setDate(endDate.getDate()-1); 
+    endDate.setUTCHours(0,0,0,0);
+    var startDate = new Date();
+    if (granularity == "1D") {
+      startDate.setDate(startDate.getDate()-2); 
+    } else if (granularity == "1W") {
+      startDate.setDate(startDate.getDate()-8); 
+    } else if (granularity == "1M") {
+      startDate.setDate(startDate.getDate()-32); // if we have time we can change this to actual # of days in a month 
+    }
+    startDate.setUTCHours(0,0,0,0);
+    res.push(startDate);
+    res.push(endDate);
+    return res; 
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.button}>
       <Button
-          onPress={() => {
-            {chartFormat == "line"? setChartFormat("candlestick") : setChartFormat("line")}
-            
-          }}
+          onPress={() => {{chartFormat == "line"? setChartFormat("candlestick") : setChartFormat("line")}}}
           color="#ffffff"
           title={chartFormat == "line"?"Candlestick": "Line"}
         />
+      <Button
+          onPress={() => {{chartFormat == "line"? setLineDataGranularity("1D") : setCandleDataGranularity("1D")}}}
+          color="#ffffff"
+          title="1D"
+        />
+      <Button
+          onPress={() => {{chartFormat == "line"? setLineDataGranularity("1W") : setCandleDataGranularity("1W")}}}
+          color="#ffffff"
+          title="1W"
+        />
+      <Button
+          onPress={() => {{chartFormat == "line"? setLineDataGranularity("1M") : setCandleDataGranularity("1M")}}}
+          color="#ffffff"
+          title="1M"
+        />
+      {/* <Button
+        onPress={() => {uploadData()}}
+        color="#ffffff"
+        title="upload"
+      /> */}
       </View>
       <View style={styles.graph}>
         {chartFormat == "line"? createLineGraph() : createCandlestickGraph()}
