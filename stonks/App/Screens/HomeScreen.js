@@ -1,12 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Button, ActivityIndicator} from 'react-native';
+import { StyleSheet, Text, View, Button} from 'react-native';
 import firebase from 'firebase';
 
 import {firebaseInit} from '../Lib/Firebase';
 import {stockUpdater} from '../Lib/StockUpdater';
-import Login from './Login';
-import Buttons from '../Styles/Buttons';
+
 
 export default function HomeScreen({navigation}) {
   const [shouldShow, setShouldShow] = useState(false);

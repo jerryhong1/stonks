@@ -1,8 +1,7 @@
-import { StatusBar } from 'expo-status-bar';
 import React, { useState, setState} from 'react';
 import { StyleSheet, Text, View, TouchableOpacity} from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import DialogInput from 'react-native-dialog-input';
+import firebase from 'firebase';
 
 import Buttons from '../Styles/Buttons';
 
@@ -10,13 +9,39 @@ import Buttons from '../Styles/Buttons';
 export default function Welcome({route, navigation}) {
   const {name, email, username, balance} = route.params;
   const [curUser, setUsername] = useState(name);
-  const [curBalance, setBalance] = useState(balance);
+  const [defaultBalance, setDefaultBalance] = useState(balance);
+  const [dialogVisible, setDialogVisible] = useState(true);
+
+  const updateBalance = async (inputText) => {
+    try {
+        const user = firebase.auth().currentUser;  // Not safe, but fine for now
+        const userDoc = firebase.firestore().collection('users').doc(user.uid);
+        userDoc.set({
+          balance: Number(inputText),
+          startingBalance: Number(inputText),
+        }, {merge: true});
+        console.log(inputText);
+    } catch (error) {
+        console.log(error);
+    }
+}
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}> Welcome to Stonks{curUser ? `, ${curUser}` : ''}. </Text>
-      <Text style={styles.subtitle}> You have ${curBalance} in your account. </Text>
-
+      <Text style={styles.subtitle}> You have ${defaultBalance} in your account. </Text>
+      <DialogInput isDialogVisible={dialogVisible}
+        title={"What is your preferred starting balance?"}
+        message={"We recommend starting with at least $1000."}
+        hintInput ={"$1000"}
+        submitInput={ (inputText) => {
+          setDefaultBalance(inputText)
+          setDialogVisible(false)
+          updateBalance(inputText)
+        } }
+        closeDialog={ () => {  setDialogVisible(false);
+        }}>
+      </DialogInput>
       <TouchableOpacity style={Buttons.button}
         onPress={() => navigation.navigate('TabScreen')}
       >

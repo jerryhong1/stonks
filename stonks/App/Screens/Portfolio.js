@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import { StyleSheet, Text, View, TextInput, SafeAreaView, Dimensions, TouchableOpacity, Image, FlatList} from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, Dimensions, TouchableOpacity, Image} from 'react-native';
 import firebase from 'firebase';
-
 import Buttons from "../Styles/Buttons";
 import StockList, { fullStockDict }  from "../Components/StockList";
 
@@ -13,7 +12,7 @@ function EmptyState({navigation}) {
         <TouchableOpacity style={Buttons.smallButton}
             onPress={() => navigation.navigate('Search')}
         >
-            <Text style={Buttons.buttontext}> Buy stocks</Text>
+            <Text style={Buttons.buttontext}> Buy Stocks</Text>
         </TouchableOpacity>
     </>
     )
@@ -23,8 +22,10 @@ export default function Portfolio({navigation}) {
     // total assets = balance (aka "buying power") + calculated from stock
     const [totalAssets, setTotalAssets] = useState(0);
     const [balance, setBalance] = useState(0);
+    const [startingBalance, setStartingBalance] = useState(0);
     const [portfolio, setPortfolio] = useState({});
     const [stockList, setStockList] = useState([]);
+    const [changeInAssets, setChangeInAssets] = useState(0);
     
     const reloadUserData = async () => {
         try {
@@ -33,7 +34,7 @@ export default function Portfolio({navigation}) {
             const userSnapshot = await userDoc.get();
             const userData = userSnapshot.data();
             // console.log("User Data", userData);
-
+            setStartingBalance(userData.startingBalance);
             setBalance(userData.balance);
             setPortfolio(userData.portfolio);
         } catch (error) {
@@ -86,6 +87,7 @@ export default function Portfolio({navigation}) {
           } 
         );
         setTotalAssets(stockAssets + balance);
+        setChangeInAssets(stockAssets + balance - startingBalance);
       }
     }, [balance, portfolio])
     
@@ -100,9 +102,11 @@ export default function Portfolio({navigation}) {
             {/* Your portfolio statistics */}
             <View style={styles.urPrtflio}> 
                 <Text style = {{color: "white", fontSize: 16}} >{`Total Value of Assets`} </Text> 
-                <Text style = {{color: "white", fontSize: 32, marginTop: 5, fontWeight: 'bold'}} >${totalAssets} </Text> 
-                <Text style = {{color: "green", fontSize: 16, marginTop: 5}} >↗ $50.00 (5%) </Text>
-                <Text style = {{color: "white", fontSize: 16, marginTop: 5}} >${balance} of buying power</Text>
+                <Text style = {{color: "white", fontSize: 32, marginTop: 5, fontWeight: 'bold'}} >${totalAssets.toFixed(2)} </Text> 
+                <Text style = {{color: changeInAssets < 0? "red" : "green", fontSize: 16, marginTop: 5}} >
+                  {changeInAssets < 0? "↘" : "↗"} ${Math.abs(changeInAssets).toFixed(2)} ({(100*(changeInAssets/totalAssets)).toFixed(2)}%) 
+                </Text>
+                <Text style = {{color: "white", fontSize: 16, marginTop: 5}} >${balance.toFixed(2)} of buying power</Text>
             </View>
             
             {/* Your stocks list TODO: feed in list from docs */}

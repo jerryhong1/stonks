@@ -1,14 +1,6 @@
 import React from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  Button,
-  TouchableOpacity,
-} from 'react-native';
-
+import { StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-
 
 export default function StockItem(props) {
     const navigation = useNavigation();
@@ -26,7 +18,7 @@ export default function StockItem(props) {
             <View style={styles.qtyAndChange}>
                 {data.count && <Text style={{color: "white", marginRight: 8}}>{data.count} ×</Text>}            
                 <View style={styles.dailyChangeBox}> 
-                    <Text style={{color: "white", margin: 3}}> {'$' + data.currPrice} </Text>
+                    <Text style={{color: "white", margin: 3}}> {'$' + data.currPrice.toFixed(2)} </Text>
                 </View> 
             </View>
        </TouchableOpacity>

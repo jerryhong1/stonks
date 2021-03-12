@@ -1,12 +1,6 @@
 import React, { useState, setState} from 'react';
-import { StyleSheet, Text, SafeAreaView, View, TextInput, Dimensions, TouchableOpacity, Image, Keyboard, FlatList} from 'react-native';
-
-import Buttons from "../Styles/Buttons";
-import {Ionicons} from '@expo/vector-icons';
-
-// import StockItem from "../Components/StockItem";
+import { StyleSheet, Text, SafeAreaView, View, TextInput, Dimensions, Keyboard} from 'react-native';
 import StockList from "../Components/StockList";
-
 
 export default function Search({navigation}) {
 
