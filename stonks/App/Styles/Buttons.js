@@ -9,7 +9,7 @@ export const StonksTouchable = styled.TouchableOpacity`
   backgroundColor: ${props => props.variant === "secondary" ? "#000" : props.disabled ? colors.GREEN + '66' : colors.GREEN};
   fontSize: 40px;
   color: ${props => props.variant === "secondary" ? "#000" : colors.GREEN};
-  width: ${props => props.width || Dimensions.get('window').width * .6};
+  width: ${props => props.width || Dimensions.get('window').width * .6}px;
   padding: 8px;
   margin: 6px;
   borderRadius: 4px;

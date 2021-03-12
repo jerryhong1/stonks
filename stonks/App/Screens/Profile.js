@@ -114,7 +114,7 @@ export default function Profile({navigation}) {
         <View style={styles.profileAndName}>
             <View>
                 <TouchableHighlight onPress={selectImage}>
-                    <View> 
+                    <View style={{marginLeft: 16}}> 
                         <Image
                             source={propic? {uri: propic} : require('../../imgs/profile.png')}
                             style={styles.propic}
@@ -186,18 +186,25 @@ const styles = StyleSheet.create({
         paddingTop: 16,
         flexDirection: 'row',
         alignItems: 'flex-start',
-        justifyContent: 'flex-start'
+        justifyContent: 'flex-start',
+        paddingBottom: 12
     },
     propic: {
         height: undefined,
         width: 120,
-        marginLeft: 16,
         aspectRatio: 1,
         borderRadius: 100,
         marginBottom: 24,
     },
     accountInfo: {
         marginLeft: 24,
+    },
+    transactionsAndBalance: {
+        flex: 2,
+        marginLeft: 16,
+        marginRight: 16,
+        color: 'white',
+        alignItems: 'flex-start',
     },
     graph: {
         flex: 2,
