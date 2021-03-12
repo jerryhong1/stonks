@@ -113,18 +113,48 @@ export default function ModalScreen({route, navigation}) {
         } 
       </View>
       <View style={styles.content}>
-        <TextInput
-          style={styles.inputField}
-          placeholder={'Quantity to ' + buyOrSell}
-          keyboardType='number-pad'
-          placeholderTextColor='grey'
-          onChangeText = {handleQty}
-        />
-        {/* Displays error messages based on whether the user is buying or selling. */}
-        {qty!== 0 && <Text style={{ color: "white", fontSize: 16 }}>${stockData.currPrice} × {qty} = ${cost}</Text>}
-        {buyOrSell === "Purchase" && qty * stockData.currPrice > balance && <Text style={{ color: "red", fontSize: 16 }}>Not enough balance.</Text>}
-        {buyOrSell === "Sell" && !portfolio[stockData.ticker] && <Text style={{ color: "red", fontSize: 16 }}>No stocks to sell.</Text>}
-        {buyOrSell === "Sell" && qty > portfolio[stockData.ticker] && <Text style={{ color: "red", fontSize: 16 }}>Not enough stocks to sell.</Text>}
+
+	  {/* Shares to Purchase */}
+		<View style={styles.row}> 
+			<View style={styles.leftLabel}> 
+				<Text style={styles.labelText}># of Shares to {buyOrSell} </Text> 
+			</View> 
+
+			<View style={styles.righthandView}> 
+				<TextInput
+          autoFocus
+					style={styles.inputField}
+					placeholder='0'
+					keyboardType='number-pad'
+					placeholderTextColor='grey'
+					onChangeText = {handleQty}
+					color='white'
+					fontSize={18}
+				/>
+			</View>
+		</View> 
+
+		{/* Curr Market Price */}
+		<View style={styles.row}> 
+			<View style={styles.leftLabel}> 
+				<Text style={styles.labelText}>Current Market Price</Text> 
+			</View>
+
+			<View style={styles.righthandView}> 
+				<Text style={styles.labelText}>${stockData.currPrice}</Text> 
+			</View>
+		</View> 
+
+		{/* Estimated Cost */}
+		<View style={{...styles.row, borderWidth: 0}}> 
+			<View style={styles.leftLabel}> 
+				<Text style={styles.labelText}>Estimated Cost</Text> 
+			</View>
+
+			<View style={styles.righthandView}> 
+				{<Text style={qty === 0 ? styles.defaultEstCost : {...styles.labelText, fontWeight: '600'}}>${cost}</Text>}
+			</View>
+		</View> 
         
         {/* Purchase and Cancel. */}
         <TouchableOpacity 
@@ -163,11 +193,33 @@ const styles = StyleSheet.create({
     flex: 8,
     alignItems: "center"
   },
-  inputField: {
-    backgroundColor: 'white',
-    width: Dimensions.get('window').width * .6,
-    borderRadius: 10,
-    padding: 10,
-    margin: 5
+//   inputField: {
+// 	width: '100%',
+//   },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+    margin: 4,
+    height: 48,
+    width: Dimensions.get('window').width * .9,
+    borderBottomColor: 'white',
+    borderWidth: 1,
+  },
+  leftLabel: {
+    width: '70%',
+  },
+  righthandView: {
+    width: '30%',
+    alignItems: 'flex-end',
+  },
+  labelText: {
+    color: 'white', 
+    fontSize: 18
+  },
+
+  defaultEstCost: {
+	  color: 'grey', 
+    fontSize: 18
   },
 })
