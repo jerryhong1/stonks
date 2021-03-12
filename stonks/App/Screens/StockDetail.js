@@ -206,12 +206,9 @@ export default function DetailsScreen({route, navigation}) {
       1W -> displays data in 1 hour increments 
       1M -> displays data in 1 hour increments  
   */
-  //TODO make global var for ALL chart data and one for displayed chart data 
   function setLineDataGranularity(granularity) {
     console.log("inside gran function, ", granularity);
     let dateRange = getDateRange(granularity);
-    // var startDate = new Date("2021-02-25"); 
-    // var endDate = new Date("2021-02-26");
     var startDate = dateRange[0]; 
     var endDate = dateRange[1];
     console.log("startDate: ", startDate);
@@ -219,15 +216,23 @@ export default function DetailsScreen({route, navigation}) {
     var filteredChartData = [];
     for (var i = 0; i < lineChartData.length; i++) {
       if (granularity == "1D") { // no need to remove timestamps since we get 5 min data anyways 
-        console.log(lineChartData[i].date);
         if (lineChartData[i].date <=  endDate && lineChartData[i].date >= startDate ) {
+          filteredChartData.push(lineChartData[i]);
+        }
+      } else if (granularity == "1W") {
+        if (lineChartData[i].date <=  endDate && lineChartData[i].date >= startDate && lineChartData[i].date.getMinutes() == 0 ) { //gets days in week range 
+          filteredChartData.push(lineChartData[i]);
+        }
+      } else if (granularity == "1M") {
+        if (lineChartData[i].date <=  endDate && lineChartData[i].date >= startDate && lineChartData[i].date.getUTCHours() == 0) { //gets days in week range 
+          console.log(lineChartData[i].date);
           filteredChartData.push(lineChartData[i]);
         }
       }
     }
-    let result2 = filteredChartData.map(a => a.date.toString());
-    console.log("filtered dates:");
-    console.log(result2);
+    //let result2 = filteredChartData.map(a => a.date.toString());
+    //console.log("filtered dates:");
+    //console.log(result2);
     setLineChartDataDisplay(filteredChartData);
   }
 
@@ -243,7 +248,11 @@ export default function DetailsScreen({route, navigation}) {
     var startDate = new Date();
     if (granularity == "1D") {
       startDate.setDate(startDate.getDate()-2); 
-    } 
+    } else if (granularity == "1W") {
+      startDate.setDate(startDate.getDate()-8); 
+    } else if (granularity == "1M") {
+      startDate.setDate(startDate.getDate()-32); // if we have time we can change this to actual # of days in a month 
+    }
     startDate.setUTCHours(0,0,0,0);
     res.push(startDate);
     res.push(endDate);
@@ -262,6 +271,16 @@ export default function DetailsScreen({route, navigation}) {
           onPress={() => {{chartFormat == "line"? setLineDataGranularity("1D") : setCandleDataGranularity("1D")}}}
           color="#ffffff"
           title="1D"
+        />
+      <Button
+          onPress={() => {{chartFormat == "line"? setLineDataGranularity("1W") : setCandleDataGranularity("1W")}}}
+          color="#ffffff"
+          title="1W"
+        />
+      <Button
+          onPress={() => {{chartFormat == "line"? setLineDataGranularity("1M") : setCandleDataGranularity("1M")}}}
+          color="#ffffff"
+          title="1M"
         />
       <Button
         onPress={() => {uploadData()}}
