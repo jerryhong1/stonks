@@ -1,0 +1,11 @@
+{
+  "name": "firebase_script",
+  "version": "1.0.0",
+  "description": "",
+  "main": "firebase_script.js",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "firebase-admin": "^9.5.0"
+  }
+}
