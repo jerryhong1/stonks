@@ -1,7 +1,7 @@
 import firebase from 'firebase';
 import 'firebase/firestore';
 
-const UPDATE_INTERVAL = 60000; // 1 minute
+const UPDATE_INTERVAL = 15000; // 15 seconds
 const POLYGON_KEY = "VfpjQL3hxlS56WBVpmcslVQ5jCwm7U2m"
 const POLYGON_URL = "https://api.polygon.io/v2/aggs/" //base url for aggs calls 
 
@@ -47,24 +47,28 @@ function tryStockUpdate() {
       const doc = await t.get(globalStocksDoc);
 
       // Timestamps in minutes
-      const remoteTimestamp = doc.get('update_timestamp');
+      const data = doc.data();
       const rawTimestamp = Date.now(); // UTC timezone, to convert to another timezone you will need to add/sub the appropriate number of hours
       const localTimestamp = Math.floor(rawTimestamp / UPDATE_INTERVAL); // Convert from ms to minutes
+      const ticker = data.stockList[data.stockListIndex];
 
-      // Update timestamp if no other user has already updated it
-      if (remoteTimestamp < localTimestamp) {
+      // Update timestamp and increment stock list index if no other user has
+      // already updated it
+      if (data.update_timestamp < localTimestamp) {
         return Promise.all([
+          ticker,
           localTimestamp,
           t.update(globalStocksDoc, {
-            update_timestamp: localTimestamp
+            update_timestamp: localTimestamp,
+            stockListIndex: (data.stockListIndex + 1) % data.stockList.length
           })
         ]);
       } else {
         // Fail if another user updated the timestamp before us
         throw 'too slow!';
       }
-    }).then(([endTimestamp]) => {
-      updateStockData(endTimestamp * UPDATE_INTERVAL);
+    }).then(([ticker, localTimestamp]) => {
+      updateStockData(ticker, localTimestamp * UPDATE_INTERVAL);
     }).catch((error) => {
       console.log(error);
     });
@@ -88,8 +92,7 @@ function formatDate(date) {
 
 // Actually update stock data if you become the delegate. Don't call this
 // outside of this library.
-async function updateStockData(endTimestamp) {
-  const ticker = "GME"; // we need to determine what all our stocks are to update 
+async function updateStockData(ticker, endTimestamp) {
   const stockDocRef = firebase.firestore().collection('stocks').doc(ticker);
 
   // Convert timestamps to UTC strings, subtracting one day due to polygon only updating at EOD
@@ -102,7 +105,8 @@ async function updateStockData(endTimestamp) {
   if (startTimestamp === undefined) {
     // Reset to the start of the trading day one month ago
     startTimestamp = new Date();
-    startTimestamp.setUTCMonth(startTimestamp.getUTCMonth() - 1);
+    //startTimestamp.setUTCMonth(startTimestamp.getUTCMonth() - 1);
+    startTimestamp.setUTCDate(startTimestamp.getUTCDate() - 2); // TODO: switch back
     startTimestamp.setUTCHours(0);
   }
   const startDate = new Date(startTimestamp);
