@@ -7,7 +7,7 @@ import firebase from 'firebase';
 import { StonksIconButton } from '../Styles/Buttons';
 import StockList from '../Components/TransactionList'
 import * as T from '../Styles/text'
-import {timeSince, formatMoney} from '../Lib/Utils';
+import {formatMoney} from '../Lib/Utils';
 
 
 function TransactionGraph({lineChartData}) {
@@ -111,23 +111,6 @@ export default function Profile({navigation}) {
           chartData.push(datapoint);
         }
         return chartData;
-    }
-
-    function createGraph() {
-        return (<View></View>)
-        // (
-        //     <VictoryChart theme={chartTheme} containerComponent={<VictoryVoronoiContainer/>}>
-                
-        //         <VictoryLine
-        //             // height={300} 
-        //             // domainPadding={{y: [8, 8]}} 
-        //             // padding={{ top: 5, bottom: 10 }} 
-        //             // theme={VictoryTheme.material} 
-        //             data={lineChartData}
-        //             style={{data: {stroke: "white", strokeWidth: 1}}}
-        //         />
-        //     </VictoryChart> 
-        // );
     }
 
     return (
