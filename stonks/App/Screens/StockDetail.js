@@ -57,13 +57,15 @@ export default function DetailsScreen({route, navigation}) {
   const [lineChartData, setLineChartData] = useState([0,0]); //ALL available data we have 
   const [candlestickChartData, setCandlestickChartData] = useState([0,0,0,0,0]);  //ALL available data we have
   const [lineChartDataDisplay, setLineChartDataDisplay] = useState([0,0]); //data to be DISPLAYED
+  const [candlestickChartDataDisplay, setCandlestickChartDataDisplay] = useState([0,0]); //data to be DISPLAYED
   const [stockdesc, setStockDesc] = useState(""); 
   const stockData = route.params.data;
   const buy = "Purchase";
   const sell = "Sell";
   const [chartFormat, setChartFormat] = useState("line"); 
   const [articles, setArticles] = useState([]);
-  
+  const [timeframe, setTimeframe] = useState("1D");
+
   // Get stock data for a particular stock from firebase //TODO: Once StockList pulls from firebase, should this still write to firebase?
   useEffect(() => {
     const getStockData = async () => {
@@ -77,7 +79,7 @@ export default function DetailsScreen({route, navigation}) {
       setStockDesc(stockDataFirebase.description);
       const response = await getArticles(stockData.company);
       setArticles(response.articles);
-
+      setLineChartDataDisplay(lineChartData);
       //if you want to write some data uncomment below and:
       // change stockdata to the data you want to upload
       // change the below firebase.set command to the correct stock you want to upload data to
@@ -105,26 +107,26 @@ export default function DetailsScreen({route, navigation}) {
       var datapoint = {x: i, y: data[i].vw, label: label, date: date}
       chartData.push(datapoint)
     }
-    setLineChartDataDisplay(lineChartData);
     return chartData;
   }
 
   function createLineGraph() {
-      return (
-        <VictoryGroup theme={VictoryTheme.material} height={150} domainPadding={{y: [8, 8]}} padding={{ top: 5, bottom: 12 }} containerComponent={<VictoryVoronoiContainer/>}>
-          <VictoryLine 
-            labelComponent={ <VictoryTooltip renderInPortal={false} flyoutComponent={<CustomFlyout/>}
-                             flyoutStyle={{stroke: "none", fill: "black"}} y={60}
-                             style={{fill: "white"}}/>}
-            labels={({ datum }) => datum.x + datum.label}
-            style={{data: { stroke: "red" }}}
-            theme={VictoryTheme.material}
-            data={lineChartDataDisplay}
-            x="x"
-            y="y"
-          />
-        </VictoryGroup>
-      );
+    //setChartDataGranularity(timeframe, "line", lineChartData);
+    return (
+      <VictoryGroup theme={VictoryTheme.material} height={150} domainPadding={{y: [8, 8]}} padding={{ top: 5, bottom: 12 }} containerComponent={<VictoryVoronoiContainer/>}>
+        <VictoryLine 
+          labelComponent={ <VictoryTooltip renderInPortal={false} flyoutComponent={<CustomFlyout/>}
+                            flyoutStyle={{stroke: "none", fill: "black"}} y={60}
+                            style={{fill: "white"}}/>}
+          labels={({ datum }) => datum.x + datum.label}
+          style={{data: { stroke: "red" }}}
+          theme={VictoryTheme.material}
+          data={lineChartDataDisplay}
+          x="x"
+          y="y"
+        />
+      </VictoryGroup>
+    );
   }
 
   function createCandlestickGraph() {
@@ -136,7 +138,7 @@ export default function DetailsScreen({route, navigation}) {
         containerComponent={<VictoryVoronoiContainer/>}
         theme={VictoryTheme.material} 
         candleColors={{ positive: "green", negative: "red" }}
-        data={candlestickChartData}
+        data={candlestickChartDataDisplay}
         style={{data: {stroke: "white", strokeWidth: 1}}}
       />
 
@@ -206,41 +208,60 @@ export default function DetailsScreen({route, navigation}) {
     );
   }
 
-  /*  Stock timeframe granularities 
+  /*  Stock timeframe granularities for line chart 
       1D -> displays data in 5 min increments 
       1W -> displays data in 1 hour increments 
       1M -> displays data in 1 hour increments  
+
+      Stock timeframe granularities for candlestick chart 
+      1D -> displays data in 10 min increments 
+      1W -> displays data in 1 hour increments 
+      1M -> displays data in 1 hour increments  
   */
-  function setLineDataGranularity(granularity) {
-    console.log("inside gran function, ", granularity);
-    let dateRange = getDateRange(granularity);
-    var startDate = dateRange[0]; 
-    var endDate = dateRange[1];
-    console.log("startDate: ", startDate);
-    console.log("endDate: ", endDate);
-    var filteredChartData = [];
-    for (var i = 0; i < lineChartData.length; i++) {
-      console.log(lineChartData[i].date);
-      if (granularity == "1D") { // no need to remove timestamps since we get 5 min data anyways 
-        if (lineChartData[i].date <=  endDate && lineChartData[i].date >= startDate ) {
-          filteredChartData.push(lineChartData[i]);
-        }
-      } else if (granularity == "1W") {
-        if (lineChartData[i].date <=  endDate && lineChartData[i].date >= startDate && lineChartData[i].date.getMinutes() == 0 ) { //gets days in week range 
-          filteredChartData.push(lineChartData[i]);
-        }
-      } else if (granularity == "1M") {
-        if (lineChartData[i].date <=  endDate && lineChartData[i].date >= startDate && lineChartData[i].date.getUTCHours() == 0) { //gets days in week range 
-          console.log(lineChartData[i].date);
-          filteredChartData.push(lineChartData[i]);
+ function setChartDataGranularity(granularity, type, data) {
+  let dateRange = getDateRange(granularity);
+  var startDate = dateRange[0]; 
+  var endDate = dateRange[1];
+  console.log("startDate: ", startDate);
+  console.log("endDate: ", endDate);
+  console.log(type)
+  var filteredChartData = [];
+  for (var i = 0; i < data.length; i++) {
+    let date;
+    if (type == "line") {
+      date = data[i].date;
+    } else if (type == "candlestick") {
+      date = data[i].x;
+    }
+    if (granularity == "1D") { // no need to remove timestamps since we get 5 min data anyways 
+      if (date <=  endDate && date >= startDate ) {
+        if (type == "candlestick" && (date.getMinutes() % 10) == 0 ) {
+          filteredChartData.push(data[i]);
+        } else if (type == "line") {
+          filteredChartData.push(data[i]);
         }
       }
+    } else if (granularity == "1W") {
+      if (date <=  endDate && date >= startDate && date.getMinutes() == 0 ) { //gets days in week range 
+        filteredChartData.push(data[i]);
+      }
+    } else if (granularity == "1M") {
+      if (date <=  endDate && date >= startDate && date.getUTCHours() == 0) { //gets days in week range 
+        filteredChartData.push(data[i]);
+      }
     }
-    //let result2 = filteredChartData.map(a => a.date.toString());
-    //console.log("filtered dates:");
-    //console.log(result2);
-    setLineChartDataDisplay(filteredChartData);
   }
+  if (type == "candlestick") {
+    let result2 = filteredChartData.map(a => a.x.toString());
+    console.log("filtered dates:");
+    console.log(result2)
+  }
+  if (type == "line") {
+    setLineChartDataDisplay(filteredChartData);
+  } else if (type == "candlestick") {
+    setCandlestickChartDataDisplay(filteredChartData);
+  }
+}
 
   /*
   given a granularity, returns the date range needed to display 
@@ -273,18 +294,18 @@ export default function DetailsScreen({route, navigation}) {
           color="#ffffff"
           title={chartFormat == "line"?"Candlestick": "Line"}
         />
-      <Button
-          onPress={() => {{chartFormat == "line"? setLineDataGranularity("1D") : setCandleDataGranularity("1D")}}}
+        <Button
+          onPress={() => {{chartFormat == "line"? setChartDataGranularity("1D", "line", lineChartData) : setChartDataGranularity("1D", "candlestick", candlestickChartData)}}}
           color="#ffffff"
           title="1D"
         />
-      <Button
-          onPress={() => {{chartFormat == "line"? setLineDataGranularity("1W") : setCandleDataGranularity("1W")}}}
+        <Button
+          onPress={() => {{chartFormat == "line"? setChartDataGranularity("1W", "line", lineChartData) : setChartDataGranularity("1W", "candlestick", candlestickChartData)}}}
           color="#ffffff"
           title="1W"
         />
-      <Button
-          onPress={() => {{chartFormat == "line"? setLineDataGranularity("1M") : setCandleDataGranularity("1M")}}}
+        <Button
+          onPress={() => {{chartFormat == "line"? setChartDataGranularity("1M", "line", lineChartData) : setChartDataGranularity("1M", "candlestick", candlestickChartData)}}}
           color="#ffffff"
           title="1M"
         />
