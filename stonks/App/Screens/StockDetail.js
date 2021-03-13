@@ -103,7 +103,9 @@ export default function DetailsScreen({route, navigation}) {
     var chartData = [];
     for (var i = 0; i < data.length; i++) {
       var date = new Date((data[i].t));
-      var label = convertMillisToDay(date) + "\n $" + (data[i].vw.toFixed(2)).toString()// t is the Unix Msec timestamp for the start of the aggregate window
+      var labeldate = new Date((data[i].t));
+      labeldate.setDate(labeldate.getDate()+7); 
+      var label = convertMillisToDay(labeldate) + "\n $" + (data[i].vw.toFixed(2)).toString()// t is the Unix Msec timestamp for the start of the aggregate window
       var datapoint = {x: i, y: data[i].vw, label: label, date: date}
       chartData.push(datapoint)
     }
@@ -235,7 +237,7 @@ export default function DetailsScreen({route, navigation}) {
     }
     if (granularity == "1D") { // no need to remove timestamps since we get 5 min data anyways 
       if (date <=  endDate && date >= startDate ) {
-        if (type == "candlestick" && (date.getMinutes() % 10) == 0 ) {
+        if (type == "candlestick" && (date.getMinutes() % 30) == 0 ) {
           filteredChartData.push(data[i]);
         } else if (type == "line") {
           filteredChartData.push(data[i]);
@@ -246,13 +248,18 @@ export default function DetailsScreen({route, navigation}) {
         filteredChartData.push(data[i]);
       }
     } else if (granularity == "1M") {
-      if (date <=  endDate && date >= startDate && date.getUTCHours() == 0) { //gets days in week range 
+      if (date <=  endDate && date >= startDate && date.getMinutes() == 0) { //gets days in week range 
         filteredChartData.push(data[i]);
       }
     }
   }
   // if (type == "candlestick") {
   //   let result2 = filteredChartData.map(a => a.x.toString());
+  //   console.log("filtered dates:");
+  //   console.log(result2)
+  // }
+  // if (type == "line") {
+  //   let result2 = filteredChartData.map(a => a.date.toString());
   //   console.log("filtered dates:");
   //   console.log(result2)
   // }
@@ -270,15 +277,15 @@ export default function DetailsScreen({route, navigation}) {
   function getDateRange(granularity) {
     let res = [];
     var endDate = new Date();
-    endDate.setDate(endDate.getDate()-1); 
+    endDate.setDate(endDate.getDate()-7); 
     endDate.setUTCHours(0,0,0,0);
     var startDate = new Date();
     if (granularity == "1D") {
-      startDate.setDate(startDate.getDate()-2); 
-    } else if (granularity == "1W") {
       startDate.setDate(startDate.getDate()-8); 
+    } else if (granularity == "1W") {
+      startDate.setDate(startDate.getDate()-14); 
     } else if (granularity == "1M") {
-      startDate.setDate(startDate.getDate()-32); // if we have time we can change this to actual # of days in a month 
+      startDate.setDate(startDate.getDate()-39); // if we have time we can change this to actual # of days in a month 
     }
     startDate.setUTCHours(0,0,0,0);
     res.push(startDate);
@@ -289,13 +296,13 @@ export default function DetailsScreen({route, navigation}) {
   return (
     <View style={styles.container}>
       <View style={styles.button}>
-        <View style={styles.chartTypeButton}> 
+        {/* <View style={styles.chartTypeButton}> 
           <TouchableOpacity onPress={() => {{chartFormat == "line"? setChartFormat("candlestick") : setChartFormat("line")}}}>
               <Text style={styles.buttonText}>
                 {chartFormat == "line"?"Candlestick": "      Line       "}
               </Text>
           </TouchableOpacity> 
-        </View>
+        </View> */}
         <View style={styles.timeframeButton}> 
           <TouchableOpacity onPress={() => {{chartFormat == "line"? setChartDataGranularity("1D", "line", lineChartData) : setChartDataGranularity("1D", "candlestick", candlestickChartData)}}}>
               <Text style={styles.buttonText}>1D</Text>
