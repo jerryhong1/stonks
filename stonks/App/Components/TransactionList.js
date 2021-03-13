@@ -30,10 +30,10 @@ function TransactionItem({transaction}) {
 
 // NOTE: this also needs to accept a parameter from search that filters 
 export default function StockList({transactions}) {
-    console.log("transactions", transactions);
+    // console.log("transactions", transactions);
     const renderTransactionItem = ({ index, item }) => {
         let transaction = item
-        console.log(transaction)
+        // console.log(transaction)
         return transaction ? <TransactionItem transaction={transaction} /> : null
     };
     

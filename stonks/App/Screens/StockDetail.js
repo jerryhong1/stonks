@@ -200,9 +200,8 @@ export default function DetailsScreen({route, navigation}) {
   }
 
   function displayArticles() {
-    //console.log("Articles: ", articles);
     return (
-      <View>
+      <View style={{marginBottom: 200}}>
         {articles.length > 0 && getArticleList()}
         {articles.length === 0 && <Text style={{color: 'white', margin: 10}}> No top headlines to display for this stock. </Text>}
       </View>
