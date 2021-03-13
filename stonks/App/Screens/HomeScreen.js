@@ -1,65 +1,68 @@
-import { StatusBar } from 'expo-status-bar';
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Button} from 'react-native';
-import firebase from 'firebase';
+import React, {useEffect} from 'react';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import {firebaseInit} from '../Lib/Firebase';
-import {stockUpdater} from '../Lib/StockUpdater';
+import Portfolio from './Portfolio';
+import Profile from './Profile';
+import Search from './Search';
+import Education from './Education';
 
 
-export default function HomeScreen({navigation}) {
-  const [shouldShow, setShouldShow] = useState(false);
+import {Ionicons} from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 
-  // Call once only on mount
-  useEffect(() => {
-    // Initialize app
-    if (firebase.apps.length === 0) {
-      firebaseInit();
-    }
 
-    // Check if user is already signed in
-    const authUnsubscribe = firebase.auth().onAuthStateChanged((user) => {
-      // Don't need to keep calling this every time auth state changes,
-      // unsubscribe after first call.
-      authUnsubscribe();
+const Tab = createBottomTabNavigator();
 
-      // Navigate to portfolio if already signed in
-      if (user) {
-        navigation.navigate('TabScreen');
-      } else {
-        setShouldShow(true);
-      }
-    });
-
-    // Update stock data once per minute
-    const unsub = stockUpdater();
-    return unsub;
-  }, []);
-
+export default function HomeScreen() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}> stonks </Text>
-      <StatusBar style='auto' />
-      {
-        shouldShow ?
-        <Button title='Login or Create Account'
-          onPress={() => navigation.navigate('Login')}
-        />
-        : null
+    <Tab.Navigator
+      tabBarOptions={{
+        showLabel:false,
+        inactiveBackgroundColor: 'black',
+        activeBackgroundColor: '#1EDD4E',
+      }}
+    >
+      <Tab.Screen 
+        name='Stocks' 
+        component={Portfolio} 
+        options={{
+          tabBarLabel: 'Stocks',
+          tabBarIcon: () => (
+            <FontAwesome name='line-chart' size={28} color='white' />
+          ),
+        }
       }
-    </View>
+      />
+      <Tab.Screen 
+        name='Search' 
+        component={Search}
+        options={{
+          tabBarLabel: 'Search',
+          tabBarIcon: () => (
+            <Ionicons name='ios-search-outline' size={28} color='white' />                
+          ),
+        }}
+      />
+      <Tab.Screen 
+        name='Education' 
+        component={Education}
+        options={{
+          tabBarLabel: 'Edcucation',
+          tabBarIcon: () => (
+            <FontAwesome name='graduation-cap' size={28} color='white' />                
+          ),
+        }}
+      />
+      <Tab.Screen 
+        name='Profile' 
+        component={Profile}
+        options={{
+          tabBarLabel: 'Profile',
+          tabBarIcon: () => (
+            <FontAwesome name='user-circle-o' size={28} color='white' />                
+          ),
+        }}
+      />
+    </Tab.Navigator>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#000',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  text: {
-    fontSize: 40,
-    color: '#fff'
-  }
-});

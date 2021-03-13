@@ -14,10 +14,15 @@ import {formatMoney} from '../Lib/Utils';
 function EmptyState({navigation}) {
     return (
     <View style={{marginTop: 24}}>
-        <T.H2 style={{textAlign: "center", marginBottom: 8}}>No stocks yet.</T.H2>
+        <T.H2 style={{textAlign: "center", marginBottom: 16}}>No stocks yet.</T.H2>
         <StonksButton 
             onPress={() => navigation.navigate('Search')}
             text={"Buy Stocks"}
+        />
+        <StonksButton 
+            onPress={() => navigation.navigate('Education')}
+            variant={"secondary"}
+            text={"Learn more about stocks"}
         />
     </View>
     )
@@ -98,21 +103,14 @@ export default function Portfolio({navigation}) {
     
     return (
         <SafeAreaContainer>
-            {/* graph view */}
-            <View style={styles.graph}> 
-                <Image source={require('../../imgs/stonksGoUp.png')}/>
-            </View>
-            <TouchableOpacity style={styles.education}
-              onPress={() => navigation.navigate('Education')}
-            >
-              <Text style={styles.title}>Would you like to learn more about the stock market before you start trading? </Text>
-            </TouchableOpacity>
-
+            {/* TODO: graph view */}
             {/* Your portfolio statistics */}
             <View style={styles.urPrtflio}> 
                 <T.H4>{`Total Value of Assets`}</T.H4> 
                 <T.H1>{formatMoney(totalAssets)} </T.H1> 
-                <T.P style = {{color: changeInAssets < 0 ? colors.RED : colors.GREEN}} >{changeInAssets < 0? "↘" : "↗"} {formatMoney(changeInAssets)} ({(100*(changeInAssets/totalAssets)).toFixed(2)}%) </T.P>
+                <T.P style = {{color: changeInAssets < 0 ? colors.RED : changeInAssets == 0 ? colors.SUBTLE_TEXT : colors.GREEN}} >
+                  {changeInAssets < 0? "↘" : changeInAssets == 0 ? "-" : "↗"} {formatMoney(changeInAssets)} ({(100*(changeInAssets/totalAssets)).toFixed(2)}%) 
+                </T.P>
                 <T.P style = {{marginTop: 4}} >{formatMoney(balance)} of buying power</T.P>
             </View>
             
