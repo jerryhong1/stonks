@@ -53,7 +53,7 @@ export default function ModalScreen({route, navigation}) {
     // 5. Display message indicating purchased stocks and navigate to portfolio.
     alert(`You just ${buyOrSell === "Purchase"? "bought" : "sold"} ${qty} stock(s) of ${stockData.company} at ${formatMoney(stockData.currPrice)} for ${formatMoney(total_cost)}`);
     
-    navigation.navigate('TabScreen');
+    navigation.navigate('Home');
   }
 
   async function updateTransaction (qtyChanged) {

@@ -1,7 +1,7 @@
 import firebase from 'firebase';
 import 'firebase/firestore';
 
-// This function should only be called once (right now, at HomeScreen)
+// This function should only be called once (right now, at SplashScreen)
 // It will throw an error if called multiple times.
 function firebaseInit() {
   const firebaseConfig = {

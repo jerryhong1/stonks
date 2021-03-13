@@ -43,7 +43,7 @@ export default function Welcome({route, navigation}) {
         }}>
       </DialogInput>
       <TouchableOpacity style={Buttons.button}
-        onPress={() => navigation.navigate('TabScreen')}
+        onPress={() => navigation.navigate('Home')}
       >
         <Text style={Buttons.buttontext}> Get Started </Text>
       </TouchableOpacity>

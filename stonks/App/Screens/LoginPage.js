@@ -37,7 +37,7 @@ export default function LoginPage({navigation}) {
 
         // Display Portfolio page
         tryStockUpdate();
-        navigation.navigate('TabScreen', {
+        navigation.navigate('Home', {
           name: user.displayName,
           email: user.email,
           username: userData.username,

@@ -5,7 +5,7 @@ export default function Education({navigation}) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.head}> Welcome to Stonks Education. </Text>
+      <Text style={styles.head}>Welcome to Stonks Education.</Text>
       <ScrollView>
         <TouchableOpacity style={styles.education}
           onPress={() => navigation.navigate('Investment')}
