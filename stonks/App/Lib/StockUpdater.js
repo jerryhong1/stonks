@@ -9,7 +9,7 @@ const URL = "https://api.polygon.io/v2/aggs/" //base url for aggs calls
 // unsubscribing.
 function stockUpdater() {
   const updateInterval = MS_PER_MIN; // 1 minute
-  tryStockUpdate();
+  //tryStockUpdate();
 
   // Create timeout to update at the top of the minute
   let unsubType = 'timeout';
@@ -19,10 +19,10 @@ function stockUpdater() {
 
     // Create interval to call every minute at the top of the minute
     unsubHandle = setInterval(() => {
-      tryStockUpdate();
+      //tryStockUpdate();
     }, updateInterval);
 
-    tryStockUpdate();
+    //tryStockUpdate();
   }, updateInterval - (Date.now() % updateInterval));
 
   // Return unsubscribe function that cancels the active timeout or interval
