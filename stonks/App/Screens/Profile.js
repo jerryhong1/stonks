@@ -9,6 +9,40 @@ import StockList from '../Components/TransactionList'
 import * as T from '../Styles/text'
 import {timeSince, formatMoney} from '../Lib/Utils';
 
+
+function TransactionGraph({lineChartData}) {
+    const chartTheme = {
+        axis: {
+          style: {
+            tickLabels: {
+                fill: 'white',
+                padding: 10,
+            },
+            axis: {
+                stroke: "#756f6a"
+            },
+          },
+        },
+    };
+
+    // catch cases where y is undefined (for legacy accounts)
+    lineChartData = lineChartData.filter(data => data.y)
+
+    return (
+        <VictoryChart theme={chartTheme} containerComponent={<VictoryVoronoiContainer/>}>
+                
+            <VictoryLine
+                height={300} 
+                domainPadding={{y: [8, 8]}} 
+                padding={{ top: 5, bottom: 10 }} 
+                theme={VictoryTheme.material} 
+                data={lineChartData}
+                style={{data: {stroke: "white", strokeWidth: 1}}}
+            />
+        </VictoryChart> 
+    )
+}
+
 export default function Profile({navigation}) {
     const [name, setName] = useState('');
     const [username, setUsername] = useState('');
@@ -79,34 +113,21 @@ export default function Profile({navigation}) {
         return chartData;
     }
 
-    const chartTheme = {
-        axis: {
-          style: {
-            tickLabels: {
-                fill: 'white',
-                padding: 10,
-            },
-            axis: {
-                stroke: "#756f6a"
-            },
-          },
-        },
-    };
-
     function createGraph() {
-        return (
-            <VictoryChart theme={chartTheme} containerComponent={<VictoryVoronoiContainer/>}>
+        return (<View></View>)
+        // (
+        //     <VictoryChart theme={chartTheme} containerComponent={<VictoryVoronoiContainer/>}>
                 
-                <VictoryLine
-                    height={300} 
-                    domainPadding={{y: [8, 8]}} 
-                    padding={{ top: 5, bottom: 10 }} 
-                    theme={VictoryTheme.material} 
-                    data={lineChartData}
-                    style={{data: {stroke: "white", strokeWidth: 1}}}
-                />
-            </VictoryChart> 
-        );
+        //         <VictoryLine
+        //             // height={300} 
+        //             // domainPadding={{y: [8, 8]}} 
+        //             // padding={{ top: 5, bottom: 10 }} 
+        //             // theme={VictoryTheme.material} 
+        //             data={lineChartData}
+        //             style={{data: {stroke: "white", strokeWidth: 1}}}
+        //         />
+        //     </VictoryChart> 
+        // );
     }
 
     return (
@@ -167,7 +188,11 @@ export default function Profile({navigation}) {
             </View>
             
             <View {...display === "transactions"? styles.transactionList : styles.graph}>
-               {display === "transactions"? <StockList transactions={transactions}/> : createGraph()}
+               {display === "transactions" ? 
+                <StockList transactions={transactions}/> 
+                : 
+                <TransactionGraph lineChartData={lineChartData}/> 
+               }
             </View>
         </View> 
         </SafeAreaView>
