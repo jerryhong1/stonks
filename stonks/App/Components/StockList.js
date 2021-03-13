@@ -51,9 +51,10 @@ export default function StockList({userStockList = null, searchText = null}) {
             let results = {};
             const allStocksSnapshot = await firebase.firestore().collection('stocks').get(); // add a .where() to filter on search text
             allStocksSnapshot.forEach((doc) => {
-                console.log("doc", doc.data().results);
-                //const res = doc.data().results;
-                //const lastPrice = res[res.length - 1].vw;
+                console.log("doc", doc.id);
+                //console.log("doc", doc.data().currPrice);
+                const res = doc.data().results;
+                const currPrice = doc.data().currPrice;
                 //console.log("DOC !!!", lastPrice);    //currently just has ceo, description, marketcap, results
             })
         }
