@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, FlatList, View} from 'react-native';
 import * as T from '../Styles/text'
+import { timeSince } from "../Lib/Utils"
 
 function TransactionItem({transaction}) {
     let boughtOrSold = transaction["buyOrSell"] === "Purchase"? "Buy" : "Sale";
@@ -11,8 +12,8 @@ function TransactionItem({transaction}) {
         <View style={{flex: 1, paddingHorizontal: 8}}>
             <T.P style={{lineHeight: 20}}> 
                 {transaction["stock"] + " " + boughtOrSold + "\n"}
-                <Text style={{color: 'grey'}}> 
-                    {Math.abs(transaction["qtyChanged"]) + " share(s) \t " + date.toLocaleDateString()}  
+                <Text style={{color: 'grey'}}>
+                    {Math.abs(transaction["qtyChanged"]) + " share(s)    " + timeSince(date)}  
                     {/* TODO: change into "time" for items in the most recent day */}
                 </Text>
             </T.P>
