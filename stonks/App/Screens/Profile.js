@@ -1,47 +1,12 @@
 import React, { useEffect, useState} from 'react';
-import { Button, ScrollView, StyleSheet, Text, View, SafeAreaView, TouchableHighlight, TouchableOpacity, Image } from 'react-native';
-import { VictoryChart, VictoryLine, VictoryTheme, VictoryVoronoiContainer } from "victory-native";
+import { Button, StyleSheet, View, SafeAreaView, TouchableHighlight, Image } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import firebase from 'firebase';
 
 import { StonksIconButton } from '../Styles/Buttons';
 import StockList from '../Components/TransactionList'
 import * as T from '../Styles/text'
-import {formatMoney} from '../Lib/Utils';
-
-
-function TransactionGraph({lineChartData}) {
-    const chartTheme = {
-        axis: {
-          style: {
-            tickLabels: {
-                fill: 'white',
-                padding: 10,
-            },
-            axis: {
-                stroke: "#756f6a"
-            },
-          },
-        },
-    };
-
-    // catch cases where y is undefined (for legacy accounts)
-    lineChartData = lineChartData.filter(data => data.y)
-
-    return (
-        <VictoryChart theme={chartTheme} containerComponent={<VictoryVoronoiContainer/>}>
-                
-            <VictoryLine
-                height={300} 
-                domainPadding={{y: [8, 8]}} 
-                padding={{ top: 5, bottom: 10 }} 
-                theme={VictoryTheme.material} 
-                data={lineChartData}
-                style={{data: {stroke: "white", strokeWidth: 1}}}
-            />
-        </VictoryChart> 
-    )
-}
+import {formatMoney, TransactionGraph, formatLineChartData} from '../Lib/Utils';
 
 export default function Profile({navigation}) {
     const [name, setName] = useState('');
@@ -101,17 +66,6 @@ export default function Profile({navigation}) {
         return () => unsubscribe();
 
     }, []);
-
-
-    function formatLineChartData(data) {
-        var chartData = [];
-        for (var i = 0; i < data.length; i++) {
-          var timestamp = data[i].timestamp;
-          var datapoint = {x: new Date(timestamp), y: data[i].assetTotal};
-          chartData.push(datapoint);
-        }
-        return chartData;
-    }
 
     return (
         <SafeAreaView style={styles.container}>
