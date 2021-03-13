@@ -8,8 +8,6 @@ const POLYGON_URL = "https://api.polygon.io/v2/aggs/" //base url for aggs calls
 // Sets up a system to update stocks once per minute. Returns a function for
 // unsubscribing.
 function stockUpdater() {
-  tryStockUpdate();
-
   // Create timeout to update at the top of the minute
   let unsubType = 'timeout';
   let unsubHandle = setTimeout(() => {
@@ -97,7 +95,7 @@ async function updateStockData(ticker, endTimestamp) {
 
   // Convert timestamps to UTC strings, subtracting one day due to polygon only updating at EOD
   let endDate = new Date(endTimestamp);
-  endDate.setUTCDate(endDate.getUTCDate() - 1);
+  endDate.setUTCDate(endDate.getUTCDate() - 7);
   endTimestamp = endDate.getTime();
 
   const snapshot = await stockDocRef.get();
@@ -105,22 +103,19 @@ async function updateStockData(ticker, endTimestamp) {
   if (startTimestamp === undefined) {
     // Reset to the start of the trading day one month ago
     startTimestamp = new Date();
-    //startTimestamp.setUTCMonth(startTimestamp.getUTCMonth() - 1);
-    startTimestamp.setUTCDate(startTimestamp.getUTCDate() - 2); // TODO: switch back
-    startTimestamp.setUTCHours(0);
+    startTimestamp.setUTCMonth(startTimestamp.getUTCMonth() - 1);
+    startTimestamp.setUTCDate(startTimestamp.getUTCDate() - 8);
+    startTimestamp.setUTCHours(9);
   }
   const startDate = new Date(startTimestamp);
-  console.log(`retrieve polygon data for ${ticker} from ${startDate} to ${endDate}`);
 
   // Get stock data from Polygon
   //https://api.polygon.io/v2/aggs/ticker/AAPL/range/5/minute/2020-10-14/2020-10-14?unadjusted=true&sort=asc&limit=5000&apiKey=VfpjQL3hxlS56WBVpmcslVQ5jCwm7U2m
   const fullCall = POLYGON_URL + "ticker/" + ticker + "/range/5/minute/" + formatDate(startDate) + "/" + formatDate(endDate) + "?unadjusted=true&sort=asc&limit=5000&apiKey=" + POLYGON_KEY;
-  console.log(fullCall);
-  console.log('pulling stocks from polygon');
   const response = await fetch(fullCall);
   const data = await response.json();
   if (data.status === 'ERROR') {
-    console.warn(`polygon.io API call error: ${data.error}`);
+    console.log(`polygon.io API call error: ${data.error}`);
     return;
   }
 
@@ -131,10 +126,8 @@ async function updateStockData(ticker, endTimestamp) {
   if (endIndex === -1 && startIndex !== -1) {
     endIndex = data.results.length;
   } else if (endIndex <= startIndex) {
-    console.log("no update");
     return;
   }
-  console.log(`betw ${startIndex} and ${endIndex}`);
 
   // Append new data to Firestore
   const newData = data.results.slice(startIndex, endIndex);
@@ -143,19 +136,21 @@ async function updateStockData(ticker, endTimestamp) {
       const doc = await t.get(stockDocRef);
 
       // Concatenate new stock data to stock history
-      let hist = doc.get('history');
-      if (hist === undefined) {
-        hist = [];
+      let results = doc.get('results');
+      if (results === undefined) {
+        results = [];
       }
-      hist = hist.concat(newData);
+      results = results.concat(newData);
+
+      const currentData = data.results[endIndex-1];
 
       // Commit to Firestore
       return t.update(stockDocRef, {
-        history: hist,
-        lastUpdate: data.results[endIndex-1].t
+        results: results,
+        currPrice: currentData.vw,
+        lastUpdate: currentData.t
       });
     }).then(() => {
-      console.log("success uploading to firestore");
     });
   } catch (e) {
     console.log(`Stock transaction failure: ${e}`);
