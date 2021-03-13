@@ -55,14 +55,10 @@ class CustomFlyout extends React.Component {
 //pull data from firestore and feed to chart
 export default function DetailsScreen({route, navigation}) {
   const [lineChartData, setLineChartData] = useState([0,0]); //ALL available data we have 
-  const [candlestickChartData, setCandlestickChartData] = useState([0,0,0,0,0]);  //ALL available data we have
-  const [lineChartDataDisplay, setLineChartDataDisplay] = useState([0,0]); //data to be DISPLAYED
-  const [candlestickChartDataDisplay, setCandlestickChartDataDisplay] = useState([0,0]); //data to be DISPLAYED
   const [stockdesc, setStockDesc] = useState(""); 
   const stockData = route.params.data;
   const buy = "Purchase";
   const sell = "Sell";
-  const [chartFormat, setChartFormat] = useState("line"); 
   const [articles, setArticles] = useState([]);
   const [timeframe, setTimeframe] = useState("1D");
 
@@ -75,11 +71,9 @@ export default function DetailsScreen({route, navigation}) {
       const stockDataFirebase = stockSnapshot.data();
       //put stockData into right format
       setLineChartData(formatLineChartData(stockDataFirebase.results));
-      setCandlestickChartData(formatCandlestickChartData(stockDataFirebase.results));
       setStockDesc(stockDataFirebase.description);
       const response = await getArticles(stockData.company);
       setArticles(response.articles);
-      setLineChartDataDisplay(lineChartData);
       //if you want to write some data uncomment below and:
       // change stockdata to the data you want to upload
       // change the below firebase.set command to the correct stock you want to upload data to
@@ -112,8 +106,7 @@ export default function DetailsScreen({route, navigation}) {
     return chartData;
   }
 
-  function createLineGraph() {
-    //setChartDataGranularity(timeframe, "line", lineChartData);
+  function createLineGraph(data) {
     return (
       <VictoryGroup theme={VictoryTheme.material} height={150} domainPadding={{y: [0, 50]}} padding={{ top: 0, bottom: 0 }} containerComponent={<VictoryVoronoiContainer/>}>
         <VictoryLine 
@@ -123,7 +116,7 @@ export default function DetailsScreen({route, navigation}) {
           labels={({ datum }) => datum.x + datum.label}
           style={{data: { stroke: "#ff3a3d", strokeWidth: 1.5 } }}
           theme={VictoryTheme.material}
-          data={lineChartDataDisplay}
+          data={data}
           x="x"
           y="y"
         />
@@ -225,8 +218,6 @@ export default function DetailsScreen({route, navigation}) {
   let dateRange = getDateRange(granularity);
   var startDate = dateRange[0]; 
   var endDate = dateRange[1];
-  //console.log("startDate: ", startDate);
-  //console.log("endDate: ", endDate);
   var filteredChartData = [];
   for (var i = 0; i < data.length; i++) {
     let date;
@@ -253,21 +244,7 @@ export default function DetailsScreen({route, navigation}) {
       }
     }
   }
-  // if (type == "candlestick") {
-  //   let result2 = filteredChartData.map(a => a.x.toString());
-  //   console.log("filtered dates:");
-  //   console.log(result2)
-  // }
-  // if (type == "line") {
-  //   let result2 = filteredChartData.map(a => a.date.toString());
-  //   console.log("filtered dates:");
-  //   console.log(result2)
-  // }
-  if (type == "line") {
-    setLineChartDataDisplay(filteredChartData);
-  } else if (type == "candlestick") {
-    setCandlestickChartDataDisplay(filteredChartData);
-  }
+  return filteredChartData;
 }
 
   /*
@@ -296,36 +273,27 @@ export default function DetailsScreen({route, navigation}) {
   return (
     <View style={styles.container}>
       <View style={styles.button}>
-        {/* <View style={styles.chartTypeButton}> 
-          <TouchableOpacity onPress={() => {{chartFormat == "line"? setChartFormat("candlestick") : setChartFormat("line")}}}>
-              <Text style={styles.buttonText}>
-                {chartFormat == "line"?"Candlestick": "      Line       "}
-              </Text>
-          </TouchableOpacity> 
-        </View> */}
-        <View style={styles.timeframeButton}> 
-          <TouchableOpacity onPress={() => {{chartFormat == "line"? setChartDataGranularity("1D", "line", lineChartData) : setChartDataGranularity("1D", "candlestick", candlestickChartData)}}}>
+       <View style={styles.timeframeButton}> 
+          <TouchableOpacity onPress={() => {{setTimeframe("1D")}}}>
               <Text style={styles.buttonText}>1D</Text>
           </TouchableOpacity> 
         </View>
+
         <View style={styles.timeframeButton}> 
-          <TouchableOpacity onPress={() => {{chartFormat == "line"? setChartDataGranularity("1W", "line", lineChartData) : setChartDataGranularity("1W", "candlestick", candlestickChartData)}}}>
+          <TouchableOpacity onPress={() => {{setTimeframe("1W")}}}>
               <Text style={styles.buttonText}>1W</Text>
           </TouchableOpacity> 
         </View>
+
         <View style={styles.timeframeButton}> 
-          <TouchableOpacity onPress={() => {{chartFormat == "line"? setChartDataGranularity("1M", "line", lineChartData) : setChartDataGranularity("1M", "candlestick", candlestickChartData)}}}>
+          <TouchableOpacity onPress={() => {{setTimeframe("1M")}}}>
               <Text style={styles.buttonText}>1M</Text>
           </TouchableOpacity> 
         </View>
-      {/* <Button
-        onPress={() => {uploadData()}}
-        color="#ffffff"
-        title="upload"
-      /> */}
+
       </View>
       <View style={styles.graph}>
-        {chartFormat == "line"? createLineGraph() : createCandlestickGraph()}
+        {createLineGraph(setChartDataGranularity(timeframe, "line", lineChartData))}
       </View>
 
        {/* Middle section */}
