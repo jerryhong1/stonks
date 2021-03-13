@@ -1,6 +1,12 @@
 /* File containing useful utility functions for the App */
 
 
+// simple function to convert "year" -> "years" when necessary
+function pluralize(count, string) {
+  console.log(count)
+  return count > 1 ? string + "s" : string
+}
+
 /* 
     Function that states the time elapsed since the date object
     e.g. 1 minute ago, 1 hour ago, etc.
@@ -11,25 +17,25 @@ function timeSince(date) {
     var interval = seconds / 31536000;
   
     if (interval > 1) {
-      return Math.floor(interval) + " years ago";
+      return Math.floor(interval) + ` ${pluralize(Math.floor(interval), "year")} ago`;
     }
     interval = seconds / 2592000;
     if (interval > 1) {
-      return Math.floor(interval) + " months ago";
+      return Math.floor(interval) + ` ${pluralize(Math.floor(interval), "month")} ago`;
     }
     interval = seconds / 86400;
     if (interval > 1) {
-      return Math.floor(interval) + " days ago";
+      return Math.floor(interval) + ` ${pluralize(Math.floor(interval), "day")} ago`;
     }
     interval = seconds / 3600;
     if (interval > 1) {
-      return Math.floor(interval) + " hours ago";
+      return Math.floor(interval) + ` ${pluralize(Math.floor(interval), "hour")} ago`;
     }
     interval = seconds / 60;
     if (interval > 1) {
-      return Math.floor(interval) + " minutes ago";
+      return Math.floor(interval) + ` ${pluralize(Math.floor(interval), "minute")} ago`;
     }
-    return Math.floor(seconds) + " seconds ago";
+    return Math.floor(seconds) + ` ${pluralize(Math.floor(interval), "second")} ago`;
 }
 
 function formatMoney(number) {

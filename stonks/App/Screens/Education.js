@@ -27,6 +27,13 @@ export default function Education({navigation}) {
           <Text style={styles.title}>What is the stock market? </Text>
           <Text style={styles.subtitle}>The stock market is where buyers and sellers come together to trade shares in eligible companies. </Text>
         </TouchableOpacity>
+
+        <TouchableOpacity style={styles.education}
+          onPress={() => navigation.navigate('Candlestick')}
+        >
+          <Text style={styles.title}>What is a candlestick chart? </Text>
+          <Text style={styles.subtitle}>Candlesticks are useful when trading as they show 4 price points (open, close, high, and low) throughout a timeperiod. </Text>
+        </TouchableOpacity>
       </ScrollView>
       
     </View>
