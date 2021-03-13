@@ -1,6 +1,6 @@
 import React, { useEffect, useState, setState}  from 'react';
 import { VictoryGroup, VictoryLine, VictoryTheme, VictoryVoronoiContainer, VictoryTooltip, VictoryCandlestick } from "victory-native";
-import { ScrollView, StyleSheet, Text, View, Dimensions, Button, Linking } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, Dimensions, Button, Linking, TouchableOpacity } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { formatMoney } from '../Lib/Utils';
 import firebase from 'firebase';
@@ -46,7 +46,7 @@ class CustomFlyout extends React.Component {
     const {x, y} = this.props;
     return ( //svg height and width are hard coded right now 
       <Svg height="800" width="500" style="overflow: visible"> 
-        <Line x1={x} y1="0" x2={x} y2="300" stroke="gray" strokeWidth="1" />
+        <Line x1={x} y1="30" x2={x} y2="300" stroke="gray" strokeWidth="1" />
       </Svg>
     );
   }
@@ -113,13 +113,13 @@ export default function DetailsScreen({route, navigation}) {
   function createLineGraph() {
     //setChartDataGranularity(timeframe, "line", lineChartData);
     return (
-      <VictoryGroup theme={VictoryTheme.material} height={150} domainPadding={{y: [8, 8]}} padding={{ top: 5, bottom: 12 }} containerComponent={<VictoryVoronoiContainer/>}>
+      <VictoryGroup theme={VictoryTheme.material} height={150} domainPadding={{y: [0, 50]}} padding={{ top: 0, bottom: 0 }} containerComponent={<VictoryVoronoiContainer/>}>
         <VictoryLine 
           labelComponent={ <VictoryTooltip renderInPortal={false} flyoutComponent={<CustomFlyout/>}
-                            flyoutStyle={{stroke: "none", fill: "black"}} y={60}
-                            style={{fill: "white"}}/>}
+                            flyoutStyle={{stroke: "none", fill: "black"}} y={45}
+                            style={{fill: "white", fontSize: 11, fontFamily: "Helvetica Neue"}}/>}
           labels={({ datum }) => datum.x + datum.label}
-          style={{data: { stroke: "red" }}}
+          style={{data: { stroke: "#ff3a3d", strokeWidth: 1.5 } }}
           theme={VictoryTheme.material}
           data={lineChartDataDisplay}
           x="x"
@@ -137,9 +137,10 @@ export default function DetailsScreen({route, navigation}) {
         padding={{ top: 5, bottom: 10 }} 
         containerComponent={<VictoryVoronoiContainer/>}
         theme={VictoryTheme.material} 
-        candleColors={{ positive: "green", negative: "red" }}
+        candleColors={{ positive: "#05ad6d", negative: "#ff3a3d" }}
         data={candlestickChartDataDisplay}
-        style={{data: {stroke: "white", strokeWidth: 1}}}
+        style={{data: {stroke: "white", strokeWidth: 0}}}
+        wickStrokeWidth={.6}
       />
 
     );
@@ -222,9 +223,8 @@ export default function DetailsScreen({route, navigation}) {
   let dateRange = getDateRange(granularity);
   var startDate = dateRange[0]; 
   var endDate = dateRange[1];
-  console.log("startDate: ", startDate);
-  console.log("endDate: ", endDate);
-  console.log(type)
+  //console.log("startDate: ", startDate);
+  //console.log("endDate: ", endDate);
   var filteredChartData = [];
   for (var i = 0; i < data.length; i++) {
     let date;
@@ -251,11 +251,11 @@ export default function DetailsScreen({route, navigation}) {
       }
     }
   }
-  if (type == "candlestick") {
-    let result2 = filteredChartData.map(a => a.x.toString());
-    console.log("filtered dates:");
-    console.log(result2)
-  }
+  // if (type == "candlestick") {
+  //   let result2 = filteredChartData.map(a => a.x.toString());
+  //   console.log("filtered dates:");
+  //   console.log(result2)
+  // }
   if (type == "line") {
     setLineChartDataDisplay(filteredChartData);
   } else if (type == "candlestick") {
@@ -289,26 +289,28 @@ export default function DetailsScreen({route, navigation}) {
   return (
     <View style={styles.container}>
       <View style={styles.button}>
-      <Button
-          onPress={() => {{chartFormat == "line"? setChartFormat("candlestick") : setChartFormat("line")}}}
-          color="#ffffff"
-          title={chartFormat == "line"?"Candlestick": "Line"}
-        />
-        <Button
-          onPress={() => {{chartFormat == "line"? setChartDataGranularity("1D", "line", lineChartData) : setChartDataGranularity("1D", "candlestick", candlestickChartData)}}}
-          color="#ffffff"
-          title="1D"
-        />
-        <Button
-          onPress={() => {{chartFormat == "line"? setChartDataGranularity("1W", "line", lineChartData) : setChartDataGranularity("1W", "candlestick", candlestickChartData)}}}
-          color="#ffffff"
-          title="1W"
-        />
-        <Button
-          onPress={() => {{chartFormat == "line"? setChartDataGranularity("1M", "line", lineChartData) : setChartDataGranularity("1M", "candlestick", candlestickChartData)}}}
-          color="#ffffff"
-          title="1M"
-        />
+        <View style={styles.chartTypeButton}> 
+          <TouchableOpacity onPress={() => {{chartFormat == "line"? setChartFormat("candlestick") : setChartFormat("line")}}}>
+              <Text style={styles.buttonText}>
+                {chartFormat == "line"?"Candlestick": "      Line       "}
+              </Text>
+          </TouchableOpacity> 
+        </View>
+        <View style={styles.timeframeButton}> 
+          <TouchableOpacity onPress={() => {{chartFormat == "line"? setChartDataGranularity("1D", "line", lineChartData) : setChartDataGranularity("1D", "candlestick", candlestickChartData)}}}>
+              <Text style={styles.buttonText}>1D</Text>
+          </TouchableOpacity> 
+        </View>
+        <View style={styles.timeframeButton}> 
+          <TouchableOpacity onPress={() => {{chartFormat == "line"? setChartDataGranularity("1W", "line", lineChartData) : setChartDataGranularity("1W", "candlestick", candlestickChartData)}}}>
+              <Text style={styles.buttonText}>1W</Text>
+          </TouchableOpacity> 
+        </View>
+        <View style={styles.timeframeButton}> 
+          <TouchableOpacity onPress={() => {{chartFormat == "line"? setChartDataGranularity("1M", "line", lineChartData) : setChartDataGranularity("1M", "candlestick", candlestickChartData)}}}>
+              <Text style={styles.buttonText}>1M</Text>
+          </TouchableOpacity> 
+        </View>
       {/* <Button
         onPress={() => {uploadData()}}
         color="#ffffff"
@@ -338,7 +340,7 @@ export default function DetailsScreen({route, navigation}) {
               ]}
               placeholder="+ Trade"
               containerStyle={{height: 40, width: '100%'}}
-              style={{backgroundColor: '#1EDD4E'}}
+              style={{backgroundColor: '#05ad6d'}}
               itemStyle={styles.pickerStyle}
               dropDownStyle={{backgroundColor: 'black'}}
               globalTextStyle={{
@@ -381,16 +383,17 @@ const styles = StyleSheet.create({
     height: '100%'
   },
   button: {
+    justifyContent: 'space-evenly',
     alignItems: 'flex-end',
     flexDirection: "row-reverse",
-    backgroundColor:'#1E6738',
+    width:'100%', 
   },
   graph: {
     flex: 2,
     backgroundColor: "black",
     width: "100%",
     borderBottomColor: "white",
-    borderWidth: 1,
+    borderWidth: .5,
   },
   articles: {
     width: '100%',
@@ -436,6 +439,18 @@ const styles = StyleSheet.create({
   pickerStyle: {
     backgroundColor: 'black',
     justifyContent: 'flex-start'
+  },
+  chartTypeButton: {
+    //backgroundColor: '#48494a',
+    padding: 8,
+  },
+  timeframeButton: {
+    //backgroundColor: '#48494a',
+    padding: 8,
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 13
   }
 });
 
