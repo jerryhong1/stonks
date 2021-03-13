@@ -20,6 +20,7 @@ const fullStockList = Object.values(fullStockDict)
 
 // NOTE: this also needs to accept a parameter from search that filters 
 export default function StockList({userStockList = null, searchText = null}) {
+    const [fullStockList, setFullStockList] = useState({'AAA': {ticker: 'AAA', company: 'a', currPrice: 0}});
     // TEMP DATA FOR BOTH SCREENS
     const stockList = userStockList ? userStockList : fullStockList;
 
@@ -45,17 +46,22 @@ export default function StockList({userStockList = null, searchText = null}) {
     }
 
     // NOT USED YET -- GET ALL THE STOCK DATA FROM FIRESTORE AND DEPRECATE FAKE DATA.
-    // useEffect(() => {
-    //     const getStockData = async () => {
-    //         const allStocksSnapshot = await firebase.firestore().collection('stocks').get(); // add a .where() to filter on search text
-    //         allStocksSnapshot.forEach((doc) => {
-    //             const res = doc.data().results;
-    //             const lastPrice = res[res.length - 1].vw;
-    //             console.log("DOC !!!", lastPrice);    //currently just has ceo, description, marketcap, results
-    //         })
-    //     }
-    //     const fullStockDic = getStockData();
-    // }, []);
+    useEffect(() => {
+        const getStockData = async () => {
+            let results = {};
+            const allStocksSnapshot = await firebase.firestore().collection('stocks').get(); // add a .where() to filter on search text
+            allStocksSnapshot.forEach((doc) => {
+                console.log("doc", doc.data().results);
+                //const res = doc.data().results;
+                //const lastPrice = res[res.length - 1].vw;
+                //console.log("DOC !!!", lastPrice);    //currently just has ceo, description, marketcap, results
+            })
+        }
+        const fullStockDic = getStockData();
+        setFullStockList(fullStockDic);
+        console.log("in use effect");
+        console.log("asdf", fullStockDic);
+    }, []);
 
     // Generates a flatlist from all the data passed into it. Eventually, we will do props.data for data
     return (

@@ -76,7 +76,7 @@ export default function Portfolio({navigation}) {
             }
           }
         ); 
-        console.log("new stock list", newStockList);
+        //console.log("new stock list", newStockList);
         setStockList(newStockList);
       }
     }, [portfolio])
