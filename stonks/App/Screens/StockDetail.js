@@ -171,29 +171,6 @@ export default function DetailsScreen({route, navigation}) {
     );
   };
 
-  /* a function to pull data from polygon and upload to firebase 
-  note you manually enter utcstart and utc end 
-  make sure you are uploading the correct desired granularity
-  press upload button to begin upload 
-  :D 
-  */
-  async function uploadData() {
-    var utcStart = new Date("2021-03-01"); //manually update this 
-    var utcEnd = new Date("2021-03-10"); //manually update this 
-    //https://api.polygon.io/v2/aggs/ticker/AAPL/range/5/minute/2020-10-14/2020-10-14?unadjusted=true&sort=asc&limit=5000&apiKey=VfpjQL3hxlS56WBVpmcslVQ5jCwm7U2m
-    var fullCall = URL + "ticker/" + stockData.ticker + "/range/30/minute/" + "2021-03-01" + "/" + "2021-03-12" + "?unadjusted=true&sort=asc&limit=5000&apiKey=" + KEY;
-    let response = await fetch(fullCall);
-    let data = await response.json();
-    var toUpload = { 
-      results: []
-    };
-    toUpload.results = data.results;
-    console.log('toUpload: ', toUpload);
-    console.log('pulled stock');
-    await firebase.firestore().collection('stocks').doc(stockData.ticker).set(toUpload, {merge: true});
-    console.log("success uploading", stockData.ticker, "data to firestore");
-  }
-
   function displayArticles() {
     return (
       <View style={{marginBottom: 200}}>
