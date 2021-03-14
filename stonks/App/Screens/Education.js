@@ -29,10 +29,18 @@ export default function Education({navigation}) {
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.education}
+          onPress={() => navigation.navigate('WhyInvest')}
+        >
+          <Text style={styles.title}>Why Invest in the stock market? </Text>
+          <Text style={styles.subtitle}>Investing in the stock market may seem risky at first, but learning how to manage the risk can enable traders to grow their wealth passively.</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.education}
           onPress={() => navigation.navigate('Candlestick')}
         >
           <Text style={styles.title}>What is a candlestick chart? </Text>
           <Text style={styles.subtitle}>Candlesticks are useful when trading as they show 4 price points (open, close, high, and low) throughout a timeperiod. </Text>
+
         </TouchableOpacity>
       </ScrollView>
       
