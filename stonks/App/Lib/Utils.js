@@ -1,6 +1,3 @@
-import React from 'react';
-import { VictoryChart, VictoryLine, VictoryTheme, VictoryVoronoiContainer } from "victory-native";
-
 /* File containing useful utility functions for the App */
 
 
@@ -56,47 +53,4 @@ function formatMoney(number) {
         (decPlaces ? decSep + Math.abs(number - i).toFixed(decPlaces).slice(2) : "");
 }
 
-function formatLineChartData(data) {
-  var chartData = [];
-  for (var i = 0; i < data.length; i++) {
-    var timestamp = data[i].timestamp;
-    var datapoint = {x: new Date(timestamp), y: data[i].assetTotal};
-    chartData.push(datapoint);
-  }
-  return chartData;
-}
-
-function TransactionGraph({lineChartData}) {
-  const chartTheme = {
-      axis: {
-        style: {
-          tickLabels: {
-              fill: 'white',
-              padding: 10,
-          },
-          axis: {
-              stroke: "#756f6a"
-          },
-        },
-      },
-  };
-
-  // catch cases where y is undefined (for legacy accounts)
-  lineChartData = lineChartData.filter(data => data.y)
-
-  return (
-      <VictoryChart theme={chartTheme} containerComponent={<VictoryVoronoiContainer/>}>
-              
-          <VictoryLine
-              height={300} 
-              domainPadding={{y: [8, 8]}} 
-              padding={{ top: 5, bottom: 10 }} 
-              theme={VictoryTheme.material} 
-              data={lineChartData}
-              style={{data: {stroke: "white", strokeWidth: 1}}}
-          />
-      </VictoryChart> 
-  )
-}
-
-export { timeSince, formatMoney, TransactionGraph, formatLineChartData};
+export { timeSince, formatMoney};

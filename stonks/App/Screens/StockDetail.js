@@ -7,6 +7,7 @@ import firebase from 'firebase';
 import Svg, {Line} from 'react-native-svg';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { getArticles } from "./News";
+import { LineGraph } from "../Components/StockGraph"
 
 const KEY = "VfpjQL3hxlS56WBVpmcslVQ5jCwm7U2m"
 const URL = "https://api.polygon.io/v2/aggs/" //base url for aggs calls 
@@ -39,17 +40,6 @@ function formatCandlestickChartData(data) {
     chartData.push(datapoint)
   }
   return chartData;
-}
-
-class CustomFlyout extends React.Component {
-  render() {
-    const {x, y} = this.props;
-    return ( //svg height and width are hard coded right now 
-      <Svg height="800" width="500" style="overflow: visible"> 
-        <Line x1={x} y1="30" x2={x} y2="300" stroke="gray" strokeWidth="1" />
-      </Svg>
-    );
-  }
 }
 
 //pull data from firestore and feed to chart
@@ -104,24 +94,6 @@ export default function DetailsScreen({route, navigation}) {
       chartData.push(datapoint)
     }
     return chartData;
-  }
-
-  function createLineGraph(data) {
-    return (
-      <VictoryGroup theme={VictoryTheme.material} height={150} domainPadding={{y: [0, 50]}} padding={{ top: 0, bottom: 0 }} containerComponent={<VictoryVoronoiContainer voronoiDimension="x"/>}>
-        <VictoryLine 
-          labelComponent={ <VictoryTooltip renderInPortal={false} flyoutComponent={<CustomFlyout/>}
-                            flyoutStyle={{stroke: "none", fill: "black"}} y={45}
-                            style={{fill: "white", fontSize: 11, fontFamily: "Helvetica Neue"}}/>}
-          labels={({ datum }) => datum.x + datum.label}
-          style={{data: { stroke: "#ff3a3d", strokeWidth: 1.5 } }}
-          theme={VictoryTheme.material}
-          data={data}
-          x="x"
-          y="y"
-        />
-      </VictoryGroup>
-    );
   }
 
   function createCandlestickGraph() {
@@ -292,7 +264,10 @@ export default function DetailsScreen({route, navigation}) {
 
       </View>
       <View style={styles.graph}>
-        {createLineGraph(setChartDataGranularity(timeframe, "line", lineChartData))}
+        <LineGraph
+          data={setChartDataGranularity(timeframe, "line", lineChartData)} 
+          renderData={({ datum }) => datum.x + datum.label}
+        />
       </View>
 
        {/* Middle section */}
