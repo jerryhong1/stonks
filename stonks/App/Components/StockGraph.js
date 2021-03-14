@@ -28,7 +28,7 @@ function LineGraph({data, renderLabel}) {
     // TODO: set color based on the graph
     let strokeColor = colors.RED;
     return   (
-    <VictoryGroup theme={VictoryTheme.material} height={150} domainPadding={{y: [0, 50]}} padding={{ top: 0, bottom: 0 }} containerComponent={<VictoryVoronoiContainer/>}>
+    <VictoryGroup theme={VictoryTheme.material} height={150} domainPadding={{y: [0, 50]}} padding={{ top: 0, bottom: 0 }} containerComponent={<VictoryVoronoiContainer voronoiDimension="x"/>}>
         <VictoryLine 
         labelComponent={ <VictoryTooltip renderInPortal={false} flyoutComponent={<CustomFlyout/>}
                             flyoutStyle={{stroke: "none", fill: "black"}} y={45}
