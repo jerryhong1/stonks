@@ -1,18 +1,8 @@
 import React from "react";
-import { VictoryGroup, VictoryLine, VictoryTheme, VictoryVoronoiContainer, VictoryTooltip, VictoryCandlestick } from "victory-native";
+import { VictoryChart, VictoryGroup, VictoryLine, VictoryTheme, VictoryVoronoiContainer, VictoryTooltip, VictoryCandlestick } from "victory-native";
 import Svg, {Line} from 'react-native-svg';
 import { colors } from '../Styles/colors'
 
-class CustomFlyout extends React.Component {
-    render() {
-        const {x, y} = this.props;
-        return ( //svg height and width are hard coded right now 
-        <Svg height="800" width="500" style="overflow: visible"> 
-            <Line x1={x} y1="30" x2={x} y2="300" stroke="gray" strokeWidth="1" />
-        </Svg>
-        );
-    }
-}
 
 function formatLineChartData(data) {
     var chartData = [];
@@ -44,4 +34,50 @@ function LineGraph({data, renderLabel}) {
     )
 }
 
-export {formatLineChartData, LineGraph}
+
+class CustomFlyout extends React.Component {
+    render() {
+        const {x, y} = this.props;
+        return ( //svg height and width are hard coded right now 
+        <Svg height="800" width="500" style="overflow: visible"> 
+            <Line x1={x} y1="30" x2={x} y2="300" stroke="gray" strokeWidth="1" />
+        </Svg>
+        );
+    }
+}
+
+function TransactionGraph({lineChartData, renderLabel}) {
+    const chartTheme = {
+        axis: {
+          style: {
+            tickLabels: {
+                fill: 'white',
+                padding: 10,
+            },
+            axis: {
+                stroke: "#756f6a"
+            },
+          },
+        },
+    };
+  
+    // catch cases where y is undefined (for legacy accounts)
+    lineChartData = lineChartData.filter(data => data.y)
+  
+    return (
+        <VictoryChart theme={chartTheme} containerComponent={<VictoryVoronoiContainer/>}>
+  
+            <VictoryLine
+                height={300} 
+                domainPadding={{y: [8, 8]}} 
+                padding={{ top: 5, bottom: 10 }} 
+                theme={VictoryTheme.material} 
+                data={lineChartData}
+                labels={renderLabel}
+                style={{data: {stroke: "white", strokeWidth: 1}}}
+            />
+        </VictoryChart> 
+    )
+}
+  
+export {formatLineChartData, TransactionGraph, LineGraph}
