@@ -9,7 +9,7 @@ export default function Welcome({route, navigation}) {
   const {name, email, username, balance} = route.params;
   const [curUser, setUsername] = useState(name);
   const [defaultBalance, setDefaultBalance] = useState(balance);
-  const [dialogVisible, setDialogVisible] = useState(true);
+  const [dialogVisible, setDialogVisible] = useState(false);
 
   const updateBalance = async (inputText) => {
     try {
