@@ -30,9 +30,9 @@ function LineGraph({data, renderLabel}) {
     return   (
     <VictoryGroup theme={VictoryTheme.material} height={150} domainPadding={{y: [0, 50]}} padding={{ top: 0, bottom: 0 }} containerComponent={<VictoryVoronoiContainer voronoiDimension="x"/>}>
         <VictoryLine 
-        labelComponent={ <VictoryTooltip renderInPortal={false} flyoutComponent={<CustomFlyout/>}
+        labelComponent={ renderLabel ? <VictoryTooltip renderInPortal={false} flyoutComponent={<CustomFlyout/>}
                             flyoutStyle={{stroke: "none", fill: "black"}} y={45}
-                            style={{fill: "white", fontSize: 11, fontFamily: "Helvetica Neue"}}/>}
+                            style={{fill: "white", fontSize: 11, fontFamily: "Helvetica Neue"}}/> : null}
         labels={renderLabel}
         style={{data: { stroke: strokeColor, strokeWidth: 1.5 } }}
         theme={VictoryTheme.material}
