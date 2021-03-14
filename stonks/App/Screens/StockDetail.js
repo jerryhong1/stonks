@@ -7,6 +7,8 @@ import firebase from 'firebase';
 import Svg, {Line} from 'react-native-svg';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { getArticles } from "./News";
+import { colors } from '../Styles/colors'
+import { LineGraph } from "../Components/StockGraph"
 
 function formatAMPM(date) {
   var hours = date.getHours();
@@ -34,17 +36,6 @@ function formatCandlestickChartData(data) {
     chartData.push(datapoint)
   }
   return chartData;
-}
-
-class CustomFlyout extends React.Component {
-  render() {
-    const {x, y} = this.props;
-    return ( //svg height and width are hard coded right now 
-      <Svg height="800" width="500" style="overflow: visible"> 
-        <Line x1={x} y1="30" x2={x} y2="300" stroke="gray" strokeWidth="1" />
-      </Svg>
-    );
-  }
 }
 
 //pull data from firestore and feed to chart
@@ -101,24 +92,6 @@ export default function DetailsScreen({route, navigation}) {
     return chartData;
   }
 
-  function createLineGraph(data) {
-    return (
-      <VictoryGroup theme={VictoryTheme.material} height={150} domainPadding={{y: [0, 50]}} padding={{ top: 0, bottom: 0 }} containerComponent={<VictoryVoronoiContainer/>}>
-        <VictoryLine 
-          labelComponent={ <VictoryTooltip renderInPortal={false} flyoutComponent={<CustomFlyout/>}
-                            flyoutStyle={{stroke: "none", fill: "black"}} y={45}
-                            style={{fill: "white", fontSize: 11, fontFamily: "Helvetica Neue"}}/>}
-          labels={({ datum }) => datum.x + datum.label}
-          style={{data: { stroke: "#ff3a3d", strokeWidth: 1.5 } }}
-          theme={VictoryTheme.material}
-          data={data}
-          x="x"
-          y="y"
-        />
-      </VictoryGroup>
-    );
-  }
-
   function createCandlestickGraph() {
     return (
       <VictoryCandlestick
@@ -160,17 +133,46 @@ export default function DetailsScreen({route, navigation}) {
     }
 
     return (
-      <ScrollView>
+      <View>
         {articleList}
-      </ScrollView>
+      </View>
     );
   };
 
+  class CustomFlyout extends React.Component {
+      render() {
+          const {x, y} = this.props;
+          return ( //svg height and width are hard coded right now 
+          <Svg height="800" width="500" style="overflow: visible"> 
+              <Line x1={x} y1="30" x2={x} y2="300" stroke="gray" strokeWidth="1" />
+          </Svg>
+          );
+      }
+  }
+
+  function createLineGraph(data) {
+    return (
+      <VictoryGroup theme={VictoryTheme.material} height={150} domainPadding={{y: [0, 50]}} padding={{ top: 0, bottom: 0 }} containerComponent={<VictoryVoronoiContainer/>}>
+        <VictoryLine 
+          labelComponent={ <VictoryTooltip renderInPortal={false} flyoutComponent={<CustomFlyout/>}
+                            flyoutStyle={{stroke: "none", fill: "black"}} y={45}
+                            style={{fill: "white", fontSize: 11, fontFamily: "Helvetica Neue"}}/>}
+          labels={({ datum }) => datum.x + datum.label}
+          style={{data: { stroke: "#ff3a3d", strokeWidth: 1.5 } }}
+          theme={VictoryTheme.material}
+          data={data}
+          x="x"
+          y="y"
+        />
+      </VictoryGroup>
+    );
+  }
+
   function displayArticles() {
     return (
-      <View style={{marginBottom: 200}}>
-        {articles.length > 0 && getArticleList()}
-        {articles.length === 0 && <Text style={{color: 'white', margin: 10}}> No top headlines to display for this stock. </Text>}
+      <View style={{marginBottom: 20}}>
+        {articles && articles.length > 0 && getArticleList()}
+        {(!articles || articles.length === 0) && <Text style={{color: 'white', margin: 10}}> No top headlines to display for this stock. </Text>}
       </View>
     );
   }
@@ -210,7 +212,7 @@ export default function DetailsScreen({route, navigation}) {
         filteredChartData.push(data[i]);
       }
     } else if (granularity == "1M") {
-      if (date <=  endDate && date >= startDate && date.getMinutes() == 0) { //gets days in week range 
+      if (date <=  endDate && date >= startDate && date.getMinutes() == 0 && date.getHours() % 3 == 0 ) { //gets days in week range 
         filteredChartData.push(data[i]);
       }
     }
@@ -264,6 +266,10 @@ export default function DetailsScreen({route, navigation}) {
 
       </View>
       <View style={styles.graph}>
+        {/* <LineGraph
+          data={setChartDataGranularity(timeframe, "line", lineChartData)} 
+          renderData={({ datum }) => datum.x + datum.label}
+        />  */}
         {createLineGraph(setChartDataGranularity(timeframe, "line", lineChartData))}
       </View>
 
@@ -305,12 +311,12 @@ export default function DetailsScreen({route, navigation}) {
       </View>
 
       {/* News and Description  */}
-      <View style={styles.stocks}>
+      <ScrollView style={styles.stocks}>
           <Text style={{color: "white", fontSize: 18, marginVertical: 8, marginHorizontal: 12}}>Description</Text>
           <Text style={{color: "white", fontSize: 14, marginBottom: 10, marginHorizontal: 12}}>{stockdesc}</Text>
           <Text style={{color: "white", fontSize: 18, marginVertical: 8, marginHorizontal: 12}}>News</Text>
           {displayArticles()}
-      </View>
+      </ScrollView>
 
       
       <StatusBar />
@@ -336,7 +342,7 @@ const styles = StyleSheet.create({
     width:'100%', 
   },
   graph: {
-    flex: 2,
+    flex: 0.5,
     backgroundColor: "black",
     width: "100%",
     borderBottomColor: "white",
@@ -362,7 +368,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   stockInfo: {
-    flex: 1,
+    flex: 0.25,
     padding: 12,
     paddingBottom: 0,
     backgroundColor: "black",
@@ -370,7 +376,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     flexDirection: "row",
     justifyContent: "space-between",
-    zIndex: 100
+    zIndex: 100,
   },
   stocks: {
     flex: 4,

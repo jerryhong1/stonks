@@ -59,19 +59,40 @@ export const StonksIconButton = function({variant, width, disabled, text, onPres
 
 const Buttons = {
   button: {
-      backgroundColor: colors.GREEN,
-      fontSize: 40,
-      color: colors.GREEN,
-      padding: 8,
-      margin: 6,
-      borderRadius: 4,
-      width: Dimensions.get('window').width * .6,
-    },
+    backgroundColor: colors.GREEN,
+    fontSize: 40,
+    color: colors.GREEN,
+    padding: 8,
+    margin: 6,
+    borderRadius: 4,
+    width: Dimensions.get('window').width * .6,
+  },
+  welcomeButton: {
+    backgroundColor: colors.WHITE,
+    fontSize: 40,
+    paddingVertical: 14,
+    paddingHorizontal: 10,
+    margin: 10,
+    borderRadius: 10,
+    width: Dimensions.get('window').width * .8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    height: 75
+  },
   buttontext: {
-      color: 'white',
-      fontSize: 15,
-      textAlign: 'center',
-    },
+    color: 'white',
+    fontSize: 15,
+    textAlign: 'center',
+  },
+  welcomeButtonText: {
+    color: 'black',
+    textAlign: 'flex-start',
+    fontSize: 25,
+    fontWeight: 'bold',
+  },
+  triangle: {
+    marginTop: 12,
+  },
   buttontextdisabled: {
     color: colors.GREEN,
     fontSize: 15,

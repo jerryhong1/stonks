@@ -6,7 +6,8 @@ import firebase from 'firebase';
 import { StonksIconButton } from '../Styles/Buttons';
 import StockList from '../Components/TransactionList'
 import * as T from '../Styles/text'
-import {formatMoney, TransactionGraph, formatLineChartData} from '../Lib/Utils';
+import {formatMoney} from '../Lib/Utils';
+import { TransactionGraph, formatLineChartData, LineGraph} from "../Components/StockGraph"
 
 export default function Profile({navigation}) {
     const [name, setName] = useState('');
@@ -16,7 +17,7 @@ export default function Profile({navigation}) {
     const [transactions, setTransactions] = useState([]);
     const [display, setDisplay] = useState("transactions"); 
     const [lineChartData, setLineChartData] = useState([0,0]);
-
+    
     const reloadUserData = async () => {
         try {
             const user = firebase.auth().currentUser;  // Not safe, but fine for now
@@ -30,6 +31,8 @@ export default function Profile({navigation}) {
             setPropic(userData.propic);
             setTransactions(userData.transactions.reverse()); // report with the most recent at the top
             setLineChartData(formatLineChartData(userData.transactions));
+            console.log(lineChartData);
+
         } catch (error) {
             console.log(error);
         }
@@ -128,7 +131,8 @@ export default function Profile({navigation}) {
                {display === "transactions" ? 
                 <StockList transactions={transactions}/> 
                 : 
-                <TransactionGraph lineChartData={lineChartData}/> 
+                // <TransactionGraph lineChartData={lineChartData} renderLabel={({datum}) => datum.x}/> 
+                <LineGraph data={lineChartData} renderLabel={({datum}) => datum.x}/>
                }
             </View>
         </View> 

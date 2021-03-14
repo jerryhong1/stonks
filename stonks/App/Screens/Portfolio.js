@@ -9,7 +9,7 @@ import * as T from '../Styles/text';
 
 import StockList, { fullStockDict }  from "../Components/StockList";
 import {formatMoney} from '../Lib/Utils';
-import {TransactionGraph, formatLineChartData} from '../Lib/Utils';
+import { formatLineChartData, TransactionGraph, LineGraph } from "../Components/StockGraph"
 
 function EmptyState({navigation}) {
     return (
@@ -115,9 +115,11 @@ export default function Portfolio({navigation}) {
                 </T.P>
                 <T.P style = {{marginTop: 4}} >{formatMoney(balance)} of buying power</T.P>
             </View>
+            
             {/* graph view */}
             <View style={styles.graph}> 
-                {<TransactionGraph lineChartData={lineChartData}/>}
+                <LineGraph data={lineChartData} renderLabel={({datum}) => datum.x}/>
+                {/* <TransactionGraph lineChartData={lineChartData}/> */}
             </View>
             
             {/* Your stocks list TODO: feed in list from docs */}
@@ -134,7 +136,7 @@ export default function Portfolio({navigation}) {
 
 const styles = StyleSheet.create({
   graph: {
-      flex: 6,
+      flex: 3,
       backgroundColor: "black",
       width: "100%", 
       borderBottomColor: "white",
@@ -155,7 +157,7 @@ const styles = StyleSheet.create({
   },
   urPrtflio: {
       padding: 16,
-      flex: 1.5,
+      flex: 2,
       backgroundColor: "black",
       width: "100%", 
       borderBottomColor: "white",
