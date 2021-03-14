@@ -20,6 +20,9 @@ async function yeet() {
   });
   */
 
+  db.collection('stocks').doc('GME').update({test: 'h'});
+
+  /*
   const snapshot = await db.collection('stocks').doc('GME').get();
   const results = snapshot.data().results;
   console.log(results[0]);
@@ -27,5 +30,6 @@ async function yeet() {
 
   console.log(new Date(results[0].t));
   console.log(new Date(results[results.length - 1].t));
+  */
 }
 yeet();

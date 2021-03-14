@@ -5,7 +5,7 @@ import firebase from 'firebase';
 
 import {firebaseInit} from '../Lib/Firebase';
 import {stockUpdater} from '../Lib/StockUpdater';
-
+import {initStockCache} from '../Lib/StockCache';
 
 export default function SplashScreen({navigation}) {
   const [shouldShow, setShouldShow] = useState(false);
@@ -17,22 +17,29 @@ export default function SplashScreen({navigation}) {
       firebaseInit();
     }
 
-    // Check if user is already signed in
-    const authUnsubscribe = firebase.auth().onAuthStateChanged((user) => {
-      // Don't need to keep calling this every time auth state changes,
-      // unsubscribe after first call.
-      authUnsubscribe();
+    // Setup stock cache, then display login/home page once cache is loaded
+    const unsubStockCache = initStockCache(() => {
+      // Check if user is already signed in
+      const authUnsubscribe = firebase.auth().onAuthStateChanged((user) => {
+        // Don't need to keep calling this every time auth state changes,
+        // unsubscribe after first call.
+        authUnsubscribe();
 
-      // Navigate to portfolio if already signed in
-      if (user) {
-        navigation.navigate('Home');
-      } else {
-        setShouldShow(true);
-      }
+        // Navigate to portfolio if already signed in
+        if (user) {
+          navigation.navigate('Home');
+        } else {
+          setShouldShow(true);
+        }
+      });
     });
 
     // Update stock data once per minute
-    const unsub = stockUpdater();
+    const unsubUpdater = stockUpdater();
+    const unsub = () => {
+      unsubUpdater();
+      unsubStockCache();
+    };
     return unsub;
   }, []);
 
