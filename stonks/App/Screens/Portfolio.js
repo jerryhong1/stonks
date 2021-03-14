@@ -9,7 +9,7 @@ import * as T from '../Styles/text';
 
 import StockList, { fullStockDict }  from "../Components/StockList";
 import {formatMoney} from '../Lib/Utils';
-import { formatLineChartData, LineGraph } from "../Components/StockGraph"
+import { formatLineChartData, TransactionGraph, LineGraph } from "../Components/StockGraph"
 
 function EmptyState({navigation}) {
     return (
@@ -119,6 +119,7 @@ export default function Portfolio({navigation}) {
             {/* graph view */}
             <View style={styles.graph}> 
                 <LineGraph data={lineChartData} renderLabel={({datum}) => datum.x}/>
+                {/* <TransactionGraph lineChartData={lineChartData}/> */}
             </View>
             
             {/* Your stocks list TODO: feed in list from docs */}
