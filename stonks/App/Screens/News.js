@@ -8,6 +8,7 @@ export const getArticles = async (topic) => {
       );
       const json = await response.json();
       console.log("Getting news about ", topic);
+      console.log("News: ", json);
       return json;
     } catch (error) {
       console.log(error);

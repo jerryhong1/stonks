@@ -7,6 +7,7 @@ import firebase from 'firebase';
 import Svg, {Line} from 'react-native-svg';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { getArticles } from "./News";
+import { colors } from '../Styles/colors'
 import { LineGraph } from "../Components/StockGraph"
 
 const KEY = "VfpjQL3hxlS56WBVpmcslVQ5jCwm7U2m"
@@ -143,6 +144,35 @@ export default function DetailsScreen({route, navigation}) {
     );
   };
 
+class CustomFlyout extends React.Component {
+    render() {
+        const {x, y} = this.props;
+        return ( //svg height and width are hard coded right now 
+        <Svg height="800" width="500" style="overflow: visible"> 
+            <Line x1={x} y1="30" x2={x} y2="300" stroke="gray" strokeWidth="1" />
+        </Svg>
+        );
+    }
+}
+
+function createLineGraph(data) {
+  return (
+    <VictoryGroup theme={VictoryTheme.material} height={150} domainPadding={{y: [0, 50]}} padding={{ top: 0, bottom: 0 }} containerComponent={<VictoryVoronoiContainer/>}>
+      <VictoryLine 
+        labelComponent={ <VictoryTooltip renderInPortal={false} flyoutComponent={<CustomFlyout/>}
+                          flyoutStyle={{stroke: "none", fill: "black"}} y={45}
+                          style={{fill: "white", fontSize: 11, fontFamily: "Helvetica Neue"}}/>}
+        labels={({ datum }) => datum.x + datum.label}
+        style={{data: { stroke: "#ff3a3d", strokeWidth: 1.5 } }}
+        theme={VictoryTheme.material}
+        data={data}
+        x="x"
+        y="y"
+      />
+    </VictoryGroup>
+  );
+}
+
   /* a function to pull data from polygon and upload to firebase 
   note you manually enter utcstart and utc end 
   make sure you are uploading the correct desired granularity
@@ -169,8 +199,8 @@ export default function DetailsScreen({route, navigation}) {
   function displayArticles() {
     return (
       <View style={{marginBottom: 20}}>
-        {articles.length > 0 && getArticleList()}
-        {articles.length === 0 && <Text style={{color: 'white', margin: 10}}> No top headlines to display for this stock. </Text>}
+        {articles && articles.length > 0 && getArticleList()}
+        {articles && articles.length === 0 && <Text style={{color: 'white', margin: 10}}> No top headlines to display for this stock. </Text>}
       </View>
     );
   }
@@ -264,10 +294,11 @@ export default function DetailsScreen({route, navigation}) {
 
       </View>
       <View style={styles.graph}>
-        <LineGraph
+        {/* <LineGraph
           data={setChartDataGranularity(timeframe, "line", lineChartData)} 
           renderData={({ datum }) => datum.x + datum.label}
-        />
+        />  */}
+        {createLineGraph(setChartDataGranularity(timeframe, "line", lineChartData))}
       </View>
 
        {/* Middle section */}
