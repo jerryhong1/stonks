@@ -5,7 +5,7 @@ import { timeSince } from "../Lib/Utils"
 
 function TransactionItem({transaction}) {
     let boughtOrSold = transaction["buyOrSell"] === "Purchase"? "Buy" : "Sale";
-    let posOrNeg = transaction["qtyChanged"] > 0 ? "+" : "-";
+    let posOrNeg = transaction["qtyChanged"] > 0 ? "-" : "+"; // you lose money when you buy
     let date = new Date(transaction["timestamp"])
     return (
     <View style={styles.transactions}> 

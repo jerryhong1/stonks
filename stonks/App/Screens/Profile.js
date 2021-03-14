@@ -6,7 +6,8 @@ import firebase from 'firebase';
 import { StonksIconButton } from '../Styles/Buttons';
 import StockList from '../Components/TransactionList'
 import * as T from '../Styles/text'
-import {formatMoney, TransactionGraph, formatLineChartData} from '../Lib/Utils';
+import {formatMoney} from '../Lib/Utils';
+import { LineGraph, formatLineChartData} from "../Components/StockGraph"
 
 export default function Profile({navigation}) {
     const [name, setName] = useState('');
@@ -128,7 +129,7 @@ export default function Profile({navigation}) {
                {display === "transactions" ? 
                 <StockList transactions={transactions}/> 
                 : 
-                <TransactionGraph lineChartData={lineChartData}/> 
+                <LineGraph data={lineChartData} renderLabel={({datum}) => datum.x}/> 
                }
             </View>
         </View> 
