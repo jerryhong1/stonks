@@ -8,10 +8,6 @@ import Svg, {Line} from 'react-native-svg';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { getArticles } from "./News";
 
-const KEY = "VfpjQL3hxlS56WBVpmcslVQ5jCwm7U2m"
-const URL = "https://api.polygon.io/v2/aggs/" //base url for aggs calls 
-
-
 function formatAMPM(date) {
   var hours = date.getHours();
   var minutes = date.getMinutes();
@@ -29,7 +25,6 @@ function convertMillisToDay(millis) {
   var prettyDate = date.toString().slice(4, 10) + " " + formatAMPM(date)
   return prettyDate; //returns string in format [month date time] ie Feb 22 2:00 PM
 }
-
 
 function formatCandlestickChartData(data) {
   var chartData = [];
@@ -299,7 +294,8 @@ export default function DetailsScreen({route, navigation}) {
               }}
               onChangeItem={item => {
                 navigation.navigate('BuySell', {
-                  stockData: stockData,
+                  ticker: stockData.ticker,
+                  company: stockData.company,
                   buyOrSell: item.value === 'sell' ? sell : buy,
                 })
               }}
@@ -404,4 +400,3 @@ const styles = StyleSheet.create({
     fontSize: 13
   }
 });
-
