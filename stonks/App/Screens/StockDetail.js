@@ -200,7 +200,7 @@ function createLineGraph(data) {
     return (
       <View style={{marginBottom: 20}}>
         {articles && articles.length > 0 && getArticleList()}
-        {articles && articles.length === 0 && <Text style={{color: 'white', margin: 10}}> No top headlines to display for this stock. </Text>}
+        {(!articles || articles.length === 0) && <Text style={{color: 'white', margin: 10}}> No top headlines to display for this stock. </Text>}
       </View>
     );
   }
