@@ -137,9 +137,9 @@ export default function DetailsScreen({route, navigation}) {
     }
 
     return (
-      <ScrollView>
+      <View>
         {articleList}
-      </ScrollView>
+      </View>
     );
   };
 
@@ -168,7 +168,7 @@ export default function DetailsScreen({route, navigation}) {
 
   function displayArticles() {
     return (
-      <View style={{marginBottom: 200}}>
+      <View style={{marginBottom: 20}}>
         {articles.length > 0 && getArticleList()}
         {articles.length === 0 && <Text style={{color: 'white', margin: 10}}> No top headlines to display for this stock. </Text>}
       </View>
@@ -210,7 +210,7 @@ export default function DetailsScreen({route, navigation}) {
         filteredChartData.push(data[i]);
       }
     } else if (granularity == "1M") {
-      if (date <=  endDate && date >= startDate && date.getMinutes() == 0) { //gets days in week range 
+      if (date <=  endDate && date >= startDate && date.getMinutes() == 0 && date.getHours() % 3 == 0 ) { //gets days in week range 
         filteredChartData.push(data[i]);
       }
     }
@@ -307,12 +307,12 @@ export default function DetailsScreen({route, navigation}) {
       </View>
 
       {/* News and Description  */}
-      <View style={styles.stocks}>
+      <ScrollView style={styles.stocks}>
           <Text style={{color: "white", fontSize: 18, marginVertical: 8, marginHorizontal: 12}}>Description</Text>
           <Text style={{color: "white", fontSize: 14, marginBottom: 10, marginHorizontal: 12}}>{stockdesc}</Text>
           <Text style={{color: "white", fontSize: 18, marginVertical: 8, marginHorizontal: 12}}>News</Text>
           {displayArticles()}
-      </View>
+      </ScrollView>
 
       
       <StatusBar />
@@ -338,7 +338,7 @@ const styles = StyleSheet.create({
     width:'100%', 
   },
   graph: {
-    flex: 2,
+    flex: 0.5,
     backgroundColor: "black",
     width: "100%",
     borderBottomColor: "white",
@@ -364,7 +364,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   stockInfo: {
-    flex: 1,
+    flex: 0.25,
     padding: 12,
     paddingBottom: 0,
     backgroundColor: "black",
@@ -372,7 +372,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     flexDirection: "row",
     justifyContent: "space-between",
-    zIndex: 100
+    zIndex: 100,
   },
   stocks: {
     flex: 4,
