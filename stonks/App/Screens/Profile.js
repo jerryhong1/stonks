@@ -1,13 +1,13 @@
 import React, { useEffect, useState} from 'react';
-import { Button, ScrollView, StyleSheet, Text, View, SafeAreaView, TouchableHighlight, TouchableOpacity, Image } from 'react-native';
-import { VictoryChart, VictoryLine, VictoryTheme, VictoryVoronoiContainer } from "victory-native";
+import { Button, StyleSheet, View, SafeAreaView, TouchableHighlight, Image } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import firebase from 'firebase';
 
 import { StonksIconButton } from '../Styles/Buttons';
 import StockList from '../Components/TransactionList'
 import * as T from '../Styles/text'
-import {timeSince, formatMoney} from '../Lib/Utils';
+import {formatMoney} from '../Lib/Utils';
+import { TransactionGraph, formatLineChartData, LineGraph} from "../Components/StockGraph"
 
 export default function Profile({navigation}) {
     const [name, setName] = useState('');
@@ -17,7 +17,7 @@ export default function Profile({navigation}) {
     const [transactions, setTransactions] = useState([]);
     const [display, setDisplay] = useState("transactions"); 
     const [lineChartData, setLineChartData] = useState([0,0]);
-
+    
     const reloadUserData = async () => {
         try {
             const user = firebase.auth().currentUser;  // Not safe, but fine for now
@@ -31,6 +31,8 @@ export default function Profile({navigation}) {
             setPropic(userData.propic);
             setTransactions(userData.transactions.reverse()); // report with the most recent at the top
             setLineChartData(formatLineChartData(userData.transactions));
+            console.log(lineChartData);
+
         } catch (error) {
             console.log(error);
         }
@@ -67,47 +69,6 @@ export default function Profile({navigation}) {
         return () => unsubscribe();
 
     }, []);
-
-
-    function formatLineChartData(data) {
-        var chartData = [];
-        for (var i = 0; i < data.length; i++) {
-          var timestamp = data[i].timestamp;
-          var datapoint = {x: new Date(timestamp), y: data[i].assetTotal};
-          chartData.push(datapoint);
-        }
-        return chartData;
-    }
-
-    const chartTheme = {
-        axis: {
-          style: {
-            tickLabels: {
-                fill: 'white',
-                padding: 10,
-            },
-            axis: {
-                stroke: "#756f6a"
-            },
-          },
-        },
-    };
-
-    function createGraph() {
-        return (
-            <VictoryChart theme={chartTheme} containerComponent={<VictoryVoronoiContainer/>}>
-                
-                <VictoryLine
-                    height={300} 
-                    domainPadding={{y: [8, 8]}} 
-                    padding={{ top: 5, bottom: 10 }} 
-                    theme={VictoryTheme.material} 
-                    data={lineChartData}
-                    style={{data: {stroke: "white", strokeWidth: 1}}}
-                />
-            </VictoryChart> 
-        );
-    }
 
     return (
         <SafeAreaView style={styles.container}>
@@ -167,7 +128,12 @@ export default function Profile({navigation}) {
             </View>
             
             <View {...display === "transactions"? styles.transactionList : styles.graph}>
-               {display === "transactions"? <StockList transactions={transactions}/> : createGraph()}
+               {display === "transactions" ? 
+                <StockList transactions={transactions}/> 
+                : 
+                // <TransactionGraph lineChartData={lineChartData} renderLabel={({datum}) => datum.x}/> 
+                <LineGraph data={lineChartData} renderLabel={({datum}) => datum.x}/>
+               }
             </View>
         </View> 
         </SafeAreaView>

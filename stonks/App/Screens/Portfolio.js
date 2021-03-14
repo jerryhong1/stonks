@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { StyleSheet, Text, View, SafeAreaView, Dimensions, TouchableOpacity, Image} from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import firebase from 'firebase';
 
 import { SafeAreaContainer } from "../Styles/container";
@@ -9,15 +9,20 @@ import * as T from '../Styles/text';
 
 import StockList, { fullStockDict }  from "../Components/StockList";
 import {formatMoney} from '../Lib/Utils';
-
+import { formatLineChartData, TransactionGraph, LineGraph } from "../Components/StockGraph"
 
 function EmptyState({navigation}) {
     return (
     <View style={{marginTop: 24}}>
-        <T.H2 style={{textAlign: "center", marginBottom: 8}}>No stocks yet.</T.H2>
+        <T.H2 style={{textAlign: "center", marginBottom: 16}}>No stocks yet.</T.H2>
         <StonksButton 
             onPress={() => navigation.navigate('Search')}
             text={"Buy Stocks"}
+        />
+        <StonksButton 
+            onPress={() => navigation.navigate('Education')}
+            variant={"secondary"}
+            text={"Learn more about stocks"}
         />
     </View>
     )
@@ -31,7 +36,8 @@ export default function Portfolio({navigation}) {
     const [portfolio, setPortfolio] = useState({});
     const [stockList, setStockList] = useState([]);
     const [changeInAssets, setChangeInAssets] = useState(0);
-    
+    const [lineChartData, setLineChartData] = useState([0,0]);
+
     const reloadUserData = async () => {
         try {
             const user = firebase.auth().currentUser;  // Not safe, but fine for now
@@ -42,6 +48,8 @@ export default function Portfolio({navigation}) {
             setStartingBalance(userData.startingBalance);
             setBalance(userData.balance);
             setPortfolio(userData.portfolio);
+            setLineChartData(formatLineChartData(userData.transactions));
+
         } catch (error) {
             console.log(error);
         }
@@ -98,22 +106,20 @@ export default function Portfolio({navigation}) {
     
     return (
         <SafeAreaContainer>
-            {/* graph view */}
-            <View style={styles.graph}> 
-                <Image source={require('../../imgs/stonksGoUp.png')}/>
-            </View>
-            <TouchableOpacity style={styles.education}
-              onPress={() => navigation.navigate('Education')}
-            >
-              <Text style={styles.title}>Would you like to learn more about the stock market before you start trading? </Text>
-            </TouchableOpacity>
-
             {/* Your portfolio statistics */}
             <View style={styles.urPrtflio}> 
                 <T.H4>{`Total Value of Assets`}</T.H4> 
                 <T.H1>{formatMoney(totalAssets)} </T.H1> 
-                <T.P style = {{color: changeInAssets < 0 ? colors.RED : colors.GREEN}} >{changeInAssets < 0? "↘" : "↗"} {formatMoney(changeInAssets)} ({(100*(changeInAssets/totalAssets)).toFixed(2)}%) </T.P>
+                <T.P style = {{color: changeInAssets < 0 ? colors.RED : changeInAssets == 0 ? colors.SUBTLE_TEXT : colors.GREEN}} >
+                  {changeInAssets < 0? "↘" : changeInAssets == 0 ? "-" : "↗"} {formatMoney(changeInAssets)} ({(100*(changeInAssets/totalAssets)).toFixed(2)}%) 
+                </T.P>
                 <T.P style = {{marginTop: 4}} >{formatMoney(balance)} of buying power</T.P>
+            </View>
+            
+            {/* graph view */}
+            <View style={styles.graph}> 
+                <LineGraph data={lineChartData} renderLabel={({datum}) => datum.x}/>
+                {/* <TransactionGraph lineChartData={lineChartData}/> */}
             </View>
             
             {/* Your stocks list TODO: feed in list from docs */}
@@ -130,7 +136,7 @@ export default function Portfolio({navigation}) {
 
 const styles = StyleSheet.create({
   graph: {
-      flex: 2,
+      flex: 3,
       backgroundColor: "black",
       width: "100%", 
       borderBottomColor: "white",
@@ -151,7 +157,7 @@ const styles = StyleSheet.create({
   },
   urPrtflio: {
       padding: 16,
-      flex: 1.5,
+      flex: 2,
       backgroundColor: "black",
       width: "100%", 
       borderBottomColor: "white",

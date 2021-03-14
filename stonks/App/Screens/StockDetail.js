@@ -7,10 +7,8 @@ import firebase from 'firebase';
 import Svg, {Line} from 'react-native-svg';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { getArticles } from "./News";
-
-const KEY = "VfpjQL3hxlS56WBVpmcslVQ5jCwm7U2m"
-const URL = "https://api.polygon.io/v2/aggs/" //base url for aggs calls 
-
+import { colors } from '../Styles/colors'
+import { LineGraph } from "../Components/StockGraph"
 
 function formatAMPM(date) {
   var hours = date.getHours();
@@ -30,7 +28,6 @@ function convertMillisToDay(millis) {
   return prettyDate; //returns string in format [month date time] ie Feb 22 2:00 PM
 }
 
-
 function formatCandlestickChartData(data) {
   var chartData = [];
   for (var i = 0; i < data.length; i++) {
@@ -41,28 +38,13 @@ function formatCandlestickChartData(data) {
   return chartData;
 }
 
-class CustomFlyout extends React.Component {
-  render() {
-    const {x, y} = this.props;
-    return ( //svg height and width are hard coded right now 
-      <Svg height="800" width="500" style="overflow: visible"> 
-        <Line x1={x} y1="30" x2={x} y2="300" stroke="gray" strokeWidth="1" />
-      </Svg>
-    );
-  }
-}
-
 //pull data from firestore and feed to chart
 export default function DetailsScreen({route, navigation}) {
   const [lineChartData, setLineChartData] = useState([0,0]); //ALL available data we have 
-  const [candlestickChartData, setCandlestickChartData] = useState([0,0,0,0,0]);  //ALL available data we have
-  const [lineChartDataDisplay, setLineChartDataDisplay] = useState([0,0]); //data to be DISPLAYED
-  const [candlestickChartDataDisplay, setCandlestickChartDataDisplay] = useState([0,0]); //data to be DISPLAYED
   const [stockdesc, setStockDesc] = useState(""); 
   const stockData = route.params.data;
   const buy = "Purchase";
   const sell = "Sell";
-  const [chartFormat, setChartFormat] = useState("line"); 
   const [articles, setArticles] = useState([]);
   const [timeframe, setTimeframe] = useState("1D");
 
@@ -75,11 +57,9 @@ export default function DetailsScreen({route, navigation}) {
       const stockDataFirebase = stockSnapshot.data();
       //put stockData into right format
       setLineChartData(formatLineChartData(stockDataFirebase.results));
-      setCandlestickChartData(formatCandlestickChartData(stockDataFirebase.results));
       setStockDesc(stockDataFirebase.description);
       const response = await getArticles(stockData.company);
       setArticles(response.articles);
-      setLineChartDataDisplay(lineChartData);
       //if you want to write some data uncomment below and:
       // change stockdata to the data you want to upload
       // change the below firebase.set command to the correct stock you want to upload data to
@@ -103,30 +83,13 @@ export default function DetailsScreen({route, navigation}) {
     var chartData = [];
     for (var i = 0; i < data.length; i++) {
       var date = new Date((data[i].t));
-      var label = convertMillisToDay(date) + "\n $" + (data[i].vw.toFixed(2)).toString()// t is the Unix Msec timestamp for the start of the aggregate window
+      var labeldate = new Date((data[i].t));
+      labeldate.setDate(labeldate.getDate()+7); 
+      var label = convertMillisToDay(labeldate) + "\n $" + (data[i].vw.toFixed(2)).toString()// t is the Unix Msec timestamp for the start of the aggregate window
       var datapoint = {x: i, y: data[i].vw, label: label, date: date}
       chartData.push(datapoint)
     }
     return chartData;
-  }
-
-  function createLineGraph() {
-    //setChartDataGranularity(timeframe, "line", lineChartData);
-    return (
-      <VictoryGroup theme={VictoryTheme.material} height={150} domainPadding={{y: [0, 50]}} padding={{ top: 0, bottom: 0 }} containerComponent={<VictoryVoronoiContainer/>}>
-        <VictoryLine 
-          labelComponent={ <VictoryTooltip renderInPortal={false} flyoutComponent={<CustomFlyout/>}
-                            flyoutStyle={{stroke: "none", fill: "black"}} y={45}
-                            style={{fill: "white", fontSize: 11, fontFamily: "Helvetica Neue"}}/>}
-          labels={({ datum }) => datum.x + datum.label}
-          style={{data: { stroke: "#ff3a3d", strokeWidth: 1.5 } }}
-          theme={VictoryTheme.material}
-          data={lineChartDataDisplay}
-          x="x"
-          y="y"
-        />
-      </VictoryGroup>
-    );
   }
 
   function createCandlestickGraph() {
@@ -170,41 +133,46 @@ export default function DetailsScreen({route, navigation}) {
     }
 
     return (
-      <ScrollView>
+      <View>
         {articleList}
-      </ScrollView>
+      </View>
     );
   };
 
-  /* a function to pull data from polygon and upload to firebase 
-  note you manually enter utcstart and utc end 
-  make sure you are uploading the correct desired granularity
-  press upload button to begin upload 
-  :D 
-  */
-  async function uploadData() {
-    var utcStart = new Date("2021-03-01"); //manually update this 
-    var utcEnd = new Date("2021-03-10"); //manually update this 
-    //https://api.polygon.io/v2/aggs/ticker/AAPL/range/5/minute/2020-10-14/2020-10-14?unadjusted=true&sort=asc&limit=5000&apiKey=VfpjQL3hxlS56WBVpmcslVQ5jCwm7U2m
-    var fullCall = URL + "ticker/" + stockData.ticker + "/range/30/minute/" + "2021-03-01" + "/" + "2021-03-12" + "?unadjusted=true&sort=asc&limit=5000&apiKey=" + KEY;
-    let response = await fetch(fullCall);
-    let data = await response.json();
-    var toUpload = { 
-      results: []
-    };
-    toUpload.results = data.results;
-    console.log('toUpload: ', toUpload);
-    console.log('pulled stock');
-    await firebase.firestore().collection('stocks').doc(stockData.ticker).set(toUpload, {merge: true});
-    console.log("success uploading", stockData.ticker, "data to firestore");
+  class CustomFlyout extends React.Component {
+      render() {
+          const {x, y} = this.props;
+          return ( //svg height and width are hard coded right now 
+          <Svg height="800" width="500" style="overflow: visible"> 
+              <Line x1={x} y1="30" x2={x} y2="300" stroke="gray" strokeWidth="1" />
+          </Svg>
+          );
+      }
+  }
+
+  function createLineGraph(data) {
+    return (
+      <VictoryGroup theme={VictoryTheme.material} height={150} domainPadding={{y: [0, 50]}} padding={{ top: 0, bottom: 0 }} containerComponent={<VictoryVoronoiContainer/>}>
+        <VictoryLine 
+          labelComponent={ <VictoryTooltip renderInPortal={false} flyoutComponent={<CustomFlyout/>}
+                            flyoutStyle={{stroke: "none", fill: "black"}} y={45}
+                            style={{fill: "white", fontSize: 11, fontFamily: "Helvetica Neue"}}/>}
+          labels={({ datum }) => datum.x + datum.label}
+          style={{data: { stroke: "#ff3a3d", strokeWidth: 1.5 } }}
+          theme={VictoryTheme.material}
+          data={data}
+          x="x"
+          y="y"
+        />
+      </VictoryGroup>
+    );
   }
 
   function displayArticles() {
-    //console.log("Articles: ", articles);
     return (
-      <View>
-        {articles.length > 0 && getArticleList()}
-        {articles.length === 0 && <Text style={{color: 'white', margin: 10}}> No top headlines to display for this stock. </Text>}
+      <View style={{marginBottom: 20}}>
+        {articles && articles.length > 0 && getArticleList()}
+        {(!articles || articles.length === 0) && <Text style={{color: 'white', margin: 10}}> No top headlines to display for this stock. </Text>}
       </View>
     );
   }
@@ -223,8 +191,6 @@ export default function DetailsScreen({route, navigation}) {
   let dateRange = getDateRange(granularity);
   var startDate = dateRange[0]; 
   var endDate = dateRange[1];
-  //console.log("startDate: ", startDate);
-  //console.log("endDate: ", endDate);
   var filteredChartData = [];
   for (var i = 0; i < data.length; i++) {
     let date;
@@ -235,7 +201,7 @@ export default function DetailsScreen({route, navigation}) {
     }
     if (granularity == "1D") { // no need to remove timestamps since we get 5 min data anyways 
       if (date <=  endDate && date >= startDate ) {
-        if (type == "candlestick" && (date.getMinutes() % 10) == 0 ) {
+        if (type == "candlestick" && (date.getMinutes() % 30) == 0 ) {
           filteredChartData.push(data[i]);
         } else if (type == "line") {
           filteredChartData.push(data[i]);
@@ -246,21 +212,12 @@ export default function DetailsScreen({route, navigation}) {
         filteredChartData.push(data[i]);
       }
     } else if (granularity == "1M") {
-      if (date <=  endDate && date >= startDate && date.getUTCHours() == 0) { //gets days in week range 
+      if (date <=  endDate && date >= startDate && date.getMinutes() == 0 && date.getHours() % 3 == 0 ) { //gets days in week range 
         filteredChartData.push(data[i]);
       }
     }
   }
-  // if (type == "candlestick") {
-  //   let result2 = filteredChartData.map(a => a.x.toString());
-  //   console.log("filtered dates:");
-  //   console.log(result2)
-  // }
-  if (type == "line") {
-    setLineChartDataDisplay(filteredChartData);
-  } else if (type == "candlestick") {
-    setCandlestickChartDataDisplay(filteredChartData);
-  }
+  return filteredChartData;
 }
 
   /*
@@ -270,15 +227,15 @@ export default function DetailsScreen({route, navigation}) {
   function getDateRange(granularity) {
     let res = [];
     var endDate = new Date();
-    endDate.setDate(endDate.getDate()-1); 
+    endDate.setDate(endDate.getDate()-7); 
     endDate.setUTCHours(0,0,0,0);
     var startDate = new Date();
     if (granularity == "1D") {
-      startDate.setDate(startDate.getDate()-2); 
-    } else if (granularity == "1W") {
       startDate.setDate(startDate.getDate()-8); 
+    } else if (granularity == "1W") {
+      startDate.setDate(startDate.getDate()-14); 
     } else if (granularity == "1M") {
-      startDate.setDate(startDate.getDate()-32); // if we have time we can change this to actual # of days in a month 
+      startDate.setDate(startDate.getDate()-39); // if we have time we can change this to actual # of days in a month 
     }
     startDate.setUTCHours(0,0,0,0);
     res.push(startDate);
@@ -289,36 +246,31 @@ export default function DetailsScreen({route, navigation}) {
   return (
     <View style={styles.container}>
       <View style={styles.button}>
-        <View style={styles.chartTypeButton}> 
-          <TouchableOpacity onPress={() => {{chartFormat == "line"? setChartFormat("candlestick") : setChartFormat("line")}}}>
-              <Text style={styles.buttonText}>
-                {chartFormat == "line"?"Candlestick": "      Line       "}
-              </Text>
-          </TouchableOpacity> 
-        </View>
-        <View style={styles.timeframeButton}> 
-          <TouchableOpacity onPress={() => {{chartFormat == "line"? setChartDataGranularity("1D", "line", lineChartData) : setChartDataGranularity("1D", "candlestick", candlestickChartData)}}}>
+       <View style={styles.timeframeButton}> 
+          <TouchableOpacity onPress={() => {{setTimeframe("1D")}}}>
               <Text style={styles.buttonText}>1D</Text>
           </TouchableOpacity> 
         </View>
+
         <View style={styles.timeframeButton}> 
-          <TouchableOpacity onPress={() => {{chartFormat == "line"? setChartDataGranularity("1W", "line", lineChartData) : setChartDataGranularity("1W", "candlestick", candlestickChartData)}}}>
+          <TouchableOpacity onPress={() => {{setTimeframe("1W")}}}>
               <Text style={styles.buttonText}>1W</Text>
           </TouchableOpacity> 
         </View>
+
         <View style={styles.timeframeButton}> 
-          <TouchableOpacity onPress={() => {{chartFormat == "line"? setChartDataGranularity("1M", "line", lineChartData) : setChartDataGranularity("1M", "candlestick", candlestickChartData)}}}>
+          <TouchableOpacity onPress={() => {{setTimeframe("1M")}}}>
               <Text style={styles.buttonText}>1M</Text>
           </TouchableOpacity> 
         </View>
-      {/* <Button
-        onPress={() => {uploadData()}}
-        color="#ffffff"
-        title="upload"
-      /> */}
+
       </View>
       <View style={styles.graph}>
-        {chartFormat == "line"? createLineGraph() : createCandlestickGraph()}
+        {/* <LineGraph
+          data={setChartDataGranularity(timeframe, "line", lineChartData)} 
+          renderData={({ datum }) => datum.x + datum.label}
+        />  */}
+        {createLineGraph(setChartDataGranularity(timeframe, "line", lineChartData))}
       </View>
 
        {/* Middle section */}
@@ -348,7 +300,8 @@ export default function DetailsScreen({route, navigation}) {
               }}
               onChangeItem={item => {
                 navigation.navigate('BuySell', {
-                  stockData: stockData,
+                  ticker: stockData.ticker,
+                  company: stockData.company,
                   buyOrSell: item.value === 'sell' ? sell : buy,
                 })
               }}
@@ -358,12 +311,12 @@ export default function DetailsScreen({route, navigation}) {
       </View>
 
       {/* News and Description  */}
-      <View style={styles.stocks}>
+      <ScrollView style={styles.stocks}>
           <Text style={{color: "white", fontSize: 18, marginVertical: 8, marginHorizontal: 12}}>Description</Text>
           <Text style={{color: "white", fontSize: 14, marginBottom: 10, marginHorizontal: 12}}>{stockdesc}</Text>
           <Text style={{color: "white", fontSize: 18, marginVertical: 8, marginHorizontal: 12}}>News</Text>
           {displayArticles()}
-      </View>
+      </ScrollView>
 
       
       <StatusBar />
@@ -389,7 +342,7 @@ const styles = StyleSheet.create({
     width:'100%', 
   },
   graph: {
-    flex: 2,
+    flex: 0.5,
     backgroundColor: "black",
     width: "100%",
     borderBottomColor: "white",
@@ -415,7 +368,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   stockInfo: {
-    flex: 1,
+    flex: 0.25,
     padding: 12,
     paddingBottom: 0,
     backgroundColor: "black",
@@ -423,7 +376,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     flexDirection: "row",
     justifyContent: "space-between",
-    zIndex: 100
+    zIndex: 100,
   },
   stocks: {
     flex: 4,
@@ -453,4 +406,3 @@ const styles = StyleSheet.create({
     fontSize: 13
   }
 });
-

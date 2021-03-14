@@ -10,7 +10,7 @@ export const Container = styled.View`
     justifyContent: center;
     alignContent: space-between;
     flexDirection: column;
-    width: ${Dimensions.get('window').width};
+    width: ${Dimensions.get('window').width}px;
 `
 
 export const SafeAreaContainer = styled.SafeAreaView`
@@ -20,7 +20,7 @@ export const SafeAreaContainer = styled.SafeAreaView`
     justifyContent: center;
     alignContent: space-between;
     flexDirection: column;
-    width: ${Dimensions.get('window').width};
+    width: ${Dimensions.get('window').width}px;
 `
 
 // container for stocks

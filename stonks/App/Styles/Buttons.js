@@ -17,7 +17,7 @@ export const StonksTouchable = styled.TouchableOpacity`
 `
 
 export const ButtonText = styled.Text`
-  color: ${props => props.disabled ? colors.GREEN : 'white'};
+  color: ${props => props.variant === "secondary" ? colors.GREEN : props.disabled ? '#FFFFFF66' : 'white'};
   fontSize: 16px;
   textAlign: center;
   fontWeight: 500;
@@ -26,7 +26,7 @@ export const ButtonText = styled.Text`
 // button component with:
 //  primary = green background
 // secondary = text only (no background)
-// size: width. if not specified, full-width
+// width = width. if not specified, full-width
 export const StonksButton = function({variant, width, disabled, text, onPress, style}) {
   return (
   <StonksTouchable 
@@ -36,12 +36,12 @@ export const StonksButton = function({variant, width, disabled, text, onPress, s
     width={width}
     style={style}
   >
-    <ButtonText disabled={disabled}>{text}</ButtonText>
+    <ButtonText disabled={disabled} variant={variant}>{text}</ButtonText>
   </StonksTouchable>
   )
 }
 
-export const StonksIconButton = function({width, disabled, text, onPress, style, iconName}) {
+export const StonksIconButton = function({variant, width, disabled, text, onPress, style, iconName}) {
   return (
   <StonksTouchable 
     onPress={onPress} 
@@ -51,7 +51,7 @@ export const StonksIconButton = function({width, disabled, text, onPress, style,
   >
     <View style={{flexDirection: 'row', alignItems: 'center'}} > 
         <Ionicons name={iconName} size={24} color='white' style={{marginRight: 10}} />
-        <ButtonText>{text}</ButtonText>
+        <ButtonText disabled={disabled}  variant={variant}>{text}</ButtonText>
     </View>
   </StonksTouchable>
   )
@@ -59,19 +59,40 @@ export const StonksIconButton = function({width, disabled, text, onPress, style,
 
 const Buttons = {
   button: {
-      backgroundColor: colors.GREEN,
-      fontSize: 40,
-      color: colors.GREEN,
-      padding: 8,
-      margin: 6,
-      borderRadius: 4,
-      width: Dimensions.get('window').width * .6,
-    },
+    backgroundColor: colors.GREEN,
+    fontSize: 40,
+    color: colors.GREEN,
+    padding: 8,
+    margin: 6,
+    borderRadius: 4,
+    width: Dimensions.get('window').width * .6,
+  },
+  welcomeButton: {
+    backgroundColor: colors.WHITE,
+    fontSize: 40,
+    paddingVertical: 14,
+    paddingHorizontal: 10,
+    margin: 10,
+    borderRadius: 10,
+    width: Dimensions.get('window').width * .8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    height: 75
+  },
   buttontext: {
-      color: 'white',
-      fontSize: 15,
-      textAlign: 'center',
-    },
+    color: 'white',
+    fontSize: 15,
+    textAlign: 'center',
+  },
+  welcomeButtonText: {
+    color: 'black',
+    textAlign: 'flex-start',
+    fontSize: 25,
+    fontWeight: 'bold',
+  },
+  triangle: {
+    marginTop: 12,
+  },
   buttontextdisabled: {
     color: colors.GREEN,
     fontSize: 15,

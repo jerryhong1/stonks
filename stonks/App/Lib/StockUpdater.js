@@ -1,16 +1,13 @@
 import firebase from 'firebase';
 import 'firebase/firestore';
 
-const MS_PER_MIN = 60000;
-const KEY = "VfpjQL3hxlS56WBVpmcslVQ5jCwm7U2m"
-const URL = "https://api.polygon.io/v2/aggs/" //base url for aggs calls 
+const UPDATE_INTERVAL = 15000; // 15 seconds
+const POLYGON_KEY = "VfpjQL3hxlS56WBVpmcslVQ5jCwm7U2m"
+const POLYGON_URL = "https://api.polygon.io/v2/aggs/" //base url for aggs calls 
 
 // Sets up a system to update stocks once per minute. Returns a function for
 // unsubscribing.
 function stockUpdater() {
-  const updateInterval = MS_PER_MIN; // 1 minute
-  //tryStockUpdate();
-
   // Create timeout to update at the top of the minute
   let unsubType = 'timeout';
   let unsubHandle = setTimeout(() => {
@@ -19,11 +16,11 @@ function stockUpdater() {
 
     // Create interval to call every minute at the top of the minute
     unsubHandle = setInterval(() => {
-      //tryStockUpdate();
-    }, updateInterval);
+      tryStockUpdate();
+    }, UPDATE_INTERVAL);
 
-    //tryStockUpdate();
-  }, updateInterval - (Date.now() % updateInterval));
+    tryStockUpdate();
+  }, UPDATE_INTERVAL - (Date.now() % UPDATE_INTERVAL));
 
   // Return unsubscribe function that cancels the active timeout or interval
   return () => {
@@ -48,25 +45,28 @@ function tryStockUpdate() {
       const doc = await t.get(globalStocksDoc);
 
       // Timestamps in minutes
-      const remoteTimestamp = doc.get('update_timestamp');
+      const data = doc.data();
       const rawTimestamp = Date.now(); // UTC timezone, to convert to another timezone you will need to add/sub the appropriate number of hours
-      const localTimestamp = Math.floor(rawTimestamp / MS_PER_MIN); // Convert from ms to minutes
+      const localTimestamp = Math.floor(rawTimestamp / UPDATE_INTERVAL); // Convert from ms to minutes
+      const ticker = data.stockList[data.stockListIndex];
 
-      // Update timestamp if no other user has already updated it
-      if (remoteTimestamp < localTimestamp) {
+      // Update timestamp and increment stock list index if no other user has
+      // already updated it
+      if (data.update_timestamp < localTimestamp) {
         return Promise.all([
-          remoteTimestamp,
+          ticker,
           localTimestamp,
           t.update(globalStocksDoc, {
-            update_timestamp: localTimestamp
+            update_timestamp: localTimestamp,
+            stockListIndex: (data.stockListIndex + 1) % data.stockList.length
           })
         ]);
       } else {
         // Fail if another user updated the timestamp before us
         throw 'too slow!';
       }
-    }).then(([startTimestamp, endTimestamp]) => {
-      updateStockData(startTimestamp * MS_PER_MIN, endTimestamp * MS_PER_MIN);
+    }).then(([ticker, localTimestamp]) => {
+      updateStockData(ticker, localTimestamp * UPDATE_INTERVAL);
     }).catch((error) => {
       console.log(error);
     });
@@ -75,42 +75,86 @@ function tryStockUpdate() {
   }
 }
 
-// Actually update stock data if you become the delegate. Don't call this
-// outside of this library.
-function updateStockData(startTimestamp, endTimestamp) {
-  // TODO: make polygon API call here and write the data for Firestore
-  var startDate = new Date(startTimestamp);
-  startDate.setDate(startDate.getDate()-1); // subtract 1 day 
-  var utcStart = startDate.toUTCString();
-  var utcEnd = new Date(endTimestamp).toUTCString();
-  console.log(`update stocks between ${utcStart} and ${utcEnd}`);
-  getAndUploadStockData(formatDate(utcStart), formatDate(utcEnd));
-}
-
 function formatDate(date) {
-  var d = new Date(date),
+  let d = new Date(date),
       month = '' + (d.getMonth() + 1),
       day = '' + d.getDate(),
       year = d.getFullYear();
 
-  if (month.length < 2) 
+  if (month.length < 2)
       month = '0' + month;
-  if (day.length < 2) 
+  if (day.length < 2)
       day = '0' + day;
   return [year, month, day].join('-');
 }
 
-async function getAndUploadStockData(utcStart, utcEnd) {
-  var ticker = "GME"; // we need to determine what all our stocks are to update 
+// Actually update stock data if you become the delegate. Don't call this
+// outside of this library.
+async function updateStockData(ticker, endTimestamp) {
+  const stockDocRef = firebase.firestore().collection('stocks').doc(ticker);
 
+  // Convert timestamps to UTC strings, subtracting one day due to polygon only updating at EOD
+  let endDate = new Date(endTimestamp);
+  endDate.setUTCDate(endDate.getUTCDate() - 7);
+  endTimestamp = endDate.getTime();
+
+  const snapshot = await stockDocRef.get();
+  let startTimestamp = snapshot.get('lastUpdate');
+  if (startTimestamp === undefined) {
+    // Reset to the start of the trading day one month ago
+    startTimestamp = new Date();
+    startTimestamp.setUTCMonth(startTimestamp.getUTCMonth() - 1);
+    startTimestamp.setUTCDate(startTimestamp.getUTCDate() - 8);
+    startTimestamp.setUTCHours(9);
+  }
+  const startDate = new Date(startTimestamp);
+
+  // Get stock data from Polygon
   //https://api.polygon.io/v2/aggs/ticker/AAPL/range/5/minute/2020-10-14/2020-10-14?unadjusted=true&sort=asc&limit=5000&apiKey=VfpjQL3hxlS56WBVpmcslVQ5jCwm7U2m
-  var fullCall = URL + "ticker/" + ticker + "/range/5/minute/" + utcStart + "/" + utcEnd + "?unadjusted=true&sort=asc&limit=5000&apiKey=" + KEY;
-  let response = await fetch(fullCall);
-  let data = await response.json();
-  console.log('pulling stocks from polygon');
-  await firebase.firestore().collection('stocks').doc("GME").set(data, {merge: true});
-  console.log("success uploading to firestore");
-}
+  const fullCall = POLYGON_URL + "ticker/" + ticker + "/range/5/minute/" + formatDate(startDate) + "/" + formatDate(endDate) + "?unadjusted=true&sort=asc&limit=5000&apiKey=" + POLYGON_KEY;
+  const response = await fetch(fullCall);
+  const data = await response.json();
+  if (data.status === 'ERROR') {
+    console.log(`polygon.io API call error: ${data.error}`);
+    return;
+  }
 
+  // Get the indices of the entries we're looking for
+  // Don't tell me it's slow, I swear it's ok
+  const startIndex = data.results.findIndex(entry => entry.t > startTimestamp); // inclusive
+  let endIndex = data.results.findIndex(entry => entry.t > endTimestamp); // exclusive
+  if (endIndex === -1 && startIndex !== -1) {
+    endIndex = data.results.length;
+  } else if (endIndex <= startIndex) {
+    return;
+  }
+
+  // Append new data to Firestore
+  const newData = data.results.slice(startIndex, endIndex);
+  try {
+    firebase.firestore().runTransaction(async (t) => {
+      const doc = await t.get(stockDocRef);
+
+      // Concatenate new stock data to stock history
+      let results = doc.get('results');
+      if (results === undefined) {
+        results = [];
+      }
+      results = results.concat(newData);
+
+      const currentData = data.results[endIndex-1];
+
+      // Commit to Firestore
+      return t.update(stockDocRef, {
+        results: results,
+        currPrice: currentData.vw,
+        lastUpdate: currentData.t
+      });
+    }).then(() => {
+    });
+  } catch (e) {
+    console.log(`Stock transaction failure: ${e}`);
+  }
+}
 
 export {stockUpdater, tryStockUpdate};

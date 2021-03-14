@@ -1,18 +1,19 @@
 import React from 'react';
 import { StyleSheet, Text, FlatList, View} from 'react-native';
 import * as T from '../Styles/text'
+import { timeSince } from "../Lib/Utils"
 
 function TransactionItem({transaction}) {
     let boughtOrSold = transaction["buyOrSell"] === "Purchase"? "Buy" : "Sale";
-    let posOrNeg = transaction["qtyChanged"] > 0 ? "+" : "-";
+    let posOrNeg = transaction["qtyChanged"] > 0 ? "-" : "+"; // you lose money when you buy
     let date = new Date(transaction["timestamp"])
     return (
     <View style={styles.transactions}> 
         <View style={{flex: 1, paddingHorizontal: 8}}>
             <T.P style={{lineHeight: 20}}> 
                 {transaction["stock"] + " " + boughtOrSold + "\n"}
-                <Text style={{color: 'grey'}}> 
-                    {Math.abs(transaction["qtyChanged"]) + " share(s) \t " + date.toLocaleDateString()}  
+                <Text style={{color: 'grey'}}>
+                    {Math.abs(transaction["qtyChanged"]) + " share(s)    " + timeSince(date)}  
                     {/* TODO: change into "time" for items in the most recent day */}
                 </Text>
             </T.P>
@@ -30,10 +31,10 @@ function TransactionItem({transaction}) {
 
 // NOTE: this also needs to accept a parameter from search that filters 
 export default function StockList({transactions}) {
-    console.log("transactions", transactions);
+    // console.log("transactions", transactions);
     const renderTransactionItem = ({ index, item }) => {
         let transaction = item
-        console.log(transaction)
+        // console.log(transaction)
         return transaction ? <TransactionItem transaction={transaction} /> : null
     };
     
