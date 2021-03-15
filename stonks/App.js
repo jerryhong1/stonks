@@ -16,7 +16,8 @@ import Market from './App/Screens/EducationScreens/Market';
 import Candlestick from './App/Screens/EducationScreens/Candlestick';
 import StartingAmount from './App/Screens/StartingAmount';
 import WhyInvest from './App/Screens/EducationScreens/WhyInvest';
-import HowTo from './App/Screens/EducationScreens/HowTo';
+import UseApp from './App/Screens/EducationScreens/UseApp';
+import UnderstandStock from './App/Screens/EducationScreens/UnderstandStock';
 
 const MainStack = createStackNavigator();
 
@@ -38,7 +39,9 @@ function App() {
       <MainStack.Screen name="Candlestick" component={Candlestick} />
       <MainStack.Screen name="StartingAmount" component={StartingAmount}  options={{ headerShown: false }}/>
       <MainStack.Screen name="WhyInvest" component={WhyInvest} />
-      <MainStack.Screen name="HowTo" component={HowTo} />
+      <MainStack.Screen name="UseApp" component={UseApp} />
+      <MainStack.Screen name="UnderstandStock" component={UnderstandStock} />
+
     </MainStack.Navigator>
     </NavigationContainer>
   );

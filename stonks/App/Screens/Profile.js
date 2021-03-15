@@ -80,16 +80,10 @@ export default function Profile({navigation}) {
             <View>
                 <TouchableHighlight onPress={selectImage}>
                     <View style={{marginLeft: 16}}> 
-
-                        {propic ? 
-                            <Image
-                                source={{uri: propic}}
-                                style={styles.propic}
-                            />
-                        :
-                            <FontAwesome5 name="user-circle" size={120} color="white" style={styles.propic} />
-                        }
-
+                        <Image
+                            source={propic? {uri: propic} : require('../../imgs/profile.png')}
+                            style={styles.propic}
+                        />
                         <T.Body2 style={{marginTop: -8}}>Change Profile Picture</T.Body2>
                     </View> 
                  </TouchableHighlight>

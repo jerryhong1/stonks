@@ -3,6 +3,7 @@ import { StyleSheet, Text, FlatList, View} from 'react-native';
 import * as T from '../Styles/text'
 import { timeSince } from "../Lib/Utils"
 
+
 function TransactionItem({transaction}) {
     let boughtOrSold = transaction["buyOrSell"] === "Purchase"? "Buy" : "Sale";
     let posOrNeg = transaction["qtyChanged"] > 0 ? "-" : "+"; // you lose money when you buy

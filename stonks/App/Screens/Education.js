@@ -1,92 +1,141 @@
 import React from 'react';
-import { ScrollView, SafeAreaView, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import { ScrollView, StyleSheet, Text, View, TouchableOpacity, Dimensions} from 'react-native';
+import { colors } from "../Styles/colors"
+import { SafeAreaContainer } from "../Styles/container"
+import * as T from '../Styles/text'
+import CashIcon from '../../assets/CashIcon'
+import AppIcon from '../../assets/AppIcon'
+import { FontAwesome } from '@expo/vector-icons';
+
+var width = Dimensions.get('window').width * .9
+
+export var icons = {
+  'WhyInvest': <CashIcon/>,
+  'UseApp': <AppIcon/>,
+  'Market': <FontAwesome name='line-chart' size={48} color='white' />
+}
+
+function EducationItem({title, subtitle, navigation, navigateTo}) {
+  return (
+    <TouchableOpacity 
+      style={styles.education}
+      onPress={() => navigation.navigate(navigateTo)}>
+      {/* this is a jank icon loader */}
+      {icons[navigateTo] ? <View style={{marginRight: 16}}>
+        {icons[navigateTo]}
+      </View> : null}
+      <View 
+        style={{
+          flex: 3
+        }}
+      >
+        <T.H4>{title}</T.H4>
+        <T.P style={{color: colors.LIGHT_GRAY, marginTop: 8}}>{subtitle}</T.P>
+      </View>
+    </TouchableOpacity>
+  )
+}
+
 
 export default function Education({navigation}) {
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.head}>Welcome to Stonks Education.</Text>
-      <ScrollView>
+    <SafeAreaContainer>
+      <View style={styles.header}>
+        <T.H2 style={{marginHorizontal: 16}}>Welcome to</T.H2>
+        <T.H1 style={{marginHorizontal: 16, marginBottom: 16}}>Stonks Education.</T.H1>
+      </View>
+      <ScrollView style={styles.content} contentContainerStyle={styles.contentContainerStyle}>
+        <T.H4 style={styles.heading}>Get started</T.H4> 
+       
+        <EducationItem
+          title={"How do I use this app to invest?"}
+          subtitle={"We give you the money; you decide the stocks, the quantity to buy or sell, and the timing."}
+          navigation={navigation}
+          navigateTo={'UseApp'}
+        />
+         
+        <EducationItem
+          title={"What is the stock market?"}
+          subtitle={"The stock market is where buyers and sellers come together to trade shares in eligible companies."}
+          navigation={navigation}
+          navigateTo={'Market'}
+        />
 
-        <TouchableOpacity style={styles.education}
-          onPress={() => navigation.navigate('HowTo')}
-        >
-          <Text style={styles.title}> How to use Stonks </Text>
-          <Text style={styles.subtitle}>Learn how to use stonks. </Text>
-        </TouchableOpacity>
+        <EducationItem 
+          title={"Why invest in the stock market?"}
+          subtitle={"Investing in the stock market may seem risky at first, but learning how to manage the risk can enable traders to grow their wealth passively."}
+          navigation={navigation}
+          navigateTo={'WhyInvest'}
+        />
 
-        <TouchableOpacity style={styles.education}
-          onPress={() => navigation.navigate('Investment')}
-        >
-          <Text style={styles.title}>What is an investment? </Text>
-          <Text style={styles.subtitle}>An investment is an asset bought with the expectation that it will generate some future income or profit. </Text>
-        </TouchableOpacity>
+        <EducationItem 
+          title={"Understanding a stock's components"}
+          subtitle={"Learn what the different symbols representing a stock in your portoflio mean."}
+          navigation={navigation}
+          navigateTo={'UnderstandStock'}
+        />
 
-        <TouchableOpacity style={styles.education}
-          onPress={() => navigation.navigate('Stock')}
-        >
-          <Text style={styles.title}>What is a stock? </Text>
-          <Text style={styles.subtitle}>A stock is a unit of ownership in a company. </Text>
-        </TouchableOpacity>
+        <T.H4 style={styles.heading}>Advanced</T.H4> 
+                 
+        <EducationItem
+          title={"What is an investment?"}
+          subtitle={"An investment is an asset bought with the expectation that it will generate some future income or profit."}
+          navigation={navigation}
+          navigateTo={'Investment'}
+        />
 
-        <TouchableOpacity style={styles.education}
-          onPress={() => navigation.navigate('Market')}
-        >
-          <Text style={styles.title}>What is the stock market? </Text>
-          <Text style={styles.subtitle}>The stock market is where buyers and sellers come together to trade shares in eligible companies. </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.education}
-          onPress={() => navigation.navigate('WhyInvest')}
-        >
-          <Text style={styles.title}>Why invest in the stock market? </Text>
-          <Text style={styles.subtitle}>Investing in the stock market may seem risky at first, but learning how to manage the risk can enable traders to grow their wealth passively.</Text>
-        </TouchableOpacity>
-
+        <EducationItem
+          title={"What is a stock?"}
+          subtitle={"A stock is a unit of ownership in a company."}
+          navigation={navigation}
+          navigateTo={'Stock'}
+        />
+        
+    
+{/*         
         <TouchableOpacity style={styles.education}
           onPress={() => navigation.navigate('Candlestick')}
         >
           <Text style={styles.title}>What is a candlestick chart? </Text>
           <Text style={styles.subtitle}>Candlesticks are useful when trading as they show 4 price points (open, close, high, and low) throughout a timeperiod. </Text>
 
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </ScrollView>
-      
-    </SafeAreaView>
+    </SafeAreaContainer>
   );
 }
 
 const styles = StyleSheet.create({  
-    container: {
-        flex: 1,
-        backgroundColor: '#000',
-        alignItems: 'center',
-        justifyContent: 'center',
+    header: {
+        width: Dimensions.get('window').width,
+        marginTop: 16,
+        borderBottomColor: colors.SUBTLE_TEXT,
+        borderWidth: 1,
     },
-    head: {
-        color: 'white',
-        fontSize: 26,
-        marginVertical: 30,
+    content: {
+      paddingVertical: 24, 
+      width: Dimensions.get('window').width,
+      zIndex: 100
+    }, 
+    contentContainerStyle: {
+      justifyContent: "center",
+      paddingBottom: 48
     },
-    title: {
-        color: 'white',
-        fontSize: 24,
-        marginTop: 20,
-        marginLeft: 15,
-        textAlign: 'left',
-        textDecorationLine: 'underline',
-    },
-    subtitle: {
-        color: 'white',
-        margin: 20,
-        fontSize: 18,
-        textAlign: 'left',
+    heading: {
+      color: colors.LIGHT_GRAY, 
+      marginLeft: 16,
+      marginVertical: 10
     },
     education: {
-        width: "90%",
-        backgroundColor: '#05ad6d',
-        borderRadius: 5,
-        margin: 20,
-        overflow: 'scroll',
+      justifyContent: "space-between", 
+      flexDirection: "row",
+      paddingVertical: 16, 
+      paddingHorizontal: 12, 
+      backgroundColor: colors.GRAY,
+      width:  Dimensions.get('window').width - 32,
+      borderRadius: 8,
+      marginVertical: 10,
+      marginHorizontal: 16
     }
 });
