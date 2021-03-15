@@ -3,26 +3,15 @@ import { StyleSheet, FlatList} from 'react-native';
 
 import firebase from 'firebase';
 
+import {stockCache, subscribeStockCache}  from "../Lib/StockCache";
 import StockItem from "./StockItem";
-
-// TODO: deprecate this and replace with data from our "stocks" Firestore document: See useEffect below
-// It's constructed as a dictionary so that we can easily pull out a subset based on a user's portfolio.
-export const fullStockDict = {
-  'GME': {ticker: 'GME', company: 'Gamestop', currPrice: 15.00},
-  'NFLX': {ticker: 'NFLX', company: 'Netflix', currPrice: 420.00},
-  'MSFT': {ticker: 'MSFT', company: 'Microsoft', currPrice: 232.00}
-}
-const fullStockList = Object.values(fullStockDict)
-
 
 // This component currently acts for a general stock list (e.g. in search) and a list of stocks that a user owns.
 // The key difference is the latter also includes a quantity of owned stocks.
 
 // NOTE: this also needs to accept a parameter from search that filters 
 export default function StockList({userStockList = null, searchText = null}) {
-  const [fullStockList, setFullStockList] = useState([]);
-  // TEMP DATA FOR BOTH SCREENS
-  const stockList = userStockList ? userStockList : fullStockList;
+  const [stockList, setStockList] = useState(userStockList);
 
   const renderStockItem = ({ index, item }) => {
     return <StockItem data={item}/> 
@@ -46,7 +35,12 @@ export default function StockList({userStockList = null, searchText = null}) {
   }
 
   useEffect(() => {
-    let stockList = [];
+    if (stockList === null) {
+      setStockList(Object.keys(stockCache).map((e, i) => ({ticker: e})));
+    }
+
+    /*
+    let unsubStockCache = subscribeStockCache(updateStockData, ticker);
 
     firebase.firestore().collection('stocks').get()
     .then((allStocksSnapshot) => {
@@ -59,9 +53,14 @@ export default function StockList({userStockList = null, searchText = null}) {
           company: 'test', // TODO: add this to Firestore
           currPrice: currPrice
         });
-        setFullStockList(stockList);
+        setStockList(stockList);
       });
     });
+
+    if (unsubStockCache !== null) {
+      return unsubStockCache;
+    }
+    */
   }, []);
 
   // Generates a flatlist from all the data passed into it. Eventually, we will do props.data for data

@@ -7,7 +7,8 @@ import { StonksButton } from "../Styles/Buttons";
 import { colors } from '../Styles/colors';
 import * as T from '../Styles/text';
 
-import StockList, { fullStockDict }  from "../Components/StockList";
+import StockList from "../Components/StockList";
+import {stockCache, subscribeStockCache}  from "../Lib/StockCache";
 import {formatMoney} from '../Lib/Utils';
 import { formatLineChartData, TransactionGraph, LineGraph } from "../Components/StockGraph"
 
@@ -80,7 +81,7 @@ export default function Portfolio({navigation}) {
         Object.entries(portfolio).forEach(
           ([name, qty]) => {
             if (qty > 0) {
-              newStockList.push({...fullStockDict[name], count: qty});
+              newStockList.push({ticker: name, count: qty});
             }
           }
         ); 
@@ -96,7 +97,7 @@ export default function Portfolio({navigation}) {
         let stockAssets = 0;
         Object.entries(portfolio).forEach(
           ([name, qty]) => {
-            stockAssets += fullStockDict[name].currPrice * qty;
+            stockAssets += stockCache[name].currPrice * qty;
           } 
         );
         setTotalAssets(stockAssets + balance);
