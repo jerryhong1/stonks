@@ -8,7 +8,8 @@ import Svg, {Line} from 'react-native-svg';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { getArticles } from "./News";
 import { colors } from '../Styles/colors'
-import { LineGraph } from "../Components/StockGraph"
+import { TransactionGraph, formatLineChartData} from "../Components/StockGraph"
+
 
 function formatAMPM(date) {
   var hours = date.getHours();
@@ -140,34 +141,34 @@ export default function DetailsScreen({route, navigation}) {
     );
   };
 
-  class CustomFlyout extends React.Component {
-      render() {
-          const {x, y} = this.props;
-          return ( //svg height and width are hard coded right now 
-          <Svg height="800" width="500" style="overflow: visible"> 
-              <Line x1={x} y1="30" x2={x} y2="300" stroke="gray" strokeWidth="1" />
-          </Svg>
-          );
-      }
-  }
+  // class CustomFlyout extends React.Component {
+  //     render() {
+  //         const {x, y} = this.props;
+  //         return ( //svg height and width are hard coded right now 
+  //         <Svg height="800" width="500" style="overflow: visible"> 
+  //             <Line x1={x} y1="30" x2={x} y2="300" stroke="gray" strokeWidth="1" />
+  //         </Svg>
+  //         );
+  //     }
+  // }
 
-  function createLineGraph(data) {
-    return (
-      <VictoryGroup theme={VictoryTheme.material} height={150} domainPadding={{y: [0, 50]}} padding={{ top: 0, bottom: 0 }} containerComponent={<VictoryVoronoiContainer/>}>
-        <VictoryLine 
-          labelComponent={ <VictoryTooltip renderInPortal={false} flyoutComponent={<CustomFlyout/>}
-                            flyoutStyle={{stroke: "none", fill: "black"}} y={45}
-                            style={{fill: "white", fontSize: 11, fontFamily: "Helvetica Neue"}}/>}
-          labels={({ datum }) => datum.x + datum.label}
-          style={{data: { stroke: "#ff3a3d", strokeWidth: 1.5 } }}
-          theme={VictoryTheme.material}
-          data={data}
-          x="x"
-          y="y"
-        />
-      </VictoryGroup>
-    );
-  }
+  // function createLineGraph(data) {
+  //   return (
+  //     <VictoryGroup theme={VictoryTheme.material} height={150} domainPadding={{y: [0, 50]}} padding={{ top: 0, bottom: 0 }} containerComponent={<VictoryVoronoiContainer/>}>
+  //       <VictoryLine 
+  //         labelComponent={ <VictoryTooltip renderInPortal={false} flyoutComponent={<CustomFlyout/>}
+  //                           flyoutStyle={{stroke: "none", fill: "black"}} y={45}
+  //                           style={{fill: "white", fontSize: 11, fontFamily: "Helvetica Neue"}}/>}
+  //         labels={({ datum }) => datum.x + datum.label}
+  //         style={{data: { stroke: "#ff3a3d", strokeWidth: 1.5 } }}
+  //         theme={VictoryTheme.material}
+  //         data={data}
+  //         x="x"
+  //         y="y"
+  //       />
+  //     </VictoryGroup>
+  //   );
+  // }
 
   function displayArticles() {
     return (
@@ -267,11 +268,8 @@ export default function DetailsScreen({route, navigation}) {
 
       </View>
       <View style={styles.graph}>
-        {/* <LineGraph
-          data={setChartDataGranularity(timeframe, "line", lineChartData)} 
-          renderData={({ datum }) => datum.x + datum.label}
-        />  */}
-        {createLineGraph(setChartDataGranularity(timeframe, "line", lineChartData))}
+        {<TransactionGraph lineChartData={setChartDataGranularity(timeframe, "line", lineChartData)} height={150} width={370}/>}
+        {/* {createLineGraph(setChartDataGranularity(timeframe, "line", lineChartData))} */}
       </View>
 
        {/* Middle section */}
