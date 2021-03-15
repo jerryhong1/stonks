@@ -298,7 +298,7 @@ export default function DetailsScreen({route, navigation}) {
               ]}
               placeholder="+ Trade"
               containerStyle={{height: 40, width: '100%'}}
-              style={{backgroundColor: '#05ad6d'}}
+              style={{backgroundColor: colors.GREEN}}
               itemStyle={styles.pickerStyle}
               dropDownStyle={{backgroundColor: 'black'}}
               globalTextStyle={{

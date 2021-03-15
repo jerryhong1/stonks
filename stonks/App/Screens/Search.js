@@ -15,11 +15,11 @@ export default function Search({navigation}) {
         <View style = {styles.searchBar}>
           <TextInput 
             style = {styles.textInputField}
-            placeholder="ex: GME, AAPL"
+            placeholder="ex: GME, Apple"
             placeholderTextColor='grey'
             value = {text}
             onChangeText = { (input) => setText(input)}
-            onSubmitEditing = { () => {console.log("Searching!!"); setText(""); Keyboard.dismiss();}}
+            onSubmitEditing = { () => {setText(""); Keyboard.dismiss();}}
           />
           
         </View>
@@ -27,7 +27,10 @@ export default function Search({navigation}) {
 
 
       <View style = {styles.stockResults}> 
-        <Text style = {styles.suggestedText}> Suggested </Text> 
+        <View style={{justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center'}}> 
+          <Text style = {styles.suggestedText}>Stock </Text> 
+          <Text style = {styles.suggestedText}>Current price </Text> 
+        </View>
         <StockList searchText={text.toLowerCase()}/>
       </View>
 
@@ -47,7 +50,7 @@ const styles = StyleSheet.create({
   search: {
     flexDirection: 'column',
     height: "20%",
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: 'center',
   },
   searchBar: {
@@ -55,8 +58,8 @@ const styles = StyleSheet.create({
   },
   headerText: {
     color: 'white',
-    fontSize: 26,
-    fontWeight: "600",
+    fontSize: 24,
+    fontWeight: "500",
     marginBottom: 8
   },
   textInputField: {
@@ -74,8 +77,8 @@ const styles = StyleSheet.create({
   suggestedText: {
     color: 'grey',
     fontSize: 18,
-    marginLeft: 12,
+    marginHorizontal: 12,
     marginBottom: 8
-  }
+  },
   
 });

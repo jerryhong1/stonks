@@ -26,8 +26,8 @@ export default function StockList({userStockList = null, searchText = null}) {
   const searchStockList = () => {
     if (searchText) {
       var filtered = stockList.filter(function (stock) {
-        return (stock.ticker.toLowerCase().includes(searchText));
-        // return (stock.company.toLowerCase().includes(searchText) | stock.ticker.toLowerCase().includes(searchText));
+        // return (stock.ticker.toLowerCase().includes(searchText));
+        return (stock.company.toLowerCase().includes(searchText) | stock.ticker.toLowerCase().includes(searchText));
       });
       return filtered;
     } else {
@@ -35,13 +35,14 @@ export default function StockList({userStockList = null, searchText = null}) {
     }
   }
 
+  // General, for search. Only need to add company here because stockList searches top level not by item.
   useEffect(() => {
     if (stockList === null) {
-      console.log("Stock cache " , Object.keys(stockCache)) // at the moment, you can only search by ticker based on stock cache
-      setStockList(Object.keys(stockCache).map((e, i) => ({ticker: e})));
+      setStockList(Object.keys(stockCache).map((e, i) => ({ticker: e, company: stockCache[e].company})));
     }
   }, []);
 
+  // Specific, for the user's portfolio page
   useEffect(() => {
     if (userStockList !== null) {
       setStockList(userStockList);
