@@ -57,7 +57,7 @@ class CustomFlyout extends React.Component {
     render() {
         const {x, y} = this.props;
         return ( //svg height and width are hard coded right now 
-        <Svg height="800" width="500" style="overflow: visible"> 
+        <Svg height="800" width="380" style="overflow: visible"> 
             <Line x1={x} y1="30" x2={x} y2="300" stroke="gray" strokeWidth="1" />
         </Svg>
         );
@@ -83,10 +83,9 @@ function TransactionGraph({lineChartData, height, width}) {
     return (
         <VictoryGroup theme={VictoryTheme.material} height={height} width={width} domainPadding={{y: [0, 50]}} padding={{ top: 0, bottom: 0, left:0, right:0}} containerComponent={<VictoryVoronoiContainer voronoiDimension="x"/>}>
             <VictoryLine 
-            labelComponent={ <VictoryTooltip renderInPortal={false} flyoutComponent={<CustomFlyout/>}
-                                flyoutStyle={{stroke: "none", fill: "black"}} y={45}
+            labelComponent={ <VictoryTooltip constrainToVisibleArea renderInPortal={false} flyoutComponent={<CustomFlyout/>}
+                                flyoutStyle={{stroke: "none", fill: "black"}} y={45}   
                                 style={{fill: "white", fontSize: 11, fontFamily: "Helvetica Neue"}}/>}
-            labels={({ datum }) => datum.x + datum.label}
             style={{data: { stroke: "#ff3a3d", strokeWidth: 1.5 } }}
             theme={VictoryTheme.material}
             data={lineChartData}
