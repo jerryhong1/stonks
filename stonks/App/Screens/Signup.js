@@ -94,7 +94,7 @@ export default function Signup({navigation}) {
   return (
     <KeyboardAvoidingView style={styles.container}  behavior='padding'>
       <View style = {styles.header}>
-        <Text style={{fontWeight: 'bold', color: 'white', fontSize: 30, lineHeight: 50}}> Sign up for stonks </Text>
+        <Text style={{fontWeight: '600', color: 'white', fontSize: 30, lineHeight: 50}}> Sign up for stonks </Text>
         <Text style={{color: 'white', fontSize: 16, textAlign: 'center'}}> Create an account to play with stocks and track your performance.</Text>
       </View>
 
