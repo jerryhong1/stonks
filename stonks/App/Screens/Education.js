@@ -1,12 +1,20 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import { ScrollView, SafeAreaView, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 
 export default function Education({navigation}) {
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.head}>Welcome to Stonks Education.</Text>
       <ScrollView>
+
+        <TouchableOpacity style={styles.education}
+          onPress={() => navigation.navigate('HowTo')}
+        >
+          <Text style={styles.title}> How to use Stonks </Text>
+          <Text style={styles.subtitle}>Learn how to use stonks. </Text>
+        </TouchableOpacity>
+
         <TouchableOpacity style={styles.education}
           onPress={() => navigation.navigate('Investment')}
         >
@@ -31,7 +39,7 @@ export default function Education({navigation}) {
         <TouchableOpacity style={styles.education}
           onPress={() => navigation.navigate('WhyInvest')}
         >
-          <Text style={styles.title}>Why Invest in the stock market? </Text>
+          <Text style={styles.title}>Why invest in the stock market? </Text>
           <Text style={styles.subtitle}>Investing in the stock market may seem risky at first, but learning how to manage the risk can enable traders to grow their wealth passively.</Text>
         </TouchableOpacity>
 
@@ -44,7 +52,7 @@ export default function Education({navigation}) {
         </TouchableOpacity>
       </ScrollView>
       
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -64,8 +72,9 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 24,
         marginTop: 20,
-        marginLeft: 20,
+        marginLeft: 15,
         textAlign: 'left',
+        textDecorationLine: 'underline',
     },
     subtitle: {
         color: 'white',
