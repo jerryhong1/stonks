@@ -26,7 +26,8 @@ export default function StockList({userStockList = null, searchText = null}) {
   const searchStockList = () => {
     if (searchText) {
       var filtered = stockList.filter(function (stock) {
-        return (stock.company.toLowerCase().includes(searchText) | stock.ticker.toLowerCase().includes(searchText));
+        return (stock.ticker.toLowerCase().includes(searchText));
+        // return (stock.company.toLowerCase().includes(searchText) | stock.ticker.toLowerCase().includes(searchText));
       });
       return filtered;
     } else {
@@ -36,6 +37,7 @@ export default function StockList({userStockList = null, searchText = null}) {
 
   useEffect(() => {
     if (stockList === null) {
+      console.log("Stock cache " , Object.keys(stockCache)) // at the moment, you can only search by ticker based on stock cache
       setStockList(Object.keys(stockCache).map((e, i) => ({ticker: e})));
     }
   }, []);

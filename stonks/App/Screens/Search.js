@@ -15,7 +15,7 @@ export default function Search({navigation}) {
         <View style = {styles.searchBar}>
           <TextInput 
             style = {styles.textInputField}
-            placeholder="ex: GME, Apple"
+            placeholder="ex: GME, AAPL"
             placeholderTextColor='grey'
             value = {text}
             onChangeText = { (input) => setText(input)}
