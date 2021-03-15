@@ -38,30 +38,11 @@ export default function StockList({userStockList = null, searchText = null}) {
     if (stockList === null) {
       setStockList(Object.keys(stockCache).map((e, i) => ({ticker: e})));
     }
-
-    /*
-    let unsubStockCache = subscribeStockCache(updateStockData, ticker);
-
-    firebase.firestore().collection('stocks').get()
-    .then((allStocksSnapshot) => {
-      allStocksSnapshot.forEach((doc) => {
-        const ticker = doc.id;
-        const results = doc.data().results;
-        const currPrice = doc.data().currPrice;
-        stockList.push({
-          ticker: ticker,
-          company: 'test', // TODO: add this to Firestore
-          currPrice: currPrice
-        });
-        setStockList(stockList);
-      });
-    });
-
-    if (unsubStockCache !== null) {
-      return unsubStockCache;
-    }
-    */
   }, []);
+
+  useEffect(() => {
+    setStockList(userStockList);
+  }, [userStockList]);
 
   // Generates a flatlist from all the data passed into it. Eventually, we will do props.data for data
   return (

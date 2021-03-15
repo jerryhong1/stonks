@@ -7,8 +7,8 @@ import {formatMoney} from '../Lib/Utils';
 export default function StockItem(props) {
   const [currPrice, setCurrPrice] = useState(0);
   const navigation = useNavigation();
-  const count = props.data.count;
-  const ticker = props.data.ticker;
+  const data = props.data;
+  const ticker = data.ticker;
   const company = stockCache[ticker].company;
 
   function updateStockData(ticker, data) {
@@ -39,7 +39,7 @@ export default function StockItem(props) {
         <Text style={{color: "grey", fontSize: 14}}>{company}</Text>
       </View>
       <View style={styles.qtyAndChange}>
-        {count && <Text style={{color: "white", marginRight: 8}}>{count} ×</Text>}
+        {data.count && <Text style={{color: "white", marginRight: 8}}>{data.count} ×</Text>}
         <View style={styles.dailyChangeBox}>
           <Text style={{color: "white", margin: 3}}> {formatMoney(currPrice)} </Text>
         </View>
