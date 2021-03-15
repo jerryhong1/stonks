@@ -28,8 +28,8 @@ export default function Search({navigation}) {
 
       <View style = {styles.stockResults}> 
         <View style={{justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center'}}> 
-          <Text style = {styles.suggestedText}> Suggested </Text> 
-          <Text style = {styles.suggestedText}> Current price </Text> 
+          <Text style = {styles.suggestedText}>Stock </Text> 
+          <Text style = {styles.suggestedText}>Current price </Text> 
         </View>
         <StockList searchText={text.toLowerCase()}/>
       </View>
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   search: {
     flexDirection: 'column',
     height: "20%",
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: 'center',
   },
   searchBar: {
@@ -58,8 +58,8 @@ const styles = StyleSheet.create({
   },
   headerText: {
     color: 'white',
-    fontSize: 26,
-    fontWeight: "600",
+    fontSize: 24,
+    fontWeight: "500",
     marginBottom: 8
   },
   textInputField: {
