@@ -2,7 +2,7 @@ import React, { useState, setState} from 'react';
 import { Dimensions, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import { formatMoney } from '../Lib/Utils';
 import Buttons from '../Styles/Buttons';
-
+import * as T from "../Styles/text"
 
 export default function StartingAmount({route, navigation}) {
     const {name, email, username, balance} = route.params;
@@ -10,9 +10,9 @@ export default function StartingAmount({route, navigation}) {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}> Welcome to Stonks{curUser ? `, ${curUser}` : ''}. </Text>
+            <T.H2> Welcome to Stonks{curUser ? `, ${curUser}` : ''}. </T.H2>
 
-            <View style={{height: '80%', justifyContent: 'center', alignItems: 'center'}}>
+            <View style={{marginTop: 20, height: '80%', justifyContent: 'center', alignItems: 'center'}}>
                 <Text style={styles.subtitle}> Okay, we'll start you off with </Text>
                 <Text style={styles.amount}> {formatMoney(balance)} </Text>
 
@@ -23,9 +23,9 @@ export default function StartingAmount({route, navigation}) {
                 </TouchableOpacity>
                 <View style={styles.trendBox}>
                     <Text style={styles.trendTextHeader}>{formatMoney(balance)} can yield: </Text>
-                    <Text style={styles.trendText}>✅ {formatMoney(balance * 1.15**5)} over 5 years</Text>
-                    <Text style={styles.trendText}>✅ {formatMoney(balance * 1.15**10)} over 10 years</Text>
-                    <Text style={styles.trendText}>✅ {formatMoney(balance * 1.15**25)} over 25 years</Text>
+                    <Text style={styles.trendText}>💵 {formatMoney(balance * 1.15**5)} over 5 years</Text>
+                    <Text style={styles.trendText}>💰 {formatMoney(balance * 1.15**10)} over 10 years</Text>
+                    <Text style={styles.trendText}>💸 {formatMoney(balance * 1.15**25)} over 25 years!</Text>
                     <Text style={styles.trendTextFootnote}>*with 15% growth per year</Text>
                 </View>
             </View>
@@ -39,12 +39,14 @@ const styles = StyleSheet.create({
         backgroundColor: '#000',
         alignItems: 'center',
         justifyContent: 'flex-start',
+        paddingTop: 64
     },
     subtitle: {
         color: 'white',
         fontSize: 18,
-        marginHorizontal: 80,
-        marginBottom: 20,
+        marginHorizontal: 24,
+        marginBottom: 16,
+        fontWeight: '400',
         textAlign: 'center',
     },
     title: {
@@ -56,38 +58,36 @@ const styles = StyleSheet.create({
     amount: {
         color: 'white',
         fontSize: 50,
+        fontWeight: '500',
         marginBottom: 20,
     },
     trendBox: {
         marginVertical: 40,
-        width: Dimensions.get('window').width * .8,
+        width: Dimensions.get('window').width * .85,
         backgroundColor: 'white',
         borderRadius: 10,
-        paddingVertical: 12,
-        borderColor: '#1EDD4E',
+        paddingVertical: 20,
+        paddingHorizontal: 16,
         borderWidth: 4,
     },
     trendTextHeader: {
         color: 'black',
-        fontSize: 18,
-        marginHorizontal: 20,
-        marginVertical: 4,
+        fontSize: 16,
+        marginBottom: 8,
         textAlign: 'left',
         fontWeight: 'bold'
     },
     trendText: {
         color: 'black',
-        fontSize: 18,
-        marginHorizontal: 35,
+        fontSize: 16,
         marginVertical: 4,
         textAlign: 'left',
         // paddingVertical: 5,
     },
     trendTextFootnote: {
         color: 'black',
-        fontSize: 14,
-        marginHorizontal: 20,
-        marginVertical: 4,
+        fontSize: 12,
+        marginTop: 8,
         textAlign: 'left',
         fontWeight: 'bold'
     },
