@@ -36,7 +36,7 @@ function App() {
       <MainStack.Screen name="Stock" component={Stock} />
       <MainStack.Screen name="Market" component={Market} />
       <MainStack.Screen name="Candlestick" component={Candlestick} />
-      <MainStack.Screen name="StartingAmount" component={StartingAmount} />
+      <MainStack.Screen name="StartingAmount" component={StartingAmount}  options={{ headerShown: false }}/>
       <MainStack.Screen name="WhyInvest" component={WhyInvest} />
       <MainStack.Screen name="HowTo" component={HowTo} />
     </MainStack.Navigator>
