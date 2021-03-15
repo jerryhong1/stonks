@@ -69,6 +69,13 @@ export default function Education({navigation}) {
           navigateTo={'WhyInvest'}
         />
 
+        <EducationItem 
+          title={"Understanding a stock's components"}
+          subtitle={"Learn what the different symbols representing a stock in your portoflio mean."}
+          navigation={navigation}
+          navigateTo={'UnderstandStock'}
+        />
+
         <T.H4 style={styles.heading}>Advanced</T.H4> 
                  
         <EducationItem
