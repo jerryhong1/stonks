@@ -1,4 +1,4 @@
-import React, { useState, setState} from 'react';
+import React, { useState, useRef} from 'react';
 import { KeyboardAvoidingView, StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity } from 'react-native';
 import firebase from 'firebase';
 import {tryStockUpdate} from '../Lib/StockUpdater';
@@ -10,6 +10,16 @@ export default function Signup({navigation}) {
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const inputEl = useRef([null, null, null, null]);
+
+  // index of the text input that is being focused on
+  const [focusedInput, setFocusedInput] = useState(0)
+  const focusNextTextInput = () => {
+    if (inputEl.current[focusedInput + 1]){
+      inputEl.current[focusedInput + 1].focus();
+    }
+    setFocusedInput(focusedInput + 1)
+  }
 
   function handleName(name) {
     setName(name);
@@ -90,37 +100,49 @@ export default function Signup({navigation}) {
 
       <View style = {styles.textFields}>
         <TextInput
+          key={0}
           style={styles.inputField}
+          onFocus={() => setFocusedInput(0)}
           placeholder='Name'
           placeholderTextColor='grey'
           onChangeText = {handleName}
           returnKeyType = 'next'
+          onSubmitEditing={focusNextTextInput}
+          ref={el => inputEl.current[0] = el}
         />
 
         <TextInput
           style={styles.inputField}
+          onFocus={() => setFocusedInput(1)}
           placeholder='Email'
           keyboardType='email-address'
           placeholderTextColor='grey'
           onChangeText = {handleEmail}
           returnKeyType = 'next'
+          onSubmitEditing={focusNextTextInput}
+          ref={el => inputEl.current[1] = el}
         />
 
         <TextInput
           style={styles.inputField}
+          onFocus={() => setFocusedInput(2)}
           placeholder='Username'
           placeholderTextColor='grey'
           onChangeText = {handleUsername}
           returnKeyType = 'next'
+          ref={inputEl}
+          ref={el => inputEl.current[2] = el}
         />
 
         <TextInput
           style={styles.inputField}
           placeholder='Password (6+ characters)'
+          onFocus={() => setFocusedInput(3)}
           placeholderTextColor='grey'
           secureTextEntry
           onChangeText = {handlePassword}
           returnKeyType = 'done'
+          ref={el => inputEl.current[3] = el}
         />
       </View>
 
