@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { StyleSheet, Text, TextInput, View, TouchableOpacity, Dimensions, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, Text, TextInput, View, TouchableOpacity, Dimensions, KeyboardAvoidingView, Alert } from 'react-native';
 import firebase from 'firebase';
 import Buttons from '../Styles/Buttons';
 import {formatMoney} from '../Lib/Utils';
@@ -51,7 +51,7 @@ export default function ModalScreen({route, navigation}) {
     }, {merge: true});
 
     // 5. Display message indicating purchased stocks and navigate to portfolio.
-    alert(`You just ${buyOrSell === "Purchase"? "bought" : "sold"} ${qty} stock(s) of ${company} at ${formatMoney(currPrice)} for ${formatMoney(total_cost)}`);
+    Alert.alert("Success!", `You just ${buyOrSell === "Purchase"? "bought" : "sold"} ${qty} stock(s) of ${company} at ${formatMoney(currPrice)} for ${formatMoney(total_cost)}`);
 
     navigation.navigate('Home');
   }
