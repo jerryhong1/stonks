@@ -63,7 +63,7 @@ export default function StockItem(props) {
       <View style={styles.qtyAndChange}>
         {data.count && <Text style={{color: "white", marginRight: 8}}>{data.count} ×</Text>}
         <View style={dailyChange=== 'up' ? styles.dailyChangeBoxUp : styles.dailyChangeBoxDown }>
-          <Text style={{color: "white", margin: 3}}>{formatMoney(currPrice)}</Text>
+          <Text style={{color: "white", fontWeight: '500'}}>{formatMoney(currPrice)}</Text>
         </View>
       </View>
    </TouchableOpacity>
@@ -80,16 +80,20 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 20,
     paddingVertical: 10,
+    marginBottom: 0.5
   },
   dailyChangeBoxDown: {
     backgroundColor: colors.RED, 
     borderRadius: 5,
+    padding: 8,
     alignItems: 'flex-end',
     // width: '90%',
   },
   dailyChangeBoxUp: {
     backgroundColor: colors.GREEN,   
     borderRadius: 5,
+    padding: 8,
+
     alignItems: 'flex-end',
     // width: '90%',
   },

@@ -8,8 +8,6 @@ import StockList from '../Components/TransactionList'
 import * as T from '../Styles/text'
 import {formatMoney} from '../Lib/Utils';
 import { TransactionGraph, formatLineChartData} from "../Components/StockGraph"
-
-import { FontAwesome5 } from '@expo/vector-icons';
 import { colors } from '../Styles/colors';
 
 
@@ -108,31 +106,35 @@ export default function Profile({navigation}) {
         <View style={styles.transactionsAndBalance}> 
             <T.H3>Your balance</T.H3>
             <T.H0 style={{marginBottom: 16}}>{formatMoney(balance)}</T.H0>
-            <View style={{flexDirection: 'row', width: '100%', justifyContent: 'space-between'}}>
-                <View style={styles.button}>
-                    <Button
-                        onPress={() => {
-                            {setDisplay("transactions")}
-                            
-                        }}
-                        color={display === 'transactions' ? "#ffffff" : colors.SUBTLE_TEXT}
-                        title={"Transaction History"}
-                        />
-                </View>
-                <View style={styles.button}>
-                    <Button
-                        onPress={() => {
-                            {setDisplay("graph")}
-                        }}
-                        color={display === 'graph' ? "#ffffff" : colors.SUBTLE_TEXT}
-                        title={"Transaction Graph"}
-                        />
+            <View style={styles.transactions}>
+                <T.H3>Transaction History</T.H3>
+                <View style={{flexDirection: 'row'}}>
+                    <View style={styles.button}>
+                        <Button
+                            onPress={() => {
+                                {setDisplay("transactions")}
+                                
+                            }}
+                            color={display === 'transactions' ? "#ffffff" : colors.SUBTLE_TEXT}
+                            title={"List"}
+                            />
+                    </View>
+                    <View style={styles.button}>
+                        <Button
+                            onPress={() => {
+                                {setDisplay("graph")}
+                            }}
+                            color={display === 'graph' ? "#ffffff" : colors.SUBTLE_TEXT}
+                            title={"Graph"}
+                            />
+                    </View>
                 </View>
             </View>
             
             <View {...display === "transactions"? styles.transactionList : styles.graph}>
                {display === "transactions" ? 
-                <StockList transactions={transactions}/> 
+                transactions.length ? 
+                <StockList transactions={transactions}/> : null
                 : 
                 <TransactionGraph lineChartData={lineChartData} height={250} width={340}/>
                }
@@ -167,6 +169,11 @@ const styles = StyleSheet.create({
     accountInfo: {
         marginLeft: 24,
     },
+    transactions: {
+        borderBottomColor: "white",
+        borderWidth: .5,
+        flexDirection: 'row', width: '100%', justifyContent: 'space-between', alignItems: 'baseline'
+    },
     transactionsAndBalance: {
         flex: 2,
         marginLeft: 16,
@@ -177,9 +184,7 @@ const styles = StyleSheet.create({
     graph: {
         flex: 2,
         backgroundColor: "black",
-        width: "100%",
-        borderBottomColor: "white",
-        borderWidth: 1,
+        width: "100%"
     },
     profileInfo: {
         flex: 2,
