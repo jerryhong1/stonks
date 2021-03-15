@@ -48,14 +48,6 @@ export default function Education({navigation}) {
       <ScrollView style={styles.content} contentContainerStyle={styles.contentContainerStyle}>
         <T.H4 style={styles.heading}>Get started</T.H4> 
        
-        <EducationItem 
-          title={"Why invest in the stock market?"}
-          subtitle={"Investing in the stock market may seem risky at first, but learning how to manage the risk can enable traders to grow their wealth passively."}
-          navigation={navigation}
-          navigateTo={'WhyInvest'}
-        />
-
-
         <EducationItem
           title={"How do I use this app to invest?"}
           subtitle={"We give you the money; you decide the stocks, the quantity to buy or sell, and the timing."}
@@ -68,6 +60,13 @@ export default function Education({navigation}) {
           subtitle={"The stock market is where buyers and sellers come together to trade shares in eligible companies."}
           navigation={navigation}
           navigateTo={'Market'}
+        />
+
+        <EducationItem 
+          title={"Why invest in the stock market?"}
+          subtitle={"Investing in the stock market may seem risky at first, but learning how to manage the risk can enable traders to grow their wealth passively."}
+          navigation={navigation}
+          navigateTo={'WhyInvest'}
         />
 
         <T.H4 style={styles.heading}>Advanced</T.H4> 
@@ -85,6 +84,7 @@ export default function Education({navigation}) {
           navigation={navigation}
           navigateTo={'Stock'}
         />
+        
     
 {/*         
         <TouchableOpacity style={styles.education}
