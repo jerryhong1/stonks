@@ -121,7 +121,7 @@ export default function Profile({navigation}) {
                             {setDisplay("transactions")}
                             
                         }}
-                        color="#ffffff"
+                        color={display === 'transactions' ? "#ffffff" : colors.SUBTLE_TEXT}
                         title={"Transaction History"}
                         />
                 </View>
@@ -129,9 +129,8 @@ export default function Profile({navigation}) {
                     <Button
                         onPress={() => {
                             {setDisplay("graph")}
-                            
                         }}
-                        color="#ffffff"
+                        color={display === 'graph' ? "#ffffff" : colors.SUBTLE_TEXT}
                         title={"Transaction Graph"}
                         />
                 </View>
