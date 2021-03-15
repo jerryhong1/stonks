@@ -3,7 +3,7 @@ import { StyleSheet, Text, TextInput, View, TouchableOpacity, Dimensions, Keyboa
 import firebase from 'firebase';
 import Buttons from '../Styles/Buttons';
 import {formatMoney} from '../Lib/Utils';
-import { stockCache, subscribeStockCache }  from "../Lib/StockCache";
+import {stockCache, subscribeStockCache}  from "../Lib/StockCache";
 // import { consolidateStreamedStyles } from 'styled-components';
 
 // Buy/Sell screen for a single stock, given by the route params.
@@ -13,8 +13,8 @@ export default function ModalScreen({route, navigation}) {
   const [portfolio, setPortfolio] = useState({});
   const [transactions, setTransactions] = useState([]);
   const [totalAssets, setTotalAssets] = useState(0);
-  const ticker = route.params.ticker;
   const [currPrice, setCurrPrice] = useState(0);
+  const ticker = route.params.ticker;
   const company = route.params.company;
   const buyOrSell = route.params.buyOrSell;
 
