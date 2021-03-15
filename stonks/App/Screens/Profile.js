@@ -7,7 +7,7 @@ import { StonksIconButton } from '../Styles/Buttons';
 import StockList from '../Components/TransactionList'
 import * as T from '../Styles/text'
 import {formatMoney} from '../Lib/Utils';
-import { TransactionGraph, formatLineChartData, LineGraph} from "../Components/StockGraph"
+import { TransactionGraph, formatLineChartData} from "../Components/StockGraph"
 
 export default function Profile({navigation}) {
     const [name, setName] = useState('');
@@ -131,8 +131,7 @@ export default function Profile({navigation}) {
                {display === "transactions" ? 
                 <StockList transactions={transactions}/> 
                 : 
-                // <TransactionGraph lineChartData={lineChartData} renderLabel={({datum}) => datum.x}/> 
-                <LineGraph data={lineChartData} renderLabel={({datum}) => datum.x}/>
+                <TransactionGraph lineChartData={lineChartData} height={250} width={340}/>
                }
             </View>
         </View> 
