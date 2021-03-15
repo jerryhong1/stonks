@@ -39,6 +39,13 @@ export const H4 = styled.Text`
     color: white;
 `
 
+export const Sub = styled.Text`
+    fontSize: 18px;
+    lineHeight: 24px;
+    fontWeight: 400;
+    color: white;
+`
+
 export const P = styled.Text`
     fontSize: 14px;
     lineHeight: 18px;
@@ -49,4 +56,8 @@ export const Body2 = styled.Text`
     fontSize: 12px;
     lineHeight: 16px;
     color: white;
+`
+
+export const B = styled.Text`
+    fontWeight: 600;
 `

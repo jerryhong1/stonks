@@ -9,7 +9,7 @@ import { FontAwesome } from '@expo/vector-icons';
 
 var width = Dimensions.get('window').width * .9
 
-var icons = {
+export var icons = {
   'WhyInvest': <CashIcon/>,
   'UseApp': <AppIcon/>,
   'Market': <FontAwesome name='line-chart' size={48} color='white' />
@@ -108,10 +108,12 @@ const styles = StyleSheet.create({
     },
     content: {
       paddingVertical: 24, 
-      width: Dimensions.get('window').width
+      width: Dimensions.get('window').width,
+      zIndex: 100
     }, 
     contentContainerStyle: {
-      justifyContent: "center"
+      justifyContent: "center",
+      paddingBottom: 48
     },
     heading: {
       color: colors.LIGHT_GRAY, 
