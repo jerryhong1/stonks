@@ -41,7 +41,9 @@ export default function StockList({userStockList = null, searchText = null}) {
   }, []);
 
   useEffect(() => {
-    setStockList(userStockList);
+    if (userStockList !== null) {
+      setStockList(userStockList);
+    }
   }, [userStockList]);
 
   // Generates a flatlist from all the data passed into it. Eventually, we will do props.data for data
