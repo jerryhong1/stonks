@@ -9,7 +9,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { getArticles } from "./News";
 import { colors } from '../Styles/colors'
 import { TransactionGraph, formatLineChartData} from "../Components/StockGraph"
-
+import {stockCache, subscribeStockCache}  from "../Lib/StockCache";
 
 function formatAMPM(date) {
   var hours = date.getHours();
@@ -42,36 +42,41 @@ function formatCandlestickChartData(data) {
 //pull data from firestore and feed to chart
 export default function DetailsScreen({route, navigation}) {
   const [lineChartData, setLineChartData] = useState([0,0]); //ALL available data we have 
-  const [stockdesc, setStockDesc] = useState(""); 
-  const stockData = route.params.data;
+  const [stockdesc, setStockDesc] = useState("No description.");
+  const [currPrice, setCurrPrice] = useState(0);
+  const ticker = route.params.ticker;
+  const company = stockCache[ticker].company;
   const buy = "Purchase";
   const sell = "Sell";
   const [articles, setArticles] = useState([]);
   const [timeframe, setTimeframe] = useState("1D");
 
-  // Get stock data for a particular stock from firebase //TODO: Once StockList pulls from firebase, should this still write to firebase?
-  useEffect(() => {
-    const getStockData = async () => {
-      const stock = stockData.ticker; 
-      const stockDoc = firebase.firestore().collection('stocks').doc(stock);
-      const stockSnapshot = await stockDoc.get();
-      const stockDataFirebase = stockSnapshot.data();
-      //put stockData into right format
-      setLineChartData(formatLineChartData(stockDataFirebase.results));
-      setStockDesc(stockDataFirebase.description);
-
-      const response = await getArticles(stockData.company, stock);
-      setArticles(response);
-      //if you want to write some data uncomment below and:
-      // change stockdata to the data you want to upload
-      // change the below firebase.set command to the correct stock you want to upload data to
-      // uncomment here
-      // console.log("before upload");
-      // const res = await firebase.firestore().collection('stocks').doc(stock).set(stockdata, {merge: true});
-      // console.log("success ");
-      // to here
+  function updateStockData(ticker, data) {
+    setCurrPrice(data.currPrice);
+    setLineChartData(formatLineChartData(data.results));
+    if (data.hasOwnProperty('description')) {
+      setStockDesc(data.description);
     }
-    getStockData();
+  }
+
+  // Get stock data for a particular stock from firebase
+  useEffect(() => {
+    if (stockCache.hasOwnProperty(ticker)) {
+      updateStockData(ticker, stockCache[ticker]);
+    }
+
+    const getArticleData = async () => {
+      const response = await getArticles(company, ticker);
+      setArticles(response);
+    }
+    getArticleData();
+
+    // Subscribe to stock cache changes for $TICKER.
+    let unsubStockCache = subscribeStockCache(updateStockData, ticker);
+
+    if (unsubStockCache !== null) {
+      return unsubStockCache;
+    }
   }, []);
 
   /*
@@ -278,9 +283,9 @@ export default function DetailsScreen({route, navigation}) {
          {/* Stock Info */}
          <View>
             <Text style = {{color: "white", fontSize: 16}} >
-              <Text style = {{fontWeight: "bold"}}>{stockData.ticker} </Text>
-            • {stockData.company}</Text>
-            <Text style = {{color: "white", fontSize: 30, marginTop: 4}} >{formatMoney(stockData.currPrice)}</Text>
+              <Text style = {{fontWeight: "bold"}}>{ticker} </Text>
+            • {company}</Text>
+            <Text style = {{color: "white", fontSize: 30, marginTop: 4}} >{formatMoney(currPrice)}</Text>
          </View>
           {/* Drop down picker */}
           <View style={{width: '28%'}}>
@@ -299,8 +304,8 @@ export default function DetailsScreen({route, navigation}) {
               }}
               onChangeItem={item => {
                 navigation.navigate('BuySell', {
-                  ticker: stockData.ticker,
-                  company: stockData.company,
+                  ticker: ticker,
+                  company: company,
                   buyOrSell: item.value === 'sell' ? sell : buy,
                 })
               }}
