@@ -5,6 +5,8 @@ export const colors = {
     RED: '#DD1E1E',
     WHITE: 'white',
     TEXT: 'white',
+    GRAY: '#222',
+    LIGHT_GRAY: '#CFCFCF',
     SUBTLE_TEXT: '#888',
     BACKGROUND: 'black'
 }

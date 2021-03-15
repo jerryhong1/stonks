@@ -7,6 +7,7 @@ export const H0 = styled.Text`
     lineHeight: 48px;
     fontWeight: 500;
     color: white;
+    letterSpacing: -.3px;
 `
 
 export const H1 = styled.Text`
@@ -14,18 +15,21 @@ export const H1 = styled.Text`
     lineHeight: 40px;
     fontWeight: 500;
     color: white;
+    letterSpacing: -.2px;
 `
 export const H2 = styled.Text`
     fontSize: 24px;
     lineHeight: 32px;
     fontWeight: 500;
     color: white;
+    letterSpacing: -.16px;
 `
 export const H3 = styled.Text`
     fontSize: 18px;
     lineHeight: 24px;
     fontWeight: 500;
     color: white;
+    letterSpacing: -.1px;
 `
 
 export const H4 = styled.Text`
