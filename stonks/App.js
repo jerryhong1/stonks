@@ -25,7 +25,7 @@ function App() {
     <NavigationContainer> 
     <MainStack.Navigator initialRouteName='Splash'>
       <MainStack.Screen name='Splash' component={SplashScreen} options={{ headerShown: false }}/>
-      <MainStack.Screen name='Welcome' component={Welcome}  options={{ headerShown: false }}/>
+      <MainStack.Screen name='Welcome' component={Welcome}   options={{ headerShown: false, gestureEnabled: false}}/>
       <MainStack.Screen name='Login' component={Login}  options={{ headerShown: false }}/>
       <MainStack.Screen name='Signup' component={Signup} />
       <MainStack.Screen name='LoginPage' component={LoginPage} />

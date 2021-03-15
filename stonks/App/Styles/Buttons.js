@@ -70,12 +70,13 @@ const Buttons = {
   welcomeButton: {
     backgroundColor: colors.WHITE,
     fontSize: 40,
-    paddingVertical: 14,
-    paddingHorizontal: 10,
+    paddingVertical: 20,
+    paddingHorizontal: 16,
     margin: 10,
     borderRadius: 10,
     width: Dimensions.get('window').width * .8,
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
     height: 75
   },
@@ -88,10 +89,11 @@ const Buttons = {
     color: 'black',
     // textAlign: 'flex-start',
     fontSize: 25,
+    lineHeight: 30,
     fontWeight: 'bold',
   },
   triangle: {
-    marginTop: 12,
+    // no need to center
   },
   buttontextdisabled: {
     color: colors.GREEN,

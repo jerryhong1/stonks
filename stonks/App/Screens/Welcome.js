@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import DialogInput from 'react-native-dialog-input';
 import firebase from 'firebase';
 import Buttons from '../Styles/Buttons';
+import * as T from "../Styles/text"
 
 
 export default function Welcome({route, navigation}) {
@@ -33,7 +34,7 @@ export default function Welcome({route, navigation}) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}> Welcome to Stonks{curUser ? `, ${curUser}` : ''}. </Text>
+      <T.H2> Welcome to Stonks{curUser ? `, ${curUser}` : ''}. </T.H2>
 
       <View style={{height: '80%', justifyContent: 'center', alignItems: 'center'}}> 
         <Text style={styles.subtitle}> How much money would you like to start off with? </Text>
@@ -45,6 +46,7 @@ export default function Welcome({route, navigation}) {
             setDialogVisible(false),
             updateBalance(inputText)
           } }
+          textInputProps={{keyboardType:'numeric'}}
           closeDialog={ () => {  setDialogVisible(false);
           }}>
         </DialogInput>
@@ -109,11 +111,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
     alignItems: 'center',
     justifyContent: 'flex-start',
+    paddingTop: 64
   },
   subtitle: {
     color: 'white',
     fontSize: 18,
-    marginHorizontal: 80,
+    width: 300,
     marginBottom: 20,
     textAlign: 'center',
   },
