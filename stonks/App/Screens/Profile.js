@@ -10,6 +10,7 @@ import {formatMoney} from '../Lib/Utils';
 import { TransactionGraph, formatLineChartData} from "../Components/StockGraph"
 
 import { FontAwesome5 } from '@expo/vector-icons';
+import { colors } from '../Styles/colors';
 
 
 export default function Profile({navigation}) {
@@ -98,7 +99,7 @@ export default function Profile({navigation}) {
                 <T.H3 style = {{color: 'grey'}}>{username}</T.H3>
                 
                 <StonksIconButton 
-                    style={{backgroundColor: 'red', marginTop: 12, marginBottom: 12}}
+                    style={{backgroundColor: colors.RED, marginTop: 12, marginBottom: 12}}
                     onPress={() => {
                         firebase.auth().signOut()
                         .then(() => navigation.navigate('Login'))
