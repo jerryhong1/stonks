@@ -58,8 +58,9 @@ export default function DetailsScreen({route, navigation}) {
       //put stockData into right format
       setLineChartData(formatLineChartData(stockDataFirebase.results));
       setStockDesc(stockDataFirebase.description);
-      const response = await getArticles(stockData.company);
-      setArticles(response.articles);
+
+      const response = await getArticles(stockData.company, stock);
+      setArticles(response);
       //if you want to write some data uncomment below and:
       // change stockdata to the data you want to upload
       // change the below firebase.set command to the correct stock you want to upload data to
