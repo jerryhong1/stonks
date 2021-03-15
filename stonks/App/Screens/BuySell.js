@@ -34,9 +34,9 @@ export default function ModalScreen({route, navigation}) {
 
     // 3. Calculate total cost of stocks bought or sold and update balance.
     let total_cost = (buyOrSell === "Purchase" ? 1 : -1) *
-                     parseInt(qty) * parseInt(currPrice);
+                     parseInt(qty) * parseFloat(currPrice);
     let new_balance = balance - total_cost;
-
+    
     // 4. Update user's transaction object or create if first transaction
     let newTransaction = await updateTransaction(qtyChanged);
 
