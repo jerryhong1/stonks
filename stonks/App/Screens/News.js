@@ -8,14 +8,14 @@ export const getArticles = async (topic, stock) => {
       const topicDoc = firebase.firestore().collection('articles').doc(stock);
       const snapshot = await topicDoc.get();
       const data = snapshot.data();
-      const ONE_HOUR = 60 * 60 * 1000;
+      const TWELVE_HOURS = 12 * 60 * 60 * 1000;
       let lastUpdated = data.lastUpdated;
       let articles = [];
 
       /*
-        Hasn't been updated in more than 60 minutes
+        Hasn't been updated in more than 12 Hours
       */ 
-      if (!lastUpdated || lastUpdated < (Date.now() - ONE_HOUR)) {
+      if (!lastUpdated || lastUpdated < (Date.now() - TWELVE_HOURS)) {
         console.log("Fetching new data");
         const response = await fetch(
           `https://newsapi.org/v2/top-headlines?q=${topic}&sortBy=publishedAt&apiKey=${NEWS_API_KEY}`
