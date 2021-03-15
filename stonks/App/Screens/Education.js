@@ -7,6 +7,14 @@ export default function Education({navigation}) {
     <SafeAreaView style={styles.container}>
       <Text style={styles.head}>Welcome to Stonks Education.</Text>
       <ScrollView>
+
+        <TouchableOpacity style={styles.education}
+          onPress={() => navigation.navigate('HowTo')}
+        >
+          <Text style={styles.title}> How to use Stonks </Text>
+          <Text style={styles.subtitle}>Learn how to use stonks. </Text>
+        </TouchableOpacity>
+
         <TouchableOpacity style={styles.education}
           onPress={() => navigation.navigate('Investment')}
         >
