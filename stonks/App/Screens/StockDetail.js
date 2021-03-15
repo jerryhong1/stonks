@@ -234,19 +234,21 @@ export default function DetailsScreen({route, navigation}) {
   function getDateRange(granularity) {
     let res = [];
     var endDate = new Date();
-    endDate.setDate(endDate.getDate()-7); 
+    endDate.setDate(endDate.getDate()-5); 
     endDate.setUTCHours(0,0,0,0);
     var startDate = new Date();
     if (granularity == "1D") {
       startDate.setDate(startDate.getDate()-8); 
     } else if (granularity == "1W") {
-      startDate.setDate(startDate.getDate()-14); 
+      startDate.setDate(startDate.getDate()-13); 
     } else if (granularity == "1M") {
-      startDate.setDate(startDate.getDate()-39); // if we have time we can change this to actual # of days in a month 
+      startDate.setDate(startDate.getDate()-32); // if we have time we can change this to actual # of days in a month 
     }
     startDate.setUTCHours(0,0,0,0);
     res.push(startDate);
     res.push(endDate);
+    console.log(startDate);
+    console.log(endDate);
     return res; 
   }
 
