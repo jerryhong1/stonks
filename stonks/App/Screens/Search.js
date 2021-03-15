@@ -15,11 +15,11 @@ export default function Search({navigation}) {
         <View style = {styles.searchBar}>
           <TextInput 
             style = {styles.textInputField}
-            placeholder="ex: GME, AAPL"
+            placeholder="ex: GME, Apple"
             placeholderTextColor='grey'
             value = {text}
             onChangeText = { (input) => setText(input)}
-            onSubmitEditing = { () => {console.log("Searching!!"); setText(""); Keyboard.dismiss();}}
+            onSubmitEditing = { () => {setText(""); Keyboard.dismiss();}}
           />
           
         </View>
