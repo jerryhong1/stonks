@@ -11,7 +11,7 @@ export default function UnderstandStock() {
     subtitle={"Learn what the different symbols representing a stock in your portoflio mean."}
     pageName={'UnderstandStock'}
     >
-        <Text> 
+        <Text style={{...styles.text, marginBottom: 0}}> 
         {/* WOULD BE SUPER COOL IF WE COULD MAKE THIS INTERACTIVE -- IE. SOMEONE CLICKS ON A DIFF PART OF THE PORTFOLIO AND A MODAL POPS UP */}
             <T.B>Understanding a stock</T.B>
             {"\n\n"}
@@ -30,13 +30,13 @@ export default function UnderstandStock() {
                 </View> 
             </View>
         </View> 
-        <Text style={{color: 'white'}}>
+        <Text style={styles.text}>
             {"\n\n"}
             AAPL: The 'ticker' is an abbreviation used to uniquely identify publicly traded shares of a particular stock on a particular stock market
             {"\n\n"}
             Apple: The company's full name.
             {"\n\n"}
-            Quantity: '1 x' indicates how many shares of the indicated stock you own currently in your portfolio.
+            Quantity: '1 ×' indicates how many shares of the indicated stock you own currently in your portfolio.
             {"\n\n"}
             Price: '$123.22' indicates the current market price of the stock. If the box is red, this indicates that the stock's value has
             gone down since the market opened. If the box is green, this indicates that the stock's value has gone up since the market's open.
