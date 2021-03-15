@@ -59,15 +59,15 @@ export default function DetailsScreen({route, navigation}) {
     }
   }
 
-  // Get stock data for a particular stock from firebase //TODO: Once StockList pulls from firebase, should this still write to firebase?
+  // Get stock data for a particular stock from firebase
   useEffect(() => {
     if (stockCache.hasOwnProperty(ticker)) {
       updateStockData(ticker, stockCache[ticker]);
     }
 
     const getArticleData = async () => {
-      const response = await getArticles(company);
-      setArticles(response.articles);
+      const response = await getArticles(company, ticker);
+      setArticles(response);
     }
     getArticleData();
 
