@@ -7,7 +7,11 @@ import { StonksIconButton } from '../Styles/Buttons';
 import StockList from '../Components/TransactionList'
 import * as T from '../Styles/text'
 import {formatMoney} from '../Lib/Utils';
-import { TransactionGraph, formatLineChartData, LineGraph} from "../Components/StockGraph"
+import { TransactionGraph, formatLineChartData} from "../Components/StockGraph"
+
+import { FontAwesome5 } from '@expo/vector-icons';
+import { colors } from '../Styles/colors';
+
 
 export default function Profile({navigation}) {
     const [name, setName] = useState('');
@@ -89,7 +93,7 @@ export default function Profile({navigation}) {
                 <T.H3 style = {{color: 'grey'}}>{username}</T.H3>
                 
                 <StonksIconButton 
-                    style={{backgroundColor: 'red', marginTop: 12, marginBottom: 12}}
+                    style={{backgroundColor: colors.RED, marginTop: 12, marginBottom: 12}}
                     onPress={() => {
                         firebase.auth().signOut()
                         .then(() => navigation.navigate('Login'))
@@ -111,7 +115,7 @@ export default function Profile({navigation}) {
                             {setDisplay("transactions")}
                             
                         }}
-                        color="#ffffff"
+                        color={display === 'transactions' ? "#ffffff" : colors.SUBTLE_TEXT}
                         title={"Transaction History"}
                         />
                 </View>
@@ -119,9 +123,8 @@ export default function Profile({navigation}) {
                     <Button
                         onPress={() => {
                             {setDisplay("graph")}
-                            
                         }}
-                        color="#ffffff"
+                        color={display === 'graph' ? "#ffffff" : colors.SUBTLE_TEXT}
                         title={"Transaction Graph"}
                         />
                 </View>
@@ -131,8 +134,7 @@ export default function Profile({navigation}) {
                {display === "transactions" ? 
                 <StockList transactions={transactions}/> 
                 : 
-                // <TransactionGraph lineChartData={lineChartData} renderLabel={({datum}) => datum.x}/> 
-                <LineGraph data={lineChartData} renderLabel={({datum}) => datum.x}/>
+                <TransactionGraph lineChartData={lineChartData} height={250} width={340}/>
                }
             </View>
         </View> 

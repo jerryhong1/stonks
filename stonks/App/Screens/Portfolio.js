@@ -1,15 +1,18 @@
 import React, {useEffect, useState} from 'react';
 import { StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import firebase from 'firebase';
+import Svg, {Line} from 'react-native-svg';
 
 import { SafeAreaContainer } from "../Styles/container";
 import { StonksButton } from "../Styles/Buttons";
 import { colors } from '../Styles/colors';
 import * as T from '../Styles/text';
 
-import StockList, { fullStockDict }  from "../Components/StockList";
+import StockList from "../Components/StockList";
+import {stockCache, subscribeStockCache}  from "../Lib/StockCache";
 import {formatMoney} from '../Lib/Utils';
 import { formatLineChartData, TransactionGraph, LineGraph } from "../Components/StockGraph"
+import { VictoryGroup, VictoryLine, VictoryTheme, VictoryVoronoiContainer, VictoryTooltip } from "victory-native";
 
 function EmptyState({navigation}) {
     return (
@@ -49,6 +52,7 @@ export default function Portfolio({navigation}) {
             setBalance(userData.balance);
             setPortfolio(userData.portfolio);
             setLineChartData(formatLineChartData(userData.transactions));
+            //console.log(lineChartData);
 
         } catch (error) {
             console.log(error);
@@ -80,11 +84,11 @@ export default function Portfolio({navigation}) {
         Object.entries(portfolio).forEach(
           ([name, qty]) => {
             if (qty > 0) {
-              newStockList.push({...fullStockDict[name], count: qty});
+              newStockList.push({ticker: name, count: qty});
             }
           }
         ); 
-        console.log("new stock list", newStockList);
+        //console.log("new stock list", newStockList);
         setStockList(newStockList);
       }
     }, [portfolio])
@@ -96,13 +100,23 @@ export default function Portfolio({navigation}) {
         let stockAssets = 0;
         Object.entries(portfolio).forEach(
           ([name, qty]) => {
-            stockAssets += fullStockDict[name].currPrice * qty;
+            stockAssets += stockCache[name].currPrice * qty;
           } 
         );
         setTotalAssets(stockAssets + balance);
         setChangeInAssets(stockAssets + balance - startingBalance);
       }
     }, [balance, portfolio])
+    class CustomFlyout extends React.Component {
+      render() {
+          const {x, y} = this.props;
+          return ( //svg height and width are hard coded right now 
+          <Svg height="800" width="500" style="overflow: visible"> 
+              <Line x1={x} y1="30" x2={x} y2="300" stroke="gray" strokeWidth="1" />
+          </Svg>
+          );
+      }
+  }
     
     return (
         <SafeAreaContainer>
@@ -118,8 +132,7 @@ export default function Portfolio({navigation}) {
             
             {/* graph view */}
             <View style={styles.graph}> 
-                <LineGraph data={lineChartData} renderLabel={({datum}) => datum.x}/>
-                {/* <TransactionGraph lineChartData={lineChartData}/> */}
+                <TransactionGraph lineChartData={lineChartData} height={150} width={360}/>
             </View>
             
             {/* Your stocks list TODO: feed in list from docs */}

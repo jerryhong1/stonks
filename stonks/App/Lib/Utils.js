@@ -3,7 +3,6 @@
 
 // simple function to convert "year" -> "years" when necessary
 function pluralize(count, string) {
-  console.log(count)
   return count > 1 ? string + "s" : string
 }
 

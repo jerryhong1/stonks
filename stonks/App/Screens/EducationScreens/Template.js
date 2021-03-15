@@ -18,7 +18,7 @@ export default function EducationPage({title, subtitle, pageName, children}) {
                 {icons[pageName]}
             </View> : null}
             <View style={{ flex: 3 }}>
-                <T.H2 style={{lineHeight: "30px"}}>{title}</T.H2>
+                <T.H2 style={{lineHeight: 30}}>{title}</T.H2>
             </View>
         </View>
 

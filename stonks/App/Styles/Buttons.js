@@ -86,7 +86,7 @@ const Buttons = {
   },
   welcomeButtonText: {
     color: 'black',
-    textAlign: 'flex-start',
+    // textAlign: 'flex-start',
     fontSize: 25,
     fontWeight: 'bold',
   },

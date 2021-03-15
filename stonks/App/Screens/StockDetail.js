@@ -8,7 +8,8 @@ import Svg, {Line} from 'react-native-svg';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { getArticles } from "./News";
 import { colors } from '../Styles/colors'
-import { LineGraph } from "../Components/StockGraph"
+import { TransactionGraph, formatLineChartData} from "../Components/StockGraph"
+import {stockCache, subscribeStockCache}  from "../Lib/StockCache";
 
 function formatAMPM(date) {
   var hours = date.getHours();
@@ -41,35 +42,41 @@ function formatCandlestickChartData(data) {
 //pull data from firestore and feed to chart
 export default function DetailsScreen({route, navigation}) {
   const [lineChartData, setLineChartData] = useState([0,0]); //ALL available data we have 
-  const [stockdesc, setStockDesc] = useState(""); 
-  const stockData = route.params.data;
+  const [stockdesc, setStockDesc] = useState("No description.");
+  const [currPrice, setCurrPrice] = useState(0);
+  const ticker = route.params.ticker;
+  const company = stockCache[ticker].company;
   const buy = "Purchase";
   const sell = "Sell";
   const [articles, setArticles] = useState([]);
   const [timeframe, setTimeframe] = useState("1D");
 
-  // Get stock data for a particular stock from firebase //TODO: Once StockList pulls from firebase, should this still write to firebase?
-  useEffect(() => {
-    const getStockData = async () => {
-      const stock = stockData.ticker; 
-      const stockDoc = firebase.firestore().collection('stocks').doc(stock);
-      const stockSnapshot = await stockDoc.get();
-      const stockDataFirebase = stockSnapshot.data();
-      //put stockData into right format
-      setLineChartData(formatLineChartData(stockDataFirebase.results));
-      setStockDesc(stockDataFirebase.description);
-      const response = await getArticles(stockData.company);
-      setArticles(response.articles);
-      //if you want to write some data uncomment below and:
-      // change stockdata to the data you want to upload
-      // change the below firebase.set command to the correct stock you want to upload data to
-      // uncomment here
-      // console.log("before upload");
-      // const res = await firebase.firestore().collection('stocks').doc(stock).set(stockdata, {merge: true});
-      // console.log("success ");
-      // to here
+  function updateStockData(ticker, data) {
+    setCurrPrice(data.currPrice);
+    setLineChartData(formatLineChartData(data.results));
+    if (data.hasOwnProperty('description')) {
+      setStockDesc(data.description);
     }
-    getStockData();
+  }
+
+  // Get stock data for a particular stock from firebase
+  useEffect(() => {
+    if (stockCache.hasOwnProperty(ticker)) {
+      updateStockData(ticker, stockCache[ticker]);
+    }
+
+    const getArticleData = async () => {
+      const response = await getArticles(company, ticker);
+      setArticles(response);
+    }
+    getArticleData();
+
+    // Subscribe to stock cache changes for $TICKER.
+    let unsubStockCache = subscribeStockCache(updateStockData, ticker);
+
+    if (unsubStockCache !== null) {
+      return unsubStockCache;
+    }
   }, []);
 
   /*
@@ -139,34 +146,34 @@ export default function DetailsScreen({route, navigation}) {
     );
   };
 
-  class CustomFlyout extends React.Component {
-      render() {
-          const {x, y} = this.props;
-          return ( //svg height and width are hard coded right now 
-          <Svg height="800" width="500" style="overflow: visible"> 
-              <Line x1={x} y1="30" x2={x} y2="300" stroke="gray" strokeWidth="1" />
-          </Svg>
-          );
-      }
-  }
+  // class CustomFlyout extends React.Component {
+  //     render() {
+  //         const {x, y} = this.props;
+  //         return ( //svg height and width are hard coded right now 
+  //         <Svg height="800" width="500" style="overflow: visible"> 
+  //             <Line x1={x} y1="30" x2={x} y2="300" stroke="gray" strokeWidth="1" />
+  //         </Svg>
+  //         );
+  //     }
+  // }
 
-  function createLineGraph(data) {
-    return (
-      <VictoryGroup theme={VictoryTheme.material} height={150} domainPadding={{y: [0, 50]}} padding={{ top: 0, bottom: 0 }} containerComponent={<VictoryVoronoiContainer/>}>
-        <VictoryLine 
-          labelComponent={ <VictoryTooltip renderInPortal={false} flyoutComponent={<CustomFlyout/>}
-                            flyoutStyle={{stroke: "none", fill: "black"}} y={45}
-                            style={{fill: "white", fontSize: 11, fontFamily: "Helvetica Neue"}}/>}
-          labels={({ datum }) => datum.x + datum.label}
-          style={{data: { stroke: "#ff3a3d", strokeWidth: 1.5 } }}
-          theme={VictoryTheme.material}
-          data={data}
-          x="x"
-          y="y"
-        />
-      </VictoryGroup>
-    );
-  }
+  // function createLineGraph(data) {
+  //   return (
+  //     <VictoryGroup theme={VictoryTheme.material} height={150} domainPadding={{y: [0, 50]}} padding={{ top: 0, bottom: 0 }} containerComponent={<VictoryVoronoiContainer/>}>
+  //       <VictoryLine 
+  //         labelComponent={ <VictoryTooltip renderInPortal={false} flyoutComponent={<CustomFlyout/>}
+  //                           flyoutStyle={{stroke: "none", fill: "black"}} y={45}
+  //                           style={{fill: "white", fontSize: 11, fontFamily: "Helvetica Neue"}}/>}
+  //         labels={({ datum }) => datum.x + datum.label}
+  //         style={{data: { stroke: "#ff3a3d", strokeWidth: 1.5 } }}
+  //         theme={VictoryTheme.material}
+  //         data={data}
+  //         x="x"
+  //         y="y"
+  //       />
+  //     </VictoryGroup>
+  //   );
+  // }
 
   function displayArticles() {
     return (
@@ -227,19 +234,21 @@ export default function DetailsScreen({route, navigation}) {
   function getDateRange(granularity) {
     let res = [];
     var endDate = new Date();
-    endDate.setDate(endDate.getDate()-7); 
+    endDate.setDate(endDate.getDate()-5); 
     endDate.setUTCHours(0,0,0,0);
     var startDate = new Date();
     if (granularity == "1D") {
       startDate.setDate(startDate.getDate()-8); 
     } else if (granularity == "1W") {
-      startDate.setDate(startDate.getDate()-14); 
+      startDate.setDate(startDate.getDate()-13); 
     } else if (granularity == "1M") {
-      startDate.setDate(startDate.getDate()-39); // if we have time we can change this to actual # of days in a month 
+      startDate.setDate(startDate.getDate()-32); // if we have time we can change this to actual # of days in a month 
     }
     startDate.setUTCHours(0,0,0,0);
     res.push(startDate);
     res.push(endDate);
+    console.log(startDate);
+    console.log(endDate);
     return res; 
   }
 
@@ -266,11 +275,8 @@ export default function DetailsScreen({route, navigation}) {
 
       </View>
       <View style={styles.graph}>
-        {/* <LineGraph
-          data={setChartDataGranularity(timeframe, "line", lineChartData)} 
-          renderData={({ datum }) => datum.x + datum.label}
-        />  */}
-        {createLineGraph(setChartDataGranularity(timeframe, "line", lineChartData))}
+        {<TransactionGraph lineChartData={setChartDataGranularity(timeframe, "line", lineChartData)} height={150} width={370}/>}
+        {/* {createLineGraph(setChartDataGranularity(timeframe, "line", lineChartData))} */}
       </View>
 
        {/* Middle section */}
@@ -279,9 +285,9 @@ export default function DetailsScreen({route, navigation}) {
          {/* Stock Info */}
          <View>
             <Text style = {{color: "white", fontSize: 16}} >
-              <Text style = {{fontWeight: "bold"}}>{stockData.ticker} </Text>
-            • {stockData.company}</Text>
-            <Text style = {{color: "white", fontSize: 30, marginTop: 4}} >{formatMoney(stockData.currPrice)}</Text>
+              <Text style = {{fontWeight: "bold"}}>{ticker} </Text>
+            • {company}</Text>
+            <Text style = {{color: "white", fontSize: 30, marginTop: 4}} >{formatMoney(currPrice)}</Text>
          </View>
           {/* Drop down picker */}
           <View style={{width: '28%'}}>
@@ -292,7 +298,7 @@ export default function DetailsScreen({route, navigation}) {
               ]}
               placeholder="+ Trade"
               containerStyle={{height: 40, width: '100%'}}
-              style={{backgroundColor: '#05ad6d'}}
+              style={{backgroundColor: colors.GREEN}}
               itemStyle={styles.pickerStyle}
               dropDownStyle={{backgroundColor: 'black'}}
               globalTextStyle={{
@@ -300,8 +306,8 @@ export default function DetailsScreen({route, navigation}) {
               }}
               onChangeItem={item => {
                 navigation.navigate('BuySell', {
-                  ticker: stockData.ticker,
-                  company: stockData.company,
+                  ticker: ticker,
+                  company: company,
                   buyOrSell: item.value === 'sell' ? sell : buy,
                 })
               }}

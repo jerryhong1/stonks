@@ -34,68 +34,71 @@ export default function Welcome({route, navigation}) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}> Welcome to Stonks{curUser ? `, ${curUser}` : ''}. </Text>
-      <Text style={styles.subtitle}> How much money would you like to start off with? </Text>
-      <DialogInput isDialogVisible={dialogVisible}
-        title={"What is your preferred starting balance?"}
-        message={"We recommend starting with at least $1000."}
-        hintInput ={"$1000"}
-        submitInput={ (inputText) => {
-          setDialogVisible(false),
-          updateBalance(inputText)
-        } }
-        closeDialog={ () => {  setDialogVisible(false);
-        }}>
-      </DialogInput>
-      <TouchableOpacity style={Buttons.welcomeButton}
-        onPress={() => 
-          updateBalance("1000")
-        }
-      >
-        <View > 
-          <Text style={Buttons.welcomeButtonText}>$1000</Text>
-          <Text>My first paycheck</Text>
-        </View>
-        <View>
-          <Text style={Buttons.triangle}> ▶ </Text>  
-        </View>      
-      </TouchableOpacity>
-      <TouchableOpacity style={Buttons.welcomeButton}
-        onPress={() => 
-          updateBalance("10000")
-        }
-      >
-        <View > 
-          <Text style={Buttons.welcomeButtonText}>$10k</Text>
-          <Text>Almost a Roth IRA's worth </Text>
-        </View>
-        <View>
-          <Text style={Buttons.triangle}> ▶ </Text>  
-        </View>      
-      </TouchableOpacity>
-      <TouchableOpacity style={Buttons.welcomeButton}
-        onPress={() => 
-          updateBalance("100000")
-        }
-      >
-        <View > 
-          <Text style={Buttons.welcomeButtonText}>$100k</Text>
-          <Text>My life savings</Text>
-        </View>
-        <View>
-          <Text style={Buttons.triangle}> ▶ </Text>  
-        </View>      
-      </TouchableOpacity>
-      <TouchableOpacity style={Buttons.welcomeButton}
-        onPress={() => setDialogVisible(true)}
-      >
-        <View > 
-          <Text style={Buttons.welcomeButtonText}>Custom</Text>
-          <Text>Choose your own amount</Text>
-        </View>
-        <View>
-          <Text style={Buttons.triangle}> ▶ </Text>  
-        </View>      
-      </TouchableOpacity>
+
+      <View style={{height: '80%', justifyContent: 'center', alignItems: 'center'}}> 
+        <Text style={styles.subtitle}> How much money would you like to start off with? </Text>
+        <DialogInput isDialogVisible={dialogVisible}
+          title={"What is your preferred starting balance?"}
+          message={"We recommend starting with at least $1000."}
+          hintInput ={"$1000"}
+          submitInput={ (inputText) => {
+            setDialogVisible(false),
+            updateBalance(inputText)
+          } }
+          closeDialog={ () => {  setDialogVisible(false);
+          }}>
+        </DialogInput>
+        <TouchableOpacity style={Buttons.welcomeButton}
+          onPress={() => 
+            updateBalance("1000")
+          }
+        >
+          <View > 
+            <Text style={Buttons.welcomeButtonText}>$1000</Text>
+            <Text>My first paycheck</Text>
+          </View>
+          <View>
+            <Text style={Buttons.triangle}> ▶ </Text>  
+          </View>      
+        </TouchableOpacity>
+        <TouchableOpacity style={Buttons.welcomeButton}
+          onPress={() => 
+            updateBalance("10000")
+          }
+        >
+          <View > 
+            <Text style={Buttons.welcomeButtonText}>$10k</Text>
+            <Text>Almost a Roth IRA's worth </Text>
+          </View>
+          <View>
+            <Text style={Buttons.triangle}> ▶ </Text>  
+          </View>      
+        </TouchableOpacity>
+        <TouchableOpacity style={Buttons.welcomeButton}
+          onPress={() => 
+            updateBalance("100000")
+          }
+        >
+          <View > 
+            <Text style={Buttons.welcomeButtonText}>$100k</Text>
+            <Text>My life savings</Text>
+          </View>
+          <View>
+            <Text style={Buttons.triangle}> ▶ </Text>  
+          </View>      
+        </TouchableOpacity>
+        <TouchableOpacity style={Buttons.welcomeButton}
+          onPress={() => setDialogVisible(true)}
+        >
+          <View > 
+            <Text style={Buttons.welcomeButtonText}>Custom</Text>
+            <Text>Choose your own amount</Text>
+          </View>
+          <View>
+            <Text style={Buttons.triangle}> ▶ </Text>  
+          </View>      
+        </TouchableOpacity>
+      </View> 
     </View>
   );
 }
@@ -110,7 +113,6 @@ const styles = StyleSheet.create({
   subtitle: {
     color: 'white',
     fontSize: 18,
-    marginTop: 170,
     marginHorizontal: 80,
     marginBottom: 20,
     textAlign: 'center',
