@@ -35,13 +35,14 @@ export default function StockList({userStockList = null, searchText = null}) {
     }
   }
 
+  // General, for search. Only need to add company here because stockList searches top level not by item.
   useEffect(() => {
     if (stockList === null) {
-      console.log("Stock cache " , stockCache) // at the moment, you can only search by ticker based on stock cache
       setStockList(Object.keys(stockCache).map((e, i) => ({ticker: e, company: stockCache[e].company})));
     }
   }, []);
 
+  // Specific, for the user's portfolio page
   useEffect(() => {
     if (userStockList !== null) {
       setStockList(userStockList);

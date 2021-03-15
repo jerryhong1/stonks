@@ -9,6 +9,9 @@ import * as T from '../Styles/text'
 import {formatMoney} from '../Lib/Utils';
 import { TransactionGraph, formatLineChartData} from "../Components/StockGraph"
 
+import { FontAwesome5 } from '@expo/vector-icons';
+
+
 export default function Profile({navigation}) {
     const [name, setName] = useState('');
     const [username, setUsername] = useState('');
@@ -76,10 +79,16 @@ export default function Profile({navigation}) {
             <View>
                 <TouchableHighlight onPress={selectImage}>
                     <View style={{marginLeft: 16}}> 
-                        <Image
-                            source={propic? {uri: propic} : require('../../imgs/profile.png')}
-                            style={styles.propic}
-                        />
+
+                        {propic ? 
+                            <Image
+                                source={{uri: propic}}
+                                style={styles.propic}
+                            />
+                        :
+                            <FontAwesome5 name="user-circle" size={120} color="white" style={styles.propic} />
+                        }
+
                         <T.Body2 style={{marginTop: -8}}>Change Profile Picture</T.Body2>
                     </View> 
                  </TouchableHighlight>

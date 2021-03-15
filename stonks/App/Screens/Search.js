@@ -27,7 +27,10 @@ export default function Search({navigation}) {
 
 
       <View style = {styles.stockResults}> 
-        <Text style = {styles.suggestedText}> Suggested </Text> 
+        <View style={{justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center'}}> 
+          <Text style = {styles.suggestedText}> Suggested </Text> 
+          <Text style = {styles.suggestedText}> Current price </Text> 
+        </View>
         <StockList searchText={text.toLowerCase()}/>
       </View>
 
@@ -74,8 +77,8 @@ const styles = StyleSheet.create({
   suggestedText: {
     color: 'grey',
     fontSize: 18,
-    marginLeft: 12,
+    marginHorizontal: 12,
     marginBottom: 8
-  }
+  },
   
 });
