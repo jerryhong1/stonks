@@ -32,9 +32,9 @@ function timeSince(date) {
     }
     interval = seconds / 60;
     if (interval > 1) {
-      return Math.floor(interval) + ` ${pluralize(Math.floor(interval), "minute")} ago`;
+      return Math.floor(interval) + ` ${pluralize(Math.floor(interval), "min")} ago`;
     }
-    return Math.floor(seconds) + ` ${pluralize(Math.floor(interval), "second")} ago`;
+    return Math.floor(seconds) + ` ${pluralize(Math.floor(seconds), "sec")} ago`;
 }
 
 function numberWithCommas(x) {

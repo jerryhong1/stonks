@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, FlatList, View} from 'react-native';
 import * as T from '../Styles/text'
-import { timeSince } from "../Lib/Utils"
+import { timeSince, formatMoney } from "../Lib/Utils"
 
 
 function TransactionItem({transaction}) {
@@ -21,7 +21,7 @@ function TransactionItem({transaction}) {
         </View>
         <View style={{paddingRight: 12}}>
             <T.H3>
-                {posOrNeg + "$" + transaction["price"] * Math.abs(transaction["qtyChanged"])}
+                {posOrNeg + formatMoney(transaction["price"] * Math.abs(transaction["qtyChanged"]))}
             </T.H3>
         </View>
     </View>)
@@ -55,7 +55,6 @@ export default function StockList({transactions}) {
 const styles = StyleSheet.create({
     transactions: {
         width: '100%',
-        borderTopColor: 'grey',
         borderBottomColor: 'grey',
         borderWidth: 0.3,
         flexDirection: 'row',
